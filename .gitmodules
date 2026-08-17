@@ -1,0 +1,3 @@
+[submodule "pddl_benchmark_instances"]
+	path = pddl_benchmark_instances
+	url = https://github.com/potassco/pddl-instances.git

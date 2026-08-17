@@ -1,0 +1,16 @@
+# UNIFIED LIFECYCLE AGENT FOR PDDL DOMAIN MODELLING
+
+## Project Framework
+This project implements an Autonomous Lifecycle Agent for PDDL domain files based on the Knowledge Engineering for Planning and Scheduling (KEPS) framework.
+
+## Core Architectural Rules
+1. Schema First: All intermediate layouts must conform to `DomainBlueprint` in `schemas/pddl_blueprint.py`. Do NOT generate direct PDDL text strings without validating the intermediate schema.
+2. Symbolic Verification: Use `tools/symbolic_oracles.py` to run VAL and Fast Downward as deterministic CLI tools.
+3. LangGraph Flow: Graph orchestration lives in `graph.py`. State dictionary passed between nodes acts as the central Memory Stream.
+4. Error Handling: Triage error logs from VAL/Fast Downward before executing self-repairs.
+
+## Folder Boundaries
+- `schemas/`: Pydantic structural models.
+- `tools/`: Python subprocess wrappers for VAL & Fast Downward.
+- `nodes/`: Individual LangGraph node functions (elicitation, generation, triage).
+- `graph.py`: LangGraph state graph & conditional routing logic.

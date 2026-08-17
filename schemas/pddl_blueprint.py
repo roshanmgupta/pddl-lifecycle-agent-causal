@@ -1,0 +1,56 @@
+from typing import List, Dict, Optional
+from pydantic import BaseModel, Field
+
+class PddlActionSchema(BaseModel):
+    """Schema definition for individual PDDL actions."""
+    action_name: str = Field(
+        description="Snake_case identifier for the action, e.g., 'move_robot'"
+    )
+    parameters: Dict[str, str] = Field(
+        description="Map of parameter variables to their types, e.g., {'?r': 'robot', '?from': 'location', '?to': 'location'}"
+    )
+    preconditions: List[str] = Field(
+        description="List of PDDL predicate statements required before execution, e.g., ['(at ?r ?from)', '(connected ?from ?to)']"
+    )
+    effects: List[str] = Field(
+        description="List of PDDL state modifications after execution, e.g., ['(at ?r ?to)', '(not (at ?r ?from))']"
+    )
+
+class ProblemBlueprint(BaseModel):
+    """Phase 2.1 Intermediate Output: Relational Blueprint for a specific problem instance."""
+    problem_name: str = Field(
+        default="generated_problem",
+        description="Identifier for the problem instance, e.g., 'move_one_crate'"
+    )
+    domain_name: str = Field(
+        description="Name of the domain this problem belongs to, must match the domain file."
+    )
+    objects: Dict[str, str] = Field(
+        description="Map of object instances to their types, e.g., {'r1': 'robot', 'c1': 'crate', 'l1': 'location'}"
+    )
+    initial_state: List[str] = Field(
+        description="List of predicate instances that are true at the start, e.g., ['(at r1 l1)', '(emptyhand r1)']"
+    )
+    goal_state: List[str] = Field(
+        description="List of predicate instances that must be true to solve the problem, e.g., ['(at c1 l2)']"
+    )
+
+class DomainBlueprint(BaseModel):
+    """Phase 2.1 Intermediate Output: Relational Blueprint Schema."""
+    domain_name: str = Field(
+        default="generated_domain", 
+        description="Identifier for the domain, e.g., 'logistics_warehouse'"
+    )
+    requirements: List[str] = Field(
+        default=[":strips", ":typing"], 
+        description="List of required PDDL features, e.g., [':strips', ':typing']"
+    )
+    types: Dict[str, Optional[str]] = Field(
+        description="Map of object types to their parent supertype, e.g., {'robot': 'agent', 'crate': 'object', 'location': None}"
+    )
+    predicates: List[str] = Field(
+        description="List of formal predicate signatures, e.g., ['(at ?r - robot ?l - location)', '(holding ?r - robot ?c - crate)']"
+    )
+    actions: List[PddlActionSchema] = Field(
+        description="List of all operational action schemas defined in the domain"
+    )
