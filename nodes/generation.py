@@ -1,4 +1,33 @@
+import re
 from schemas.pddl_blueprint import DomainBlueprint, PddlActionSchema, ProblemBlueprint
+
+
+def normalize_pddl_expression(expr: str) -> str:
+    """
+    Normalizes whitespace in a PDDL expression to ensure valid syntax.
+    
+    Fixes common LLM output issues:
+      - Missing space before '?' variables:  "(at?r" -> "(at ?r"
+      - Missing space after type annotations: "robot?l" -> "robot ?l"
+      - Collapsed 'not(' patterns:            "(not(" -> "(not ("
+      - Multiple consecutive spaces collapsed to single space
+    
+    Examples:
+      >>> normalize_pddl_expression("(at?r - robot?l - location)")
+      '(at ?r - robot ?l - location)'
+      >>> normalize_pddl_expression("(not(at?r?from))")
+      '(not (at ?r ?from))'
+    """
+    s = expr.strip()
+    # 1. Ensure space before any '?' that is preceded by a word character
+    #    Handles: "(at?r" -> "(at ?r" and "robot?l" -> "robot ?l"
+    s = re.sub(r'(?<=\w)\?', ' ?', s)
+    # 2. Ensure space after '(' when followed by a word char but not already spaced
+    #    Handles: "(not(" -> "(not (" — insert space between closing keywords and '('
+    s = re.sub(r'(?<=\w)\(', ' (', s)
+    # 3. Collapse multiple spaces into single space
+    s = re.sub(r' {2,}', ' ', s)
+    return s
 
 def compile_pddl_programmatically(blueprint_data: dict) -> str:
     """
@@ -49,6 +78,7 @@ def compile_pddl_programmatically(blueprint_data: dict) -> str:
                 clean_pred = f"({clean_pred}"
             if not clean_pred.endswith(")"):
                 clean_pred = f"{clean_pred})"
+            clean_pred = normalize_pddl_expression(clean_pred)
             pddl_lines.append(f"    {clean_pred}")
         pddl_lines.append("  )")
         pddl_lines.append("")
@@ -69,20 +99,20 @@ def compile_pddl_programmatically(blueprint_data: dict) -> str:
         
         # Format Preconditions
         if len(act_obj.preconditions) == 1:
-            pre_str = act_obj.preconditions[0].strip()
+            pre_str = normalize_pddl_expression(act_obj.preconditions[0])
             pddl_lines.append(f"    :precondition {pre_str}")
         elif len(act_obj.preconditions) > 1:
-            pres = " ".join([p.strip() for p in act_obj.preconditions])
+            pres = " ".join([normalize_pddl_expression(p) for p in act_obj.preconditions])
             pddl_lines.append(f"    :precondition (and {pres})")
         else:
             pddl_lines.append("    :precondition (and)")
             
         # Format Effects
         if len(act_obj.effects) == 1:
-            eff_str = act_obj.effects[0].strip()
+            eff_str = normalize_pddl_expression(act_obj.effects[0])
             pddl_lines.append(f"    :effect {eff_str}")
         elif len(act_obj.effects) > 1:
-            effs = " ".join([e.strip() for e in act_obj.effects])
+            effs = " ".join([normalize_pddl_expression(e) for e in act_obj.effects])
             pddl_lines.append(f"    :effect (and {effs})")
         else:
             pddl_lines.append("    :effect (and)")
@@ -121,12 +151,12 @@ def compile_problem_pddl(problem_blueprint_data: dict) -> str:
 
     # 3. Initial State
     pddl_lines.append("  (:init")
-    pddl_lines.extend([f"    {s.strip()}" for s in initial_state])
+    pddl_lines.extend([f"    {normalize_pddl_expression(s)}" for s in initial_state])
     pddl_lines.append("  )")
     pddl_lines.append("")
 
     # 4. Goal State
-    goal_str = " ".join([g.strip() for g in goal_state])
+    goal_str = " ".join([normalize_pddl_expression(g) for g in goal_state])
     pddl_lines.append(f"  (:goal (and {goal_str}))")
     pddl_lines.append(")")
 
@@ -138,6 +168,10 @@ def run_generation_node(state: dict) -> dict:
     into valid Lisp PDDL code without calling an LLM.
     """
     blueprint_data = state.get("pddl_domain_blueprint", {})
+    if hasattr(blueprint_data, "model_dump"):
+        blueprint_data = blueprint_data.model_dump()
+    elif hasattr(blueprint_data, "dict"):
+        blueprint_data = blueprint_data.dict()
     
     # Compile Domain
     compiled_pddl = compile_pddl_programmatically(blueprint_data)
@@ -146,6 +180,11 @@ def run_generation_node(state: dict) -> dict:
     # Compile Problem
     problem_blueprint_data = state.get("pddl_problem_blueprint")
     if problem_blueprint_data:
+        if hasattr(problem_blueprint_data, "model_dump"):
+            problem_blueprint_data = problem_blueprint_data.model_dump()
+        elif hasattr(problem_blueprint_data, "dict"):
+            problem_blueprint_data = problem_blueprint_data.dict()
+            
         compiled_problem_pddl = compile_problem_pddl(problem_blueprint_data)
         state["generated_problem_pddl"] = compiled_problem_pddl
-    return state
+    return state

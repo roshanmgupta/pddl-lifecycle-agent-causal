@@ -1,34 +1,46 @@
-(define (domain warehouse_logistics)
+(define (domain depots)
   (:requirements :strips :typing)
 
   (:types
-    robot crate location - object
+    truck - vehicle
+    crate - object
+    pallet - platform
+    location - place
   )
 
   (:predicates
-    (at?r - robot?l - location)
     (at?c - crate?l - location)
+    (at?t - truck?l - location)
+    (on?c - crate?p - pallet)
+    (on?c - crate?t - truck)
+    (in?c - crate?t - truck)
+    (empty?p - pallet)
+    (empty?t - truck)
     (connected?l1 - location?l2 - location)
-    (hand-empty?r - robot)
-    (holding?r - robot?c - crate)
   )
 
-  (:action move_robot
-    :parameters (?r - robot ?from - location ?to - location)
-    :precondition (and (at?r?from) (connected?from?to))
-    :effect (and (at?r?to) (not (at?r?from)))
+  (:action load_truck
+    :parameters (?c - crate ?t - truck ?l - location)
+    :precondition (and (at?c?l) (at?t?l) (empty?t))
+    :effect (and (in?c?t) (not (at?c?l)) (not (empty?t)))
   )
 
-  (:action pick_up_crate
-    :parameters (?r - robot ?c - crate ?l - location)
-    :precondition (and (at?r?l) (at?c?l) (hand-empty?r))
-    :effect (and (holding?r?c) (not (at?c?l)) (not (hand-empty?r)))
+  (:action unload_truck
+    :parameters (?c - crate ?t - truck ?l - location)
+    :precondition (and (in?c?t) (at?t?l))
+    :effect (and (at?c?l) (not (in?c?t)) (empty?t))
   )
 
-  (:action drop_crate
-    :parameters (?r - robot ?c - crate ?l - location)
-    :precondition (and (at?r?l) (holding?r?c))
-    :effect (and (at?c?l) (hand-empty?r) (not (holding?r?c)))
+  (:action move_truck
+    :parameters (?t - truck ?from - location ?to - location)
+    :precondition (and (at?t?from) (connected?from?to))
+    :effect (and (at?t?to) (not (at?t?from)))
+  )
+
+  (:action stack_on_pallet
+    :parameters (?c - crate ?p - pallet ?l - location)
+    :precondition (and (at?c?l) (at?p?l) (empty?p))
+    :effect (and (on?c?p) (not (at?c?l)) (not (empty?p)))
   )
 
 )
