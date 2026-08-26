@@ -1,6 +1,8 @@
 {
     "python-envs.defaultEnvManager": "ms-python.python:conda",
-    "python.terminal.useEnvFile": true
-   
+    "python.terminal.useEnvFile": true,
+    "python.defaultInterpreterPath": "C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe",
+    "python.analysis.extraPaths": [
+        "C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\Lib\\site-packages"
+    ]
 }
-// # "python-envs.defaultPackageManager": "ms-python.python:conda"

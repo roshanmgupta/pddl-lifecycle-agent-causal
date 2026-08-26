@@ -3,3 +3,5 @@ langchain-openai
 langgraph
 pydantic
 jupyter
+streamlit
+python-dotenv

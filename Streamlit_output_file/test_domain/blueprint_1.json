@@ -1,0 +1,10 @@
+{
+  "domain_name": "test_domain",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "test_domain"
+  },
+  "problem_blueprint": null,
+  "iteration_count": 0,
+  "is_valid": true
+}

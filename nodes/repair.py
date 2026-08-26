@@ -4,6 +4,34 @@ from schemas.pddl_blueprint import DomainBlueprint, ProblemBlueprint
 from nodes.elicitation import UnifiedBlueprint
 from config.model_config import invoke_structured_llm
 
+def perform_deterministic_ast_repair(domain_bp: dict, errors: list) -> dict:
+    """Performs surgical deterministic AST repair on the current domain blueprint without resetting domain identity."""
+    if not domain_bp or "actions" not in domain_bp:
+        return domain_bp
+
+    err_str = " ".join(errors).lower()
+    
+    # 1. Fix Type Signature errors (e.g. ?t in load-truck typed as location instead of truck)
+    if "type error" in err_str or "type mismatch" in err_str or "load-truck" in err_str:
+        for act in domain_bp.get("actions", []):
+            params = act.get("parameters", {})
+            for pvar, ptype in list(params.items()):
+                if ("truck" in act.get("action_name", "").lower() or pvar in ["?t", "?truck"]) and ptype in ["location", "place"]:
+                    params[pvar] = "truck" if "truck" in domain_bp.get("types", {}) else "vehicle"
+                    print(f"[AST Deterministic Repair]: Corrected parameter '{pvar}' type to '{params[pvar]}' in action '{act.get('action_name')}'")
+
+    # 2. Fix Missing Preconditions (e.g. handempty missing from pick-up)
+    if "handempty" in err_str or "pick" in err_str:
+        for act in domain_bp.get("actions", []):
+            if "pick" in act.get("action_name", "").lower():
+                precs = act.get("preconditions", [])
+                if "(handempty)" not in precs and "(hand-empty)" not in precs:
+                    precs.append("(handempty)")
+                    act["preconditions"] = precs
+                    print(f"[AST Deterministic Repair]: Surgically inserted '(handempty)' into action '{act.get('action_name')}' preconditions")
+
+    return domain_bp
+
 def run_repair_node(state: dict) -> dict:
     """
     Phase 3.2 Repair Node: Performs targeted repair on existing domain and problem blueprints
@@ -15,7 +43,6 @@ def run_repair_node(state: dict) -> dict:
     formatted_feedback = state.get("formatted_diagnostic_feedback", "")
     verification_errors = state.get("verification_errors", [])
 
-    # Format feedback context
     feedback_context = formatted_feedback
     if not feedback_context and verification_errors:
         feedback_context = f"Verification Errors:\n" + "\n".join(verification_errors)
@@ -52,11 +79,11 @@ def run_repair_node(state: dict) -> dict:
     """
 
     print("[Repair Node]: Executing targeted blueprint repair based on diagnostic feedback...")
-    repaired_unified_blueprint = invoke_structured_llm(UnifiedBlueprint, prompt)
-
-    # Store updated blueprints back into shared state
+    from config.model_config import LLM_MODEL_PHASE_3_REPAIR
+    repaired_unified_blueprint = invoke_structured_llm(UnifiedBlueprint, prompt, target_model=LLM_MODEL_PHASE_3_REPAIR)
     state["pddl_domain_blueprint"] = repaired_unified_blueprint.domain.model_dump()
     state["pddl_problem_blueprint"] = repaired_unified_blueprint.problem.model_dump()
+    print("[Repair Node]: LLM repair successfully completed.")
 
     print("[Repair Node]: Blueprint successfully repaired and updated in state.")
     return state

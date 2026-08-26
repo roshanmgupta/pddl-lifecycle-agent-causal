@@ -15,7 +15,17 @@ def run_elicitation_node(state: dict) -> dict:
     requirements_text = state.get("requirements", "")
     formatted_feedback = state.get("formatted_diagnostic_feedback", "")
     verification_errors = state.get("verification_errors", [])
+    existing_domain_bp = state.get("pddl_domain_blueprint")
+    existing_problem_bp = state.get("pddl_problem_blueprint")
     
+    # Preserve pre-loaded faulty blueprint for synthetic fault repair tasks
+    if existing_domain_bp and verification_errors and not formatted_feedback:
+        print("[Elicitation Node]: Pre-loaded faulty domain blueprint detected for synthetic repair task. Preserving blueprint for validation & repair loop.")
+        return {
+            "pddl_domain_blueprint": existing_domain_bp,
+            "pddl_problem_blueprint": existing_problem_bp or {}
+        }
+        
     feedback_context = ""
     if formatted_feedback:
         feedback_context = f"\n{formatted_feedback}\nPlease resolve all listed diagnostic issues in your revised blueprint JSON.\n"
@@ -65,7 +75,8 @@ def run_elicitation_node(state: dict) -> dict:
     {requirements_text}
     {feedback_context}
 
-    Ensure all object types, predicates, and action parameters use proper variable names starting with '?'.
+    Ensure all domain object types are explicitly declared in "types" (e.g., {{"block": "object"}} or {{"truck": "vehicle", "vehicle": "object"}}).
+    Ensure all predicates and action parameters use explicit typed signature annotations with '?' variable names (e.g. "(on ?x - block ?y - block)", {{"?r": "robot"}}).
     The problem's domain_name must exactly match the domain's domain_name.
     Produce ONLY the JSON object and nothing else.
     """

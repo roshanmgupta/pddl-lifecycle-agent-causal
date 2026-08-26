@@ -5,18 +5,25 @@ from nodes.elicitation import run_elicitation_node
 from nodes.generation import run_generation_node
 from nodes.triage import run_triage_node
 from nodes.repair import run_repair_node
+from nodes.maintenance import run_maintenance_node
 from tools.symbolic_oracles import run_val_validator, run_fast_downward
 
-# 1. Memory Stream Shared State
+# 1. Shared Memory AgentState Contract
 class AgentState(TypedDict, total=False):
     requirements: str
     pddl_domain_blueprint: dict
     pddl_problem_blueprint: dict
+    initial_pddl_domain_blueprint: dict
     generated_domain_pddl: str
     generated_problem_pddl: str
+    initial_domain_pddl: str
+    initial_problem_pddl: str
     verification_errors: List[str]
+    initial_verification_errors: List[str]
     diagnostic_reports: List[dict]
+    historical_diagnostic_reports: List[dict]
     formatted_diagnostic_feedback: str
+    historical_regression_suite: List[dict]
     iteration_count: int
     max_iterations: int
 
@@ -28,14 +35,14 @@ def run_full_validation_node(state: AgentState) -> AgentState:
     
     # Save temporary domain file to disk
     temp_domain_file = "PDDL_file/temp_domain_2.pddl"
-    with open(temp_domain_file, "w") as f:
+    with open(temp_domain_file, "w", encoding="utf-8") as f:
         f.write(pddl_code)
         
     problem_pddl_code = state.get("generated_problem_pddl")
     temp_problem_file = None
     if problem_pddl_code:
         temp_problem_file = "PDDL_file/temp_problem_2.pddl"
-        with open(temp_problem_file, "w") as f:
+        with open(temp_problem_file, "w", encoding="utf-8") as f:
             f.write(problem_pddl_code)
 
     # -- Oracle 1: VAL for Syntax/Semantic Check --
@@ -43,7 +50,10 @@ def run_full_validation_node(state: AgentState) -> AgentState:
     
     if not is_valid_syntax:
         if "not found" not in val_log.lower(): # Ignore if binary tool is missing
-            state["verification_errors"] = ["VAL Error: " + val_log]
+            err_msg = "VAL Error: " + val_log
+            state["verification_errors"] = [err_msg]
+            if not state.get("initial_verification_errors"):
+                state["initial_verification_errors"] = [err_msg]
         return state
 
     # -- Oracle 2: Fast Downward for Solvability Check --
@@ -51,10 +61,13 @@ def run_full_validation_node(state: AgentState) -> AgentState:
         plan_found, fd_log = run_fast_downward(temp_domain_file, temp_problem_file)
         if not plan_found:
             if "not found" not in fd_log.lower(): # Ignore if binary tool is missing
-                state["verification_errors"] = ["Planner Error: Could not find a plan. " + fd_log]
+                err_msg = "Planner Error: Could not find a plan. " + fd_log
+                state["verification_errors"] = [err_msg]
+                if not state.get("initial_verification_errors"):
+                    state["initial_verification_errors"] = [err_msg]
             return state
 
-    # If both oracles pass, clear errors
+    # If both oracles pass, clear current active errors and diagnostic reports (historical reports remain preserved in historical_diagnostic_reports)
     state["verification_errors"] = []
     state["diagnostic_reports"] = []
     state["formatted_diagnostic_feedback"] = ""
@@ -62,14 +75,22 @@ def run_full_validation_node(state: AgentState) -> AgentState:
 
 MAX_ITERATIONS_DEFAULT = 5
 
-# 3. Router Function for Closed Loop
+# 3. Router Functions for Closed Loop Workflow
+def route_after_validation(state: AgentState) -> str:
+    """If primary validation fails, route directly to triage. If validation passes, route to Phase 4 maintenance."""
+    errors = state.get("verification_errors", [])
+    if errors:
+        return "triage"
+    return "maintenance"
+
 def route_after_triage(state: AgentState) -> str:
-    errors = state.get("verification_errors")
+    """Gatekeeper router after triage node."""
+    errors = state.get("verification_errors", [])
     reports = state.get("diagnostic_reports", [])
     
     if not errors and not reports:
-        print("[SUCCESS]: Validation Passed! Model successfully verified by oracles.")
-        return END           # Validation passed!
+        print("[SUCCESS]: Model successfully verified by Oracles & Phase 4 Maintenance Suite!")
+        return END           # Validation & Maintenance passed!
         
     current_iteration = state.get("iteration_count", 0) + 1
     state["iteration_count"] = current_iteration
@@ -88,13 +109,15 @@ builder = StateGraph(AgentState)
 builder.add_node("elicit", run_elicitation_node)
 builder.add_node("generate", run_generation_node)
 builder.add_node("validate", run_full_validation_node)
+builder.add_node("maintenance", run_maintenance_node)
 builder.add_node("triage", run_triage_node)
 builder.add_node("repair", run_repair_node)
 
 builder.set_entry_point("elicit")
 builder.add_edge("elicit", "generate")
 builder.add_edge("generate", "validate")
-builder.add_edge("validate", "triage")
+builder.add_conditional_edges("validate", route_after_validation)
+builder.add_edge("maintenance", "triage")
 builder.add_conditional_edges("triage", route_after_triage)
 builder.add_edge("repair", "generate")
 

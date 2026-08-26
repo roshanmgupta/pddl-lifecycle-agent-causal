@@ -1,0 +1,45 @@
+(define (domain zenotravel)
+  (:requirements :strips :typing)
+
+  (:types
+    aircraft city flevel person - object
+  )
+
+  (:predicates
+    (at ?x - object ?c - city)
+    (in ?p - person ?a - aircraft)
+    (fuel-level ?a - aircraft ?l - flevel)
+    (next ?l1 - flevel ?l2 - flevel)
+  )
+
+  (:action board
+    :parameters (?p - person ?a - aircraft ?c - city)
+    :precondition (and (at ?p ?c) (at ?a ?c))
+    :effect (and (not (at ?p ?c)) (in ?p ?a))
+  )
+
+  (:action debark
+    :parameters (?p - person ?a - aircraft ?c - city)
+    :precondition (and (in ?p ?a) (at ?a ?c))
+    :effect (and (not (in ?p ?a)) (at ?p ?c))
+  )
+
+  (:action fly
+    :parameters (?a - aircraft ?c1 - city ?c2 - city ?l1 - flevel ?l2 - flevel)
+    :precondition (and (at ?a ?c1) (fuel-level ?a ?l1) (next ?l2 ?l1))
+    :effect (and (not (at ?a ?c1)) (at ?a ?c2) (not (fuel-level ?a ?l1)) (fuel-level ?a ?l2))
+  )
+
+  (:action zoom
+    :parameters (?a - aircraft ?c1 - city ?c2 - city ?l1 - flevel ?l2 - flevel ?l3 - flevel)
+    :precondition (and (at ?a ?c1) (fuel-level ?a ?l1) (next ?l2 ?l1) (next ?l3 ?l2))
+    :effect (and (not (at ?a ?c1)) (at ?a ?c2) (not (fuel-level ?a ?l1)) (fuel-level ?a ?l3))
+  )
+
+  (:action refuel
+    :parameters (?a - aircraft ?c - city ?l1 - flevel ?l2 - flevel)
+    :precondition (and (at ?a ?c) (fuel-level ?a ?l1) (next ?l1 ?l2))
+    :effect (and (not (fuel-level ?a ?l1)) (fuel-level ?a ?l2))
+  )
+
+)

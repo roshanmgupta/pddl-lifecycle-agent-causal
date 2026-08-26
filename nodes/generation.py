@@ -50,24 +50,63 @@ def compile_pddl_programmatically(blueprint_data: dict) -> str:
     pddl_lines.append("")
     
     # 2. Types Hierarchy Block
-    if types:
-        pddl_lines.append("  (:types")
-        # Group child types by supertype
-        supertype_map = {}
+    normalized_types = {}
+    if isinstance(types, dict):
         for child, parent in types.items():
-            parent_key = parent if parent else "object"
-            if parent_key not in supertype_map:
-                supertype_map[parent_key] = []
-            supertype_map[parent_key].append(child)
-            
-        for parent, children in supertype_map.items():
-            children_str = " ".join(children)
-            if parent == "object":
-                pddl_lines.append(f"    {children_str} - object")
+            normalized_types[str(child).strip()] = str(parent).strip() if parent and str(parent).lower() != "none" else None
+    elif isinstance(types, list):
+        for item in types:
+            if "-" in str(item):
+                parts = str(item).split("-")
+                children = parts[0].strip().split()
+                parent = parts[1].strip()
+                for c in children:
+                    normalized_types[c] = parent if parent and parent.lower() != "none" else None
             else:
-                pddl_lines.append(f"    {children_str} - {parent}")
+                for c in str(item).strip().split():
+                    normalized_types[c] = None
+
+    # Auto-discover types from predicates and action parameters
+    discovered_types = set()
+    for pred in predicates:
+        matches = re.findall(r"\?\w+\s*-\s*([a-zA-Z0-9_\-]+)", str(pred))
+        for t in matches:
+            if t.lower() != "object":
+                discovered_types.add(t)
+
+    for act in actions:
+        if isinstance(act, dict):
+            params = act.get("parameters", {})
+        else:
+            params = getattr(act, "parameters", {})
+        if isinstance(params, dict):
+            for pvar, ptype in params.items():
+                if ptype and str(ptype).lower() != "object":
+                    discovered_types.add(str(ptype))
+
+    for dt in discovered_types:
+        if dt not in normalized_types:
+            normalized_types[dt] = None
+
+    if normalized_types or ":typing" in req_str:
+        pddl_lines.append("  (:types")
+        if normalized_types:
+            supertype_map = {}
+            for child, parent in normalized_types.items():
+                parent_key = parent if parent else "object"
+                if parent_key not in supertype_map:
+                    supertype_map[parent_key] = []
+                supertype_map[parent_key].append(child)
+
+            for parent, children in supertype_map.items():
+                children_str = " ".join(sorted(children))
+                if parent == "object":
+                    pddl_lines.append(f"    {children_str} - object")
+                else:
+                    pddl_lines.append(f"    {children_str} - {parent}")
         pddl_lines.append("  )")
         pddl_lines.append("")
+
         
     # 3. Predicates Block
     if predicates:
@@ -176,6 +215,10 @@ def run_generation_node(state: dict) -> dict:
     # Compile Domain
     compiled_pddl = compile_pddl_programmatically(blueprint_data)
     state["generated_domain_pddl"] = compiled_pddl
+    if "initial_domain_pddl" not in state or not state["initial_domain_pddl"]:
+        state["initial_domain_pddl"] = compiled_pddl
+    if "initial_pddl_domain_blueprint" not in state or not state["initial_pddl_domain_blueprint"]:
+        state["initial_pddl_domain_blueprint"] = blueprint_data
 
     # Compile Problem
     problem_blueprint_data = state.get("pddl_problem_blueprint")
@@ -187,4 +230,6 @@ def run_generation_node(state: dict) -> dict:
             
         compiled_problem_pddl = compile_problem_pddl(problem_blueprint_data)
         state["generated_problem_pddl"] = compiled_problem_pddl
+        if "initial_problem_pddl" not in state or not state["initial_problem_pddl"]:
+            state["initial_problem_pddl"] = compiled_problem_pddl
     return state

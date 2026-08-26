@@ -1,0 +1,93 @@
+{
+  "domain_name": "elevator_domain",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "elevator_domain",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "passenger": "object",
+      "floor": "object",
+      "elevator": "object"
+    },
+    "predicates": [
+      "(lift-at ?e - elevator ?f - floor)",
+      "(at ?p - passenger ?f - floor)",
+      "(boarded ?p - passenger ?e - elevator)"
+    ],
+    "actions": [
+      {
+        "action_name": "move",
+        "parameters": {
+          "?e": "elevator",
+          "?from": "floor",
+          "?to": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?e ?from)"
+        ],
+        "effects": [
+          "(not (lift-at ?e ?from))",
+          "(lift-at ?e ?to)"
+        ]
+      },
+      {
+        "action_name": "board",
+        "parameters": {
+          "?p": "passenger",
+          "?e": "elevator",
+          "?f": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?e ?f)",
+          "(at ?p ?f)"
+        ],
+        "effects": [
+          "(not (at ?p ?f))",
+          "(boarded ?p ?e)"
+        ]
+      },
+      {
+        "action_name": "leave",
+        "parameters": {
+          "?p": "passenger",
+          "?e": "elevator",
+          "?f": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?e ?f)",
+          "(boarded ?p ?e)"
+        ],
+        "effects": [
+          "(not (boarded ?p ?e))",
+          "(at ?p ?f)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "transport_passengers",
+    "domain_name": "elevator_domain",
+    "objects": {
+      "e0": "elevator",
+      "f1": "floor",
+      "f2": "floor",
+      "f3": "floor",
+      "p1": "passenger",
+      "p2": "passenger"
+    },
+    "initial_state": [
+      "(lift-at e0 f1)",
+      "(at p1 f1)",
+      "(at p2 f2)"
+    ],
+    "goal_state": [
+      "(at p1 f3)",
+      "(at p2 f1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}
