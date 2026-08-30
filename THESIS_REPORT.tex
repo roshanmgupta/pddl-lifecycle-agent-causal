@@ -1,3 +1,4 @@
+% !TEX root = THESIS_REPORT.tex
 \documentclass[11pt,a4paper]{report}
 
 % --- Packages ---
@@ -77,43 +78,53 @@ Empirical evaluation on the \texttt{PDDLLifeCycleBench} dataset across Internati
 % --- Chapter 1: Introduction ---
 \chapter{Introduction}
 
-\section{Context and Motivation}
-Automated planning is a core branch of Artificial Intelligence dedicated to synthesizing sequences of actions (plans) that transform an agent or system from an initial world state $S_0$ into a desired goal state $S_g$ (Ghallab, Nau, \& Traverso, 2004). At the center of classical planning is the domain model, written in the Planning Domain Definition Language (PDDL) (McDermott et al., 1998). A PDDL model formally encapsulates the environment dynamics, including object typing hierarchies, state predicates, and action schemas defined by preconditions and state transition effects.
+% \section{Context and Motivation}
+Automated planning is a foundational branch of Artificial Intelligence dedicated to synthesizing sequences of actions—termed \textit{plans}—that transition a system or autonomous agent from a initial world state $S_0$ into a predefined goal state $S_g$ \cite{ghallab2004}. At the core of classical AI planning is the formal domain model, traditionally expressed in the Planning Domain Definition Language (PDDL) \cite{mcdermott1998}. A PDDL domain model formally encapsulates the environment dynamics, establishing the object typing hierarchy ($\mathcal{T}$), state predicate signatures ($\mathcal{P}$), and STRIPS action schemas ($\mathcal{A}$) defined by explicit parameter lists, precondition logical formulas, and state transition effects (add and delete lists).
 
-Despite decades of progress in heuristic search algorithms and planning solvers (Helmert, 2006), \textbf{authoring and maintaining PDDL domain models remains a manual, time-consuming, and error-prone engineering bottleneck} (Georgievski, 2023). Translating human domain knowledge or natural language requirements into syntactically sound and planner-executable PDDL requires specialized expertise in formal logic. Even minor discrepancies—such as an omitted precondition, an undeclared type in a predicate signature, or a misspelled variable—can render the domain unsolvable or lead to unsound plan generation.
+Despite major advances in domain-independent heuristic search planners over recent decades \cite{helmert2006}, **authoring, validating, and maintaining PDDL domain models remains a significant human engineering bottleneck** \cite{georgievski2024}. Translating unstructured human requirements or natural language domain descriptions into syntactically valid and planner-executable PDDL requires specialized expertise in mathematical logic and formal modeling. Even minor engineering flaws—such as an ungrounded variable in an action schema, a missing precondition, an undeclared type hierarchy relationship, or a misspelled predicate signature—can cause immediate parser failure, state space explosion, or unreachable goal conditions.
 
-The recent emergence of Large Language Models (LLMs) trained on vast code corpora has generated strong interest in automated PDDL domain model generation from natural language (Oswald et al., 2024; Valmeekam et al., 2023). However, LLMs are fundamentally statistical pattern matching engines over word sequences; they lack formal symbolic reasoning capabilities and struggle to guarantee exact syntax or logical soundness (Kambhampati et al., 2024).
+The rapid emergence of Large Language Models (LLMs) trained on extensive source code corpora has opened promising avenues for automating software engineering and formal specification synthesis \cite{chen2021, oswald2024}. Recent literature has explored using LLMs as natural language formalizers to generate PDDL models directly from informal descriptions \cite{valmeekam2023, kambhampati2024}. However, Large Language Models operate fundamentally as statistical pattern-matching engines over token sequences. They lack internal formal world models, precise logical reasoning guarantees, and deterministic syntax validation capabilities \cite{lin2023}. Consequently, direct one-shot LLM translation frequently yields malformed or semantically inconsistent PDDL domains that fail execution under symbolic classical planners.
 
 \section{Research Challenges \& Gaps}
-Existing LLM-based planning domain generation frameworks suffer from three major architectural limitations:
+Existing research in LLM-driven planning domain generation suffers from three major architectural limitations:
 \begin{enumerate}
-    \item \textbf{Syntax Collapse in Direct Text Generation:} When LLMs directly emit raw Lisp PDDL code blocks, they frequently hallucinate unmatched parentheses, invalid colon keywords (e.g., \texttt{:preconditions} instead of \texttt{:precondition}), or malformed predicate arities.
-    \item \textbf{Absence of Closed-Loop Fault Localization \& Targeted Repair:} Most systems rely on simple ``try-again'' re-prompting when an external planner fails. Without a dedicated triage node that parses symbolic verifier logs (such as VAL error traces) and localizes the exact AST component (e.g., a parameter type mismatch in action \texttt{load-truck}), LLMs spin in unguided retry loops.
-    \item \textbf{Neglect of the Full KEPS Domain Lifecycle:} Existing work treats domain generation as a one-shot translation exercise. Real-world planning systems require a continuous lifecycle, including \textbf{Phase 4 Maintenance}, to ensure that evolving or updated domain models remain backward compatible with historical regression test cases.
+    \item \textbf{Syntax Collapse in Direct Text Generation (Option A):} When LLMs are prompted to emit raw Lisp-formatted PDDL strings directly, they frequently introduce severe syntax errors—such as unmatched parentheses, malformed colon keywords (e.g., \texttt{:preconditions} instead of \texttt{:precondition}), invalid parameter arities, and broken single-type hierarchy structures. Direct text generation fails to decouple language understanding from formal syntax emission.
+    \item \textbf{Absence of Closed-Loop Fault Localization \& Targeted AST Repair:} Most current systems rely on open-loop generation or naive "unstructured retry" re-prompting when an external verifier fails. When a classical planner or validator emits a binary error trace, simple re-prompting feeds raw error strings back to the LLM without diagnostic triage. Without a dedicated fault localization mechanism that parses verifier logs into precise AST node suspiciousness scores, LLMs engage in unguided retry loops that often corrupt valid domain components.
+    \item \textbf{Neglect of the Continuous KEPS Domain Lifecycle:} Existing approaches treat PDDL generation as a static, one-shot translation exercise. Real-world planning systems operate within a continuous engineering lifecycle \cite{georgievski2023}, requiring ongoing maintenance, requirement evolution, and regression validation to ensure that domain model updates do not break compatibility with historical problem instances.
 \end{enumerate}
 
 \section{Research Questions}
-To address these challenges, this thesis investigates the following primary research question:
+To address these fundamental challenges, this thesis investigates the overarching primary research question:
 \begin{quote}
     \textbf{RQ1:} How can a closed-loop neuro-symbolic agent architecture automate the 4-phase KEPS lifecycle for PDDL domain modelling from natural language descriptions without requiring human-in-the-loop intervention?
 \end{quote}
 
-To answer this primary question, we explore three specific sub-questions:
+To systematically address \textbf{RQ1}, this research breaks down the primary investigation into three specific sub-questions:
 \begin{itemize}
-    \item \textbf{RQ1.1 (AST Contract vs. Raw Text):} How effective is an intermediate Pydantic JSON Abstract Syntax Tree (AST) contract paired with a deterministic Lisp string compiler in eliminating syntactic formatting errors compared to direct LLM text generation?
-    \item \textbf{RQ1.2 (Symbolic Fault Localization \& Repair):} How accurately can symbolic Oracles (VAL \& Fast Downward) combined with diagnostic fault triage guide targeted LLM model repair?
-    \item \textbf{RQ1.3 (Phase 4 Maintenance \& Regression):} How does incorporating a Phase 4 historical regression suite prevent semantic regression during domain evolution?
+    \item \textbf{RQ1.1 (Intermediate AST Schemas vs. Direct Text Generation):} How effective is enforcing an intermediate Pydantic Abstract Syntax Tree (AST) schema contract (\texttt{DomainBlueprint}) paired with a deterministic programmatic Lisp compiler (Option B) in eliminating syntactic formatting errors compared to direct LLM text generation (Option A)?
+    \item \textbf{RQ1.2 (Symbolic Fault Localization \& Targeted Repair):} How accurately can a diagnostic triage engine—combining symbolic binary Oracles (\texttt{VAL} validator and \texttt{Fast Downward} planner)—calculate Fault Suspiciousness Rank Scores ($0.0$ to $1.0$) to guide targeted, AST-level model repair loops?
+    \item \textbf{RQ1.3 (Phase 4 Maintenance \& Regression Preservation):} How does incorporating an automated Phase 4 historical regression suite preserve backward compatibility and prevent semantic regression during continuous domain evolution?
 \end{itemize}
 
-\section{Key Contributions}
-The key technical contributions of this thesis are:
+\section{Key Technical Contributions}
+The key technical contributions of this thesis are summarized as follows:
 \begin{enumerate}
-    \item \textbf{A Unified 4-Phase KEPS Lifecycle Agent:} Implemented using \textbf{LangGraph}, providing centralized state management (\texttt{AgentState}), persistent memory, and conditional routing edges across Acquisition, Encoding, V\&V, and Maintenance.
-    \item \textbf{Intermediate Relational AST Schemas (\texttt{DomainBlueprint}, \texttt{ProblemBlueprint}):} Enforces strict Pydantic JSON contracts on LLM outputs, coupled with a deterministic programmatic Lisp compiler that programmatically constructs 100\% syntactically valid PDDL Lisp strings.
-    \item \textbf{Dual Symbolic Oracle \& Triage Architecture:} Integrates \texttt{VAL} (syntax \& plan validator) and \texttt{Fast Downward} (heuristic search planner) into a diagnostic triage engine that categorizes errors (\texttt{SYNTAX}, \texttt{TYPE\_SIGNATURE}, \texttt{GROUNDING\_UNSOLVABILITY}) and executes targeted AST repairs.
-    \item \textbf{Phase 4 Historical Regression Suite:} Automatically validates newly generated or repaired domains against historical problem instances to guarantee backward compatibility.
-    \item \textbf{\texttt{PDDLLifeCycleBench} Benchmark \& Web Application:} A comprehensive benchmark dataset of IPC domain tasks paired with an interactive \textbf{Streamlit} visual dashboard for real-time thought-streaming and state inspection.
+    \item \textbf{A Unified 4-Phase KEPS Lifecycle Agent Architecture:} Developed an autonomous neuro-symbolic state-machine agent using \textbf{LangGraph}, establishing centralized state management (\texttt{AgentState}), persistent memory, and deterministic conditional routing across Acquisition, Encoding, V\&V, and Maintenance.
+    \item \textbf{Intermediate Relational AST Schemas (\texttt{DomainBlueprint}, \texttt{ProblemBlueprint}):} Defined strict Pydantic JSON contracts that enforce structural typing, predicate signatures, and action preconditions/effects on LLM outputs, coupled with an **Option B Programmatic Lisp Compiler** that guarantees 100\% syntactically sound PDDL code generation.
+    \item \textbf{Dual Symbolic Binary Oracles \& Diagnostic Triage Engine:} Integrated \texttt{VAL} (syntax and plan validator) and \texttt{Fast Downward} (heuristic search planner) into an automated triage engine (\texttt{nodes/triage.py}) that parses execution traces, categorizes failure modes (\texttt{SYNTAX}, \texttt{TYPE\_SIGNATURE}, \texttt{GROUNDING\_UNSOLVABILITY}), and computes Fault Suspiciousness Rank Scores for surgical AST patching.
+    \item \textbf{Phase 4 Historical Regression Maintenance Suite:} Implemented a regression testing module (\texttt{nodes/maintenance.py}) that automatically validates modified domain models against historical problem instances to preserve backward compatibility during domain evolution.
+    \item \textbf{\texttt{PDDLLifeCycleBench} Dataset \& Interactive Dashboard:} Created a benchmark suite of 15 tasks across 5 classical IPC domain families (\texttt{Blocksworld}, \texttt{Logistics}, \texttt{Depots}, \texttt{Satellite}, \texttt{Zenotravel}) and deployed an interactive **Streamlit** visual web application for real-time thought-streaming and state graph inspection.
 \end{enumerate}
+
+\section{Thesis Structure}
+The remainder of this report is organized as follows:
+\begin{itemize}
+    \item \textbf{Chapter 2 (Background \& Related Work):} Reviews classical AI planning fundamentals, knowledge engineering lifecycles (KEPS), LLM formalization limitations, neuro-symbolic LLM-Modulo architectures, and automated program repair literature.
+    \item \textbf{Chapter 3 (System Architecture \& The 4-Phase KEPS Lifecycle):} Details the high-level system architecture, the LangGraph state machine design, and the operational mechanics of all 4 KEPS phases.
+    \item \textbf{Chapter 4 (Technical Implementation):} Explains the Pydantic AST schema contracts, Option B programmatic Lisp compiler, multi-provider LLM infrastructure, symbolic binary execution wrappers, and the Streamlit web interface.
+    \item \textbf{Chapter 5 (Empirical Evaluation \& Results):} Presents quantitative benchmark evaluations on \texttt{PDDLLifeCycleBench}, comparative performance analysis across baseline pipelines (\texttt{ZERO\_SHOT}, \texttt{UNSTRUCTURED\_RETRY}, \texttt{CLOSED\_LOOP\_AST\_AGENT}), and qualitative fault repair case studies.
+    \item \textbf{Chapter 6 (Conclusion \& Future Directions):} Summarizes the primary research findings, technical contributions, and outlines promising avenues for future research.
+\end{itemize}
 
 
 % --- Chapter 2: Background & Related Work ---
