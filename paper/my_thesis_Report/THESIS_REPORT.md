@@ -58,7 +58,7 @@ Empirical evaluation on the `PDDLLifeCycleBench` dataset across International Pl
 
 ## 1 Introduction
 
-### 1.1 Context and Motivation
+### 1.1 Overview of the State of the Art
 
 Automated planning is a foundational branch of Artificial Intelligence dedicated to synthesizing sequences of actions—termed *plans*—that transition a system or autonomous agent from an initial world state $S_0$ into a predefined goal state $S_g$ (Ghallab, Nau, & Traverso, 2004). At the core of classical AI planning is the formal domain model, traditionally expressed in the Planning Domain Definition Language (PDDL) (McDermott et al., 1998). A PDDL domain model formally encapsulates the environment dynamics, establishing the object typing hierarchy ($\mathcal{T}$), state predicate signatures ($\mathcal{P}$), and STRIPS action schemas ($\mathcal{A}$) defined by explicit parameter lists, precondition logical formulas, and state transition effects (add and delete lists).
 
@@ -66,7 +66,7 @@ Despite major advances in domain-independent heuristic search planners over rece
 
 The rapid emergence of Large Language Models (LLMs) trained on extensive source code corpora has opened promising avenues for automating software engineering and formal specification synthesis (Chen et al., 2021; Oswald et al., 2024). Recent literature has explored using LLMs as natural language formalizers to generate PDDL models directly from informal descriptions (Valmeekam et al., 2023; Kambhampati et al., 2024). However, Large Language Models operate fundamentally as statistical pattern-matching engines over token sequences. They lack internal formal world models, precise logical reasoning guarantees, and deterministic syntax validation capabilities (Lin et al., 2023). Consequently, direct one-shot LLM translation frequently yields malformed or semantically inconsistent PDDL domains that fail execution under symbolic classical planners.
 
-### 1.2 Research Challenges & Gaps
+### 1.2 Gaps in the State of Art
 
 Existing research in LLM-driven planning domain generation suffers from three major architectural limitations:
 
