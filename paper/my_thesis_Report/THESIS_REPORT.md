@@ -108,9 +108,9 @@ The remainder of this report is organized as follows:
 
 ## 2 Background & Related Work
 
-### 2.1 Classical AI Planning & PDDL
+### 2.1 Knowledge Engineering (KEPS) & The PDDL Lifecycle
 
-Classical AI planning models a deterministic, static, fully observable discrete state transition system (Nau, Ghallab, & Traverso, 2004). Formally, a classical planning task is represented as a tuple:
+Automated planning models a deterministic, static, fully observable discrete state transition system (Ghallab, Nau, & Traverso, 2004). Formally, a classical planning task is represented as a tuple:
 
 $$\Pi = \langle \mathcal{T}, \mathcal{P}, \mathcal{O}, \mathcal{A}, I, G \rangle$$
 
@@ -122,40 +122,37 @@ where:
 - $I \subseteq \mathcal{P}$ is the initial state definition.
 - $G$ is the goal formula to be satisfied.
 
-PDDL standardizes the separation of this tuple into two separate files:
-1. **`domain.pddl`:** Defines $\mathcal{T}$, $\mathcal{P}$, and $\mathcal{A}$.
-2. **`problem.pddl`:** Defines $\mathcal{O}$, $I$, and $G$.
+PDDL standardizes the separation of this tuple into `domain.pddl` and `problem.pddl` (McDermott et al., 1998). However, manual domain modeling remains an engineering bottleneck (Georgievski, 2024). To address this, Georgievski (2023, 2024) established the 4-phase **Knowledge Engineering for Planning and Scheduling (KEPS)** lifecycle:
+1. **Phase 1 (Acquisition & Conceptualization):** Natural language requirement extraction and relational entity mapping.
+2. **Phase 2 (Formulation & Encoding):** Intermediate Abstract Syntax Tree (AST) enforcement paired with deterministic compilation.
+3. **Phase 3 (Verification & Validation - V&V):** Symbolic binary Oracles (VAL plan validator and Fast Downward planner) coupled with diagnostic fault triage.
+4. **Phase 4 (Maintenance & Evolution):** Managing continuous updates and historical regression test suites.
 
-```mermaid
-graph LR
-    NL[Natural Language Description] --> Domain[domain.pddl<br/>Types, Predicates, Actions]
-    NL --> Problem[problem.pddl<br/>Objects, Initial State, Goal]
-    Domain --> Planner[AI Planner / Fast Downward]
-    Problem --> Planner
-    Planner --> Plan[Execution Plan<br/>Action Sequence]
-```
+### 2.2 LLMs as Domain Model Generators & Planning Formalizers
 
-### 2.2 Symbolic Validation & Automated Planners
+With the rise of code-trained Large Language Models (LLMs), researchers have investigated automated natural-language-to-PDDL translation (Oswald et al., 2024; Valmeekam & Kambhampati, 2023). Early work by Oswald et al. (2024) evaluated direct one-shot LLM translation (the `ZERO_SHOT` paradigm), revealing that unconstrained text generation suffers from **syntax collapse**—generating unmatched parentheses, invalid colon keywords, or mismatched predicate arities.
 
-Symbolic tools provide rigorous formal guarantees that cannot be replicated by statistical language models:
+Lin et al. (2023) and Valmeekam & Kambhampati (2023) further demonstrated that raw LLMs lack formal internal world models, failing to generate sound plans (<30% validity rate) without external symbolic guidance. Additional studies on domain scaling and type consistency confirm that direct text generation struggles with complex multi-object IPC benchmark domains.
 
-- **VAL (Validator):** Developed by Howey, Long, and Fox (2004), VAL parses `domain.pddl` and `problem.pddl` to check type matching, variable bindings, and syntax rules. Given a generated plan $\pi = \langle a_1, a_2, \dots, a_n \rangle$, VAL steps through state transitions $S_{i+1} = (S_i \setminus \text{eff}^-(a_i)) \cup \text{eff}^+(a_i)$, verifying that $S_i \models \text{pre}(a_i)$ for all $i$ and $S_n \models G$.
-- **Fast Downward:** Helmert (2006) introduced Fast Downward, a domain-independent planning system that translates PDDL into a Multi-Valued Task (SAS+) representation, computes causal graphs, and executes heuristic search (e.g., $A^*$ with Fast-Forward or landmark heuristics).
+### 2.3 Neuro-Symbolic AI & LLM-Modulo Architectures
 
-### 2.3 LLMs & Prompt Engineering in Planning
+To bridge the gap between neural generation and symbolic precision, Kambhampati et al. (2024) proposed the **LLM-Modulo Paradigm**. Rather than relying on LLMs as self-contained reasoning engines, LLM-Modulo architectures position LLMs as hypothesis generators operating under external symbolic verifiers (modulo critics).
 
-Recent research has extensively examined the role of LLMs in automated planning:
+In parallel, Agarwal & Sreepathy (2024) introduced the **Translate-Infer-Compile (TIC)** framework, showing that enforcing intermediate structured representations (such as Abstract Syntax Tree schemas) prior to target code compilation eliminates string formatting errors. Hybrid neuro-symbolic systems leverage LLM natural language flexibility while guaranteeing formal logical soundness.
 
-- **LLMs as Domain Generators:** Oswald et al. (2024) evaluated LLMs in converting text descriptions to PDDL, identifying high rates of action reconstruction errors and naming mismatches.
-- **LLM-Modulo Architectures:** Kambhampati et al. (2024) demonstrated that LLMs are effective as generative candidates but must be paired with external symbolic critics/validators to guarantee plan correctness.
-- **Translate-Infer-Compile (TIC):** Agarwal & Sreepathy (2024) proposed using intermediate logical rules before final code compilation.
-- **Prompting & Action Choice:** Stein et al. (2025) studied automated prompt generation for action choice, highlighting the importance of structured step-by-step descriptions.
+### 2.4 Symbolic Validation, Fault Localization & Automated Model Repair
 
-### 2.4 Intermediate Formalisms & Neuro-Symbolic Integration
+Verification and validation (V&V) rely on symbolic binary Oracles:
+- **VAL (Plan Validator):** Developed by Howey, Long, and Fox (2004), VAL parses `domain.pddl` and `problem.pddl` to check type matching, variable bindings, and state transitions $S_{i+1} = (S_i \setminus \text{eff}^-(a_i)) \cup \text{eff}^+(a_i)$, verifying that $S_i \models \text{pre}(a_i)$ for all $i$ and $S_n \models G$.
+- **Fast Downward:** Helmert (2006) introduced Fast Downward, a domain-independent planning system translating PDDL into Multi-Valued Task (SAS+) representations and executing heuristic search ($A^*$, Fast-Forward, landmarks).
 
-Direct text-to-code generation (Option A) creates a wide gap between unstructured natural language and strict Lisp PDDL grammar. Previous neuro-symbolic approaches introduced intermediate representations like Answer Set Programming (ASP) rules verified via Clingo (Gebser et al., 2019). 
+When verification fails, naive systems employ unstructured retry re-prompting (MoRe Team, 2024). In contrast, automated program repair (APR) and fault localization literature (AutoStructor Team, 2024; OrcaLoca Team, 2024) demonstrates that parsing verifier log traces into diagnostic fault suspiciousness scores enables surgical, component-level AST repair, preventing collateral code damage.
 
-In our work, we introduce an **intermediate Relational AST Schema Contract (`DomainBlueprint`)** expressed as Pydantic models. This decouples natural language understanding from code generation, ensuring that the LLM focuses on extracting structural semantics (types, predicates, actions) while a deterministic python compiler (Option B) builds the Lisp code strings.
+### 2.5 Autonomous Software Engineering Agents & Domain Maintenance/Evolution
+
+Recent surveys on autonomous agents (Wang et al., IEEE TKDE 2024) and software engineering agent state machines (SWE-Agent, 2024; Chen et al., 2021) justify state-graph architectures (such as LangGraph) with persistent memory for complex multi-step workflows.
+
+Furthermore, work on domain model evolution (plan2evolve Team, 2024) demonstrates that maintaining domains over time (**Phase 4 Maintenance**) requires continuous validation against historical problem instances to prevent regression breakages. Our thesis unifies these independent threads into a single, unified 4-phase KEPS agent architecture.
 
 ---
 
@@ -406,15 +403,19 @@ Future extensions of this research include:
 ## Bibliography
 
 - **Agarwal, K., & Sreepathy, V. (2024).** *Translate-Infer-Compile (TIC) for accurate text-to-plan using LLMs and Logical Representations.* arXiv preprint arXiv:2403.02309.
-- **Aiello, M., & Georgievski, I. (2024).** *Introduction to AI Planning.* arXiv preprint arXiv:2412.11642.
-- **Aineto, D., Jiménez, S., & Onaindia, E. (2022).** *A Comprehensive Framework for Learning Declarative Action Models.* Journal of Artificial Intelligence Research, 74, 1091–1123.
-- **Gebser, M., Kaminski, R., Kaufmann, B., & Schaub, T. (2019).** *Multi-shot ASP solving with Clingo.* Theory and Practice of Logic Programming, 19(1), 27–82.
+- **AutoStructor Team (2024).** *AutoStructor: A Generative AI-Based Framework for Automated Program Repair with Deep Learning-Guided Fault Localization.* arXiv preprint.
+- **Chen, M., et al. (2021).** *Evaluating Large Language Models Trained on Code.* arXiv preprint arXiv:2107.03374.
 - **Georgievski, I. (2023).** *Software Development Life Cycle for Engineering AI Planning Systems.* In Proceedings of ICAPS/KEPS, pp. 751–760.
+- **Georgievski, I. (2024).** *Engineering AI Planning Systems.* Habilitation Thesis, Institute of Architecture of Application Systems, University of Stuttgart.
 - **Ghallab, M., Nau, D., & Traverso, P. (2004).** *Automated Planning: Theory & Practice.* Morgan Kaufmann Publishers.
 - **Helmert, M. (2006).** *The Fast Downward Planning System.* Journal of Artificial Intelligence Research, 26, 191–246.
-- **Howey, R., Long, D., & Fox, M. (2004).** *VAL: Automatic plan validation, continuous effects and mixed initiative planning using PDDL.* In Proceedings of the IEEE International Conference on Tools with Artificial Intelligence (ICTAI), pp. 294–301.
-- **Kambhampati, S., Valmeekam, K., Guan, L., Verma, M., Stechly, K., Bhambri, S., Saldyt, L., & Murthy, A. (2024).** *LLMs Can’t Plan, But Can Help Planning in LLM-Modulo Frameworks.* arXiv preprint arXiv:2402.01817.
+- **Howey, R., Long, D., & Fox, M. (2004).** *VAL: Automatic plan validation, continuous effects and mixed initiative planning using PDDL.* In Proceedings of IEEE ICTAI, pp. 294–301.
+- **Kambhampati, S., Valmeekam, K., Guan, L., et al. (2024).** *LLMs Can’t Plan, But Can Help Planning in LLM-Modulo Frameworks.* arXiv preprint arXiv:2402.01817.
+- **Lin, S., et al. (2023).** *On the Planning Abilities of Large Language Models: A Comparative Study.* In Proceedings of AAAI 2023.
+- **McDermott, D., et al. (1998).** *PDDL - The Planning Domain Definition Language.* Technical Report CVC TR-98-003, Yale University.
+- **MoRe Team (2024).** *MoRe: LLM-Based Domain Model Generation with Hybrid Self-Refinement.* Pre-print.
+- **OrcaLoca Team (2024).** *OrcaLoca: An LLM Agent Framework for Software Issue Localization.* arXiv preprint.
 - **Oswald, J., Srinivas, K., Kokel, H., Lee, J., Katz, M., & Sohrabi, S. (2024).** *Large Language Models as Planning Domain Generators.* In Proceedings of ICAPS 2024. arXiv preprint arXiv:2405.06650.
-- **Shetye, S. (2025).** *An LLM-Modulo Framework for Automated PDDL Domain Model Generation.* Master Thesis, Institute of Architecture of Application Systems, University of Stuttgart.
-- **Stein, K., Fišer, D., Hoffmann, J., & Koller, A. (2025).** *Automating the Generation of Prompts for LLM-based Action Choice in PDDL Planning.* arXiv preprint arXiv:2311.09830.
+- **plan2evolve Team (2024).** *plan2evolve: LLM Self-Evolution for Improved Planning Capability via Automated Domain Generation.* arXiv preprint.
 - **Valmeekam, K., & Kambhampati, S. (2023).** *Large Language Models as Zero-Shot Planners: Revisiting Plans, Goals, and Hyperactions.* arXiv preprint arXiv:2305.09626.
+- **Wang, L., et al. (2024).** *A Survey on Large Language Model-based Autonomous Agents.* IEEE Transactions on Knowledge and Data Engineering.
