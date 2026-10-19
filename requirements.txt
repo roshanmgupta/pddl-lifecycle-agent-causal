@@ -5,3 +5,4 @@ pydantic
 jupyter
 streamlit
 python-dotenv
+json-repair

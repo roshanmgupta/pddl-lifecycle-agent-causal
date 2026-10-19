@@ -1,0 +1,7 @@
+{
+  "flaw_category": "PRECONDITION_MISALIGNMENT",
+  "target_action": "change-color",
+  "description": "Injected unreachable precondition (unreachable_precondition_clause) in action 'change-color'.",
+  "ground_truth_fix": "Remove (unreachable_precondition_clause) from action 'change-color' preconditions.",
+  "expected_oracle_signal": "Fast Downward SAS+ reachability search halts with goal unreachable from initial state."
+}

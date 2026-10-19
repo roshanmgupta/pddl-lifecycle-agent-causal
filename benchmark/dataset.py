@@ -1,447 +1,360 @@
+import os
+from pathlib import Path
 from typing import List
 from benchmark.schema import BenchmarkTask, LifecycleTaskType
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+def load_pddl_file(rel_path: str, fallback_str: str = "") -> str:
+    """Loads a PDDL domain or problem file directly from the benchmark dataset folder."""
+    full_path = BASE_DIR / rel_path
+    if full_path.exists():
+        try:
+            content = full_path.read_text(encoding="utf-8").strip()
+            if content:
+                return content
+        except Exception as e:
+            print(f"[WARN]: Error reading {full_path}: {e}")
+    else:
+        print(f"[WARNING]: Benchmark file missing at '{full_path}'! Metric calculations may be skewed.")
+    return fallback_str.strip()
 
 BENCHMARK_TASKS: List[BenchmarkTask] = [
 
     # =========================================================================
-    # 1. BLOCKSWORLD DOMAIN FAMILY
+    # 1. DEPOTS DOMAIN FAMILY (IPC-2002 Typed)
     # =========================================================================
 
     # 1.1 Elicitation Task
     BenchmarkTask(
-        task_id="blocksworld_elicitation_01",
-        domain_family="blocksworld",
+        task_id="depots_elicit_01",
+        domain_family="depots",
         task_type=LifecycleTaskType.ELICITATION,
-        title="Blocksworld Domain & Problem Elicitation",
+        title="Depots Logistics & Stacking Domain Elicitation",
         natural_language_requirements="""
-        We need a classical Blocksworld domain.
-        There are blocks. A robot arm can pick up a block from the table if the block is clear and the hand is empty.
-        The arm can put down a held block onto the table.
-        The arm can stack a held block onto another clear block.
-        The arm can unstack a clear block from another block if the hand is empty.
-        Define a scenario with blocks A, B, and C where block A is on block B, block B is on table, block C is on table, and arm is empty.
-        The goal is to have block C on block B, and block B on block A.
+        A depots domain combining logistics and block stacking mechanics.
+        Trucks carry crates between depots and distributors.
+        Hoists lift crates from trucks, pallets, or other crates and drop them onto pallets or crates.
+        Hoists can also load and unload crates into trucks.
+        Define scenario with truck t1, hoist h1 at depot d1, crate c1 on pallet p1 at d1.
+        The goal is to have crate c1 loaded into truck t1.
         """,
-        ground_truth_domain_pddl="""(define (domain blocksworld)
-  (:requirements :strips :typing)
-  (:types block - object)
-  (:predicates
-    (on ?x - block ?y - block)
-    (ontable ?x - block)
-    (clear ?x - block)
-    (handempty)
-    (holding ?x - block)
-  )
-
-  (:action pick-up
-    :parameters (?x - block)
-    :precondition (and (clear ?x) (ontable ?x) (handempty))
-    :effect (and (not (ontable ?x)) (not (clear ?x)) (not (handempty)) (holding ?x))
-  )
-
-  (:action put-down
-    :parameters (?x - block)
-    :precondition (holding ?x)
-    :effect (and (not (holding ?x)) (clear ?x) (handempty) (ontable ?x))
-  )
-
-  (:action stack
-    :parameters (?x - block ?y - block)
-    :precondition (and (holding ?x) (clear ?y))
-    :effect (and (not (holding ?x)) (not (clear ?y)) (clear ?x) (handempty) (on ?x ?y))
-  )
-
-  (:action unstack
-    :parameters (?x - block ?y - block)
-    :precondition (and (on ?x ?y) (clear ?x) (handempty))
-    :effect (and (holding ?x) (clear ?y) (not (clear ?x)) (not (handempty)) (not (on ?x ?y)))
-  )
-)""",
-        ground_truth_problem_pddl="""(define (problem blocksworld_prob_01)
-  (:domain blocksworld)
-  (:objects a b c - block)
-  (:init
-    (on a b)
-    (ontable b)
-    (ontable c)
-    (clear a)
-    (clear c)
-    (handempty)
-  )
-  (:goal (and (on c b) (on b a)))
-)"""
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/depots-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/depots-strips-automatic/instances/instance-1.pddl"
+        )
     ),
 
-    # 1.2 Synthetic Fault Repair Task (Missing Precondition)
+    # 1.2 Synthetic Fault Repair Task (Unbound Variable Error)
     BenchmarkTask(
-        task_id="blocksworld_repair_missing_precondition_01",
-        domain_family="blocksworld",
+        task_id="depots_repair_unbound_var_01",
+        domain_family="depots",
         task_type=LifecycleTaskType.SYNTHETIC_FAULT_REPAIR,
-        title="Blocksworld Repair: Missing (handempty) Precondition in pick-up",
-        fault_category="GROUNDING_UNSOLVABILITY",
-        natural_language_requirements="Blocks domain where picking up requires arm to be empty.",
-        initial_domain_pddl="""(define (domain blocksworld)
-  (:requirements :strips :typing)
-  (:types block - object)
+        title="Depots Repair: Unbound Variable in drop Action",
+        fault_category="TYPE_SIGNATURE",
+        gold_fault_element="drop",
+        natural_language_requirements="Hoists drop crates onto pallets or surfaces. All parameters must be bound.",
+        initial_domain_pddl="""(define (domain depot)
+  (:requirements :typing)
+  (:types place locatable - object
+          depot distributor - place
+          truck hoist surface - locatable
+          pallet crate - surface)
   (:predicates
-    (on ?x - block ?y - block)
-    (ontable ?x - block)
-    (clear ?x - block)
-    (handempty)
-    (holding ?x - block)
+    (at ?x - locatable ?p - place)
+    (on ?c - crate ?s - surface)
+    (lifting ?h - hoist ?c - crate)
+    (available ?h - hoist)
+    (clear ?s - surface)
   )
 
-  (:action pick-up
-    :parameters (?x - block)
-    :precondition (and (clear ?x) (ontable ?x))  ;; FAULT: Missing (handempty)!
-    :effect (and (not (ontable ?x)) (not (clear ?x)) (not (handempty)) (holding ?x))
+  (:action drop
+    :parameters (?x - hoist ?y - crate ?z - surface ?p - place)
+    :precondition (and (at ?x ?p) (at ?z ?p) (clear ?z) (lifting ?x ?y))
+    :effect (and (available ?x) (not (lifting ?x ?y)) (at ?y ?p) (not (clear ?z)) (clear ?y) (on ?y ?z))
   )
 
-  (:action put-down
-    :parameters (?x - block)
-    :precondition (holding ?x)
-    :effect (and (not (holding ?x)) (clear ?x) (handempty) (ontable ?x))
+  (:action lift
+    :parameters (?x - hoist ?y - crate ?z - surface ?p - place)
+    :precondition (and (at ?x ?p) (available ?x) (at ?y ?p) (on ?y ?z) (clear ?y))
+    :effect (and (not (at ?y ?p)) (lifting ?x ?y) (not (clear ?y)) (not (available ?x)) (clear ?z) (not (on ?y ?z)))
   )
 )""",
-        initial_problem_pddl="""(define (problem blocksworld_prob_01)
-  (:domain blocksworld)
-  (:objects a b - block)
-  (:init
-    (ontable a)
-    (ontable b)
-    (clear a)
-    (clear b)
-    (handempty)
-  )
-  (:goal (and (holding a) (holding b)))  ;; Unsolvable concurrently without handempty check!
+        initial_problem_pddl="""(define (problem depot_prob_01)
+  (:domain depot)
+  (:objects d1 - depot h1 - hoist c1 - crate p1 - pallet)
+  (:init (at h1 d1) (at p1 d1) (at c1 d1) (on c1 p1) (clear c1) (available h1))
+  (:goal (lifting h1 c1))
 )""",
-        ground_truth_domain_pddl="""(define (domain blocksworld)
-  (:requirements :strips :typing)
-  (:types block - object)
-  (:predicates
-    (on ?x - block ?y - block)
-    (ontable ?x - block)
-    (clear ?x - block)
-    (handempty)
-    (holding ?x - block)
-  )
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/depots-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/depots-strips-automatic/instances/instance-1.pddl"
+        )
+    ),
 
-  (:action pick-up
-    :parameters (?x - block)
-    :precondition (and (clear ?x) (ontable ?x) (handempty))
-    :effect (and (not (ontable ?x)) (not (clear ?x)) (not (handempty)) (holding ?x))
-  )
-
-  (:action put-down
-    :parameters (?x - block)
-    :precondition (holding ?x)
-    :effect (and (not (holding ?x)) (clear ?x) (handempty) (ontable ?x))
-  )
-)""",
-        ground_truth_problem_pddl="""(define (problem blocksworld_prob_01)
-  (:domain blocksworld)
-  (:objects a b - block)
-  (:init
-    (ontable a)
-    (ontable b)
-    (clear a)
-    (clear b)
-    (handempty)
-  )
-  (:goal (and (holding a)))
-)"""
+    # 1.3 Domain Evolution Task (Dual Hoist Capacity)
+    BenchmarkTask(
+        task_id="depots_evolve_01",
+        domain_family="depots",
+        task_type=LifecycleTaskType.DOMAIN_EVOLUTION,
+        title="Depots Evolution: Dual Hoist Operational Capacity",
+        natural_language_requirements="""
+        Extend Depots domain to manage multiple independent hoists at each depot simultaneously.
+        Ensure backward compatibility with single-hoist historical problems.
+        """,
+        initial_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/depots-strips-automatic/domain.pddl"),
+        initial_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/depots-strips-automatic/instances/instance-2.pddl"),
+        ground_truth_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/depots-strips-automatic/domain.pddl"),
+        ground_truth_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/depots-strips-automatic/instances/instance-2.pddl")
     ),
 
     # =========================================================================
-    # 2. LOGISTICS DOMAIN FAMILY
+    # 2. DRIVERLOG DOMAIN FAMILY (IPC-2002 Typed)
     # =========================================================================
 
     # 2.1 Elicitation Task
     BenchmarkTask(
-        task_id="logistics_elicitation_01",
-        domain_family="logistics",
+        task_id="driverlog_elicit_01",
+        domain_family="driverlog",
         task_type=LifecycleTaskType.ELICITATION,
-        title="Logistics Domain & Problem Elicitation",
+        title="DriverLog Domain & Problem Elicitation",
         natural_language_requirements="""
-        We need a logistics domain with packages, trucks, airplanes, locations, and airports.
-        Trucks move between locations in the same city.
-        Airplanes fly between airport locations in different cities.
-        Packages can be loaded into trucks at locations, and unloaded at locations.
-        Packages can be loaded into airplanes at airports, and unloaded at airports.
-        Define scenario with truck t1, airplane p1, package pkg1, location loc1, airport apt1 in city1, and airport apt2 in city2.
-        pkg1 starts at loc1. Goal is pkg1 at apt2.
+        A transportation logistics network where delivery trucks must be driven by licensed human drivers.
+        Drivers walk between path-connected locations or board trucks to drive them along road networks between locations.
+        Trucks are used to load, transport, and unload packages between warehouse docks and delivery addresses.
+        Define scenario with drivers driver1 and driver2 at location s2, trucks truck1 and truck2 at location s0,
+        packages package1 and package2 at s0, path and road connections between s0, s1, and s2.
+        The goal is to deliver package1 to s1 and package2 to s0.
         """,
-        ground_truth_domain_pddl="""(define (domain logistics)
-  (:requirements :strips :typing)
-  (:types
-    package vehicle location city - object
-    truck airplane - vehicle
-    airport - location
-  )
-  (:predicates
-    (at ?obj - object ?loc - location)
-    (in ?pkg - package ?veh - vehicle)
-    (in-city ?loc - location ?c - city)
-  )
-
-  (:action drive-truck
-    :parameters (?t - truck ?from - location ?to - location ?c - city)
-    :precondition (and (at ?t ?from) (in-city ?from ?c) (in-city ?to ?c))
-    :effect (and (not (at ?t ?from)) (at ?t ?to))
-  )
-
-  (:action fly-airplane
-    :parameters (?p - airplane ?from - airport ?to - airport)
-    :precondition (at ?p ?from)
-    :effect (and (not (at ?p ?from)) (at ?p ?to))
-  )
-
-  (:action load-truck
-    :parameters (?pkg - package ?t - truck ?loc - location)
-    :precondition (and (at ?pkg ?loc) (at ?t ?loc))
-    :effect (and (not (at ?pkg ?loc)) (in ?pkg ?t))
-  )
-
-  (:action unload-truck
-    :parameters (?pkg - package ?t - truck ?loc - location)
-    :precondition (and (in ?pkg ?t) (at ?t ?loc))
-    :effect (and (not (in ?pkg ?t)) (at ?pkg ?loc))
-  )
-)""",
-        ground_truth_problem_pddl="""(define (problem logistics_prob_01)
-  (:domain logistics)
-  (:objects
-    pkg1 - package
-    t1 - truck
-    p1 - airplane
-    loc1 - location
-    apt1 apt2 - airport
-    city1 city2 - city
-  )
-  (:init
-    (at pkg1 loc1)
-    (at t1 loc1)
-    (at p1 apt1)
-    (in-city loc1 city1)
-    (in-city apt1 city1)
-    (in-city apt2 city2)
-  )
-  (:goal (at pkg1 apt2))
-)"""
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/driverlog-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/driverlog-strips-automatic/instances/instance-1.pddl"
+        )
     ),
 
-    # 2.2 Synthetic Fault Repair Task (Type Signature Error)
+    # 2.2 Synthetic Fault Repair Task (Missing Driving Precondition in DRIVE-TRUCK)
     BenchmarkTask(
-        task_id="logistics_repair_type_mismatch_01",
-        domain_family="logistics",
+        task_id="driverlog_repair_driving_condition_01",
+        domain_family="driverlog",
         task_type=LifecycleTaskType.SYNTHETIC_FAULT_REPAIR,
-        title="Logistics Repair: Type Mismatch in load-truck",
-        fault_category="TYPE_SIGNATURE",
-        natural_language_requirements="Logistics package loading requires package and truck parameter types to match vehicle declarations.",
-        initial_domain_pddl="""(define (domain logistics)
-  (:requirements :strips :typing)
-  (:types
-    package vehicle location city - object
-    truck airplane - vehicle
-    airport - location
-  )
+        title="DriverLog Repair: Missing (driving ?driver ?truck) Precondition in DRIVE-TRUCK",
+        fault_category="GROUNDING_UNSOLVABILITY",
+        gold_fault_element="DRIVE-TRUCK",
+        natural_language_requirements="Driving a truck requires the driver to be actively driving that specific truck.",
+        initial_domain_pddl="""(define (domain driverlog)
+  (:requirements :typing)
+  (:types location locatable - object
+          driver truck obj - locatable)
   (:predicates
-    (at ?obj - object ?loc - location)
-    (in ?pkg - package ?veh - vehicle)
+    (at ?obj - locatable ?loc - location)
+    (in ?obj1 - obj ?obj - truck)
+    (driving ?d - driver ?v - truck)
+    (link ?x ?y - location)
+    (path ?x ?y - location)
+    (empty ?v - truck)
   )
 
-  (:action load-truck
-    :parameters (?pkg - package ?t - location ?loc - location)  ;; FAULT: ?t typed as location instead of truck!
-    :precondition (and (at ?pkg ?loc) (at ?t ?loc))
-    :effect (and (not (at ?pkg ?loc)) (in ?pkg ?t))
-  )
-)""",
-        initial_problem_pddl="""(define (problem logistics_prob_01)
-  (:domain logistics)
-  (:objects pkg1 - package t1 - truck loc1 - location)
-  (:init (at pkg1 loc1) (at t1 loc1))
-  (:goal (in pkg1 t1))
-)""",
-        ground_truth_domain_pddl="""(define (domain logistics)
-  (:requirements :strips :typing)
-  (:types
-    package vehicle location city - object
-    truck airplane - vehicle
-    airport - location
-  )
-  (:predicates
-    (at ?obj - object ?loc - location)
-    (in ?pkg - package ?veh - vehicle)
+  (:action LOAD-TRUCK
+    :parameters (?obj - obj ?truck - truck ?loc - location)
+    :precondition (and (at ?truck ?loc) (at ?obj ?loc))
+    :effect (and (not (at ?obj ?loc)) (in ?obj ?truck))
   )
 
-  (:action load-truck
-    :parameters (?pkg - package ?t - truck ?loc - location)
-    :precondition (and (at ?pkg ?loc) (at ?t ?loc))
-    :effect (and (not (at ?pkg ?loc)) (in ?pkg ?t))
+  (:action UNLOAD-TRUCK
+    :parameters (?obj - obj ?truck - truck ?loc - location)
+    :precondition (and (at ?truck ?loc) (in ?obj ?truck))
+    :effect (and (not (in ?obj ?truck)) (at ?obj ?loc))
+  )
+
+  (:action BOARD-TRUCK
+    :parameters (?driver - driver ?truck - truck ?loc - location)
+    :precondition (and (at ?truck ?loc) (at ?driver ?loc) (empty ?truck))
+    :effect (and (not (at ?driver ?loc)) (driving ?driver ?truck) (not (empty ?truck)))
+  )
+
+  (:action DISEMBARK-TRUCK
+    :parameters (?driver - driver ?truck - truck ?loc - location)
+    :precondition (and (at ?truck ?loc) (driving ?driver ?truck))
+    :effect (and (not (driving ?driver ?truck)) (at ?driver ?loc) (empty ?truck))
+  )
+
+  (:action DRIVE-TRUCK
+    :parameters (?truck - truck ?loc-from - location ?loc-to - location ?driver - driver)
+    :precondition (and (at ?truck ?loc-from) (link ?loc-from ?loc-to)) ;; FAULT: Missing (driving ?driver ?truck)!
+    :effect (and (not (at ?truck ?loc-from)) (at ?truck ?loc-to))
+  )
+
+  (:action WALK
+    :parameters (?driver - driver ?loc-from - location ?loc-to - location)
+    :precondition (and (at ?driver ?loc-from) (path ?loc-from ?loc-to))
+    :effect (and (not (at ?driver ?loc-from)) (at ?driver ?loc-to))
   )
 )""",
-        ground_truth_problem_pddl="""(define (problem logistics_prob_01)
-  (:domain logistics)
-  (:objects pkg1 - package t1 - truck loc1 - location)
-  (:init (at pkg1 loc1) (at t1 loc1))
-  (:goal (in pkg1 t1))
-)"""
+        initial_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/driverlog-strips-automatic/instances/instance-1.pddl"
+        ),
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/driverlog-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/driverlog-strips-automatic/instances/instance-1.pddl"
+        )
+    ),
+
+    # 2.3 Domain Evolution Task (Multi-Trailer Logistics Extension)
+    BenchmarkTask(
+        task_id="driverlog_evolve_01",
+        domain_family="driverlog",
+        task_type=LifecycleTaskType.DOMAIN_EVOLUTION,
+        title="DriverLog Evolution: Express Road Transit",
+        natural_language_requirements="""
+        Extend DriverLog domain to support high-throughput express delivery between distribution centers.
+        Ensure backward compatibility with standard historical driver logistics problems.
+        """,
+        initial_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/driverlog-strips-automatic/domain.pddl"),
+        initial_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/driverlog-strips-automatic/instances/instance-2.pddl"),
+        ground_truth_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/driverlog-strips-automatic/domain.pddl"),
+        ground_truth_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/driverlog-strips-automatic/instances/instance-2.pddl")
     ),
 
     # =========================================================================
-    # 3. ROVERS DOMAIN FAMILY
+    # 3. ZENOTRAVEL DOMAIN FAMILY (IPC-2002 Typed)
     # =========================================================================
 
     # 3.1 Elicitation Task
     BenchmarkTask(
-        task_id="rovers_elicitation_01",
-        domain_family="rovers",
+        task_id="zenotravel_elicit_01",
+        domain_family="zenotravel",
         task_type=LifecycleTaskType.ELICITATION,
-        title="Rovers Planetary Exploration Domain",
+        title="ZenoTravel Flight Operations & Fuel Elicitation",
         natural_language_requirements="""
-        Planetary Rover domain. Rovers move between waypoints.
-        Rovers sample soil and rock at waypoints.
-        Rovers communicate data back to lander at a waypoint.
-        Define scenario with rover r1, waypoints w1 and w2, lander l1 at w2.
-        r1 starts at w1, samples soil at w1, moves to w2, and communicates soil data to l1.
+        An air passenger transportation network with aircraft, passengers, cities, and discrete fuel levels.
+        Passengers can board and debark aircraft at cities.
+        Aircraft can fly between cities if at the departure city, consuming one discrete fuel level from current to next lower fuel level.
+        Aircraft can zoom at supersonic speed between cities, consuming two discrete fuel levels.
+        Aircraft can refuel at a city, transitioning from current fuel level to next higher level.
+        Define scenario with aircraft plane1 at city0 with fuel level fl1, passengers person1 at city0 and person2 at city2, cities city0..city2, and fuel levels fl0..fl6.
+        Goal is plane1 at city1, person1 at city0, and person2 at city2.
         """,
-        ground_truth_domain_pddl="""(define (domain rovers)
-  (:requirements :strips :typing)
-  (:types rover waypoint lander store - object)
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/zenotravel-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/zenotravel-strips-automatic/instances/instance-1.pddl"
+        )
+    ),
+
+    # 3.2 Synthetic Fault Repair Task (Missing Fuel Condition in fly)
+    BenchmarkTask(
+        task_id="zenotravel_repair_fuel_condition_01",
+        domain_family="zenotravel",
+        task_type=LifecycleTaskType.SYNTHETIC_FAULT_REPAIR,
+        title="ZenoTravel Repair: Missing Fuel Level Precondition in fly Action",
+        fault_category="GROUNDING_UNSOLVABILITY",
+        gold_fault_element="fly",
+        natural_language_requirements="Flying an aircraft requires it to have an active fuel level and consumes fuel to the next level.",
+        initial_domain_pddl="""(define (domain zeno-travel)
+  (:requirements :typing)
+  (:types aircraft person city flevel - object)
   (:predicates
-    (at ?r - rover ?w - waypoint)
-    (at-lander ?l - lander ?w - waypoint)
-    (can-traverse ?r - rover ?w1 - waypoint ?w2 - waypoint)
-    (equipped-for-soil-analysis ?r - rover)
-    (have-soil-data ?w - waypoint)
-    (communicated-soil-data ?w - waypoint)
-    (empty ?s - store)
-    (full ?s - store)
-    (store-of ?s - store ?r - rover)
-    (at-soil-sample ?w - waypoint)
+    (at ?x - (either person aircraft) ?c - city)
+    (in ?p - person ?a - aircraft)
+    (fuel-level ?a - aircraft ?l - flevel)
+    (next ?l1 ?l2 - flevel)
   )
 
-  (:action navigate
-    :parameters (?r - rover ?from - waypoint ?to - waypoint)
-    :precondition (and (at ?r ?from) (can-traverse ?r ?from ?to))
-    :effect (and (not (at ?r ?from)) (at ?r ?to))
+  (:action board
+    :parameters (?p - person ?a - aircraft ?c - city)
+    :precondition (and (at ?p ?c) (at ?a ?c))
+    :effect (and (not (at ?p ?c)) (in ?p ?a))
   )
 
-  (:action sample-soil
-    :parameters (?r - rover ?s - store ?w - waypoint)
-    :precondition (and (at ?r ?w) (at-soil-sample ?w) (equipped-for-soil-analysis ?r) (store-of ?s ?r) (empty ?s))
-    :effect (and (not (empty ?s)) (full ?s) (have-soil-data ?w) (not (at-soil-sample ?w)))
+  (:action debark
+    :parameters (?p - person ?a - aircraft ?c - city)
+    :precondition (and (in ?p ?a) (at ?a ?c))
+    :effect (and (not (in ?p ?a)) (at ?p ?c))
   )
 
-  (:action communicate-soil-data
-    :parameters (?r - rover ?l - lander ?w - waypoint ?l-w - waypoint)
-    :precondition (and (at ?r ?w) (at-lander ?l ?l-w) (have-soil-data ?w))
-    :effect (communicated-soil-data ?w)
+  (:action fly
+    :parameters (?a - aircraft ?c1 ?c2 - city ?l1 ?l2 - flevel)
+    :precondition (and (at ?a ?c1) (next ?l2 ?l1))  ;; FAULT: Missing (fuel-level ?a ?l1)!
+    :effect (and (not (at ?a ?c1)) (at ?a ?c2) (not (fuel-level ?a ?l1)) (fuel-level ?a ?l2))
+  )
+
+  (:action refuel
+    :parameters (?a - aircraft ?c - city ?l - flevel ?l1 - flevel)
+    :precondition (and (fuel-level ?a ?l) (next ?l ?l1) (at ?a ?c))
+    :effect (and (fuel-level ?a ?l1) (not (fuel-level ?a ?l)))
   )
 )""",
-        ground_truth_problem_pddl="""(define (problem rover_prob_01)
-  (:domain rovers)
-  (:objects
-    r1 - rover
-    w1 w2 - waypoint
-    l1 - lander
-    s1 - store
-  )
-  (:init
-    (at r1 w1)
-    (at-lander l1 w2)
-    (can-traverse r1 w1 w2)
-    (can-traverse r1 w2 w1)
-    (equipped-for-soil-analysis r1)
-    (store-of s1 r1)
-    (empty s1)
-    (at-soil-sample w1)
-  )
-  (:goal (communicated-soil-data w1))
-)"""
+        initial_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/zenotravel-strips-automatic/instances/instance-1.pddl"
+        ),
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/zenotravel-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/zenotravel-strips-automatic/instances/instance-1.pddl"
+        )
+    ),
+
+    # 3.3 Domain Evolution Task (Inter-City Flight Scheduling)
+    BenchmarkTask(
+        task_id="zenotravel_evolve_01",
+        domain_family="zenotravel",
+        task_type=LifecycleTaskType.DOMAIN_EVOLUTION,
+        title="ZenoTravel Evolution: Multi-Leg Long-Haul Flight Routes",
+        natural_language_requirements="""
+        Extend ZenoTravel domain to handle multi-leg cross-country transit with strict fuel conservation.
+        Ensure backward compatibility with regional historical flight instances.
+        """,
+        initial_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/zenotravel-strips-automatic/domain.pddl"),
+        initial_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/zenotravel-strips-automatic/instances/instance-2.pddl"),
+        ground_truth_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/zenotravel-strips-automatic/domain.pddl"),
+        ground_truth_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/zenotravel-strips-automatic/instances/instance-2.pddl")
     ),
 
     # =========================================================================
-    # 4. DEPOTS DOMAIN FAMILY
+    # 4. SATELLITE DOMAIN FAMILY (IPC-2002 Typed)
     # =========================================================================
 
     # 4.1 Elicitation Task
     BenchmarkTask(
-        task_id="depots_elicitation_01",
-        domain_family="depots",
+        task_id="satellite_elicit_01",
+        domain_family="satellite",
         task_type=LifecycleTaskType.ELICITATION,
-        title="Depots Logistics & Stacking Domain",
+        title="Satellite Earth Observation Domain Elicitation",
         natural_language_requirements="""
-        Depots domain combining logistics and block stacking.
-        Trucks carry crates between depots.
-        Hoists lift crates from trucks or pallets and stack them onto crates or pallets.
-        Define scenario with truck t1, hoist h1 at depot d1, crate c1 on pallet p1 at d1.
-        Goal is crate c1 loaded in truck t1.
+        Satellite observation domain with satellites, instruments, modes, and directions.
+        Satellites turn between directions.
+        Satellites turn on instruments if instrument is on-board and power is available.
+        Instruments can be calibrated pointing at calibration target direction.
+        Satellites take image of direction in mode if pointing at direction, instrument is on, calibrated, and supports mode.
+        Define scenario with satellite sat1 pointing at dir1, instrument inst1 supporting thermograph, goal is image of dir2 in thermograph.
         """,
-        ground_truth_domain_pddl="""(define (domain depots)
-  (:requirements :strips :typing)
-  (:types place locatable - object
-         depot - place
-         truck hoist surface - locatable
-         pallet crate - surface)
-  (:predicates
-    (at ?x - locatable ?p - place)
-    (on ?x - crate ?y - surface)
-    (clear ?x - surface)
-    (in ?c - crate ?t - truck)
-    (lifting ?h - hoist ?c - crate)
-    (available ?h - hoist)
-  )
-
-  (:action lift
-    :parameters (?h - hoist ?c - crate ?s - surface ?p - place)
-    :precondition (and (at ?h ?p) (available ?h) (at ?c ?p) (on ?c ?s) (clear ?c))
-    :effect (and (not (at ?c ?p)) (not (available ?h)) (not (on ?c ?s)) (not (clear ?c)) (clear ?s) (lifting ?h ?c))
-  )
-
-  (:action load
-    :parameters (?h - hoist ?c - crate ?t - truck ?p - place)
-    :precondition (and (at ?h ?p) (at ?t ?p) (lifting ?h ?c))
-    :effect (and (not (lifting ?h ?c)) (available ?h) (in ?c ?t))
-  )
-)""",
-        ground_truth_problem_pddl="""(define (problem depots_prob_01)
-  (:domain depots)
-  (:objects
-    d1 - depot
-    t1 - truck
-    h1 - hoist
-    p1 - pallet
-    c1 - crate
-  )
-  (:init
-    (at t1 d1)
-    (at h1 d1)
-    (at p1 d1)
-    (at c1 d1)
-    (on c1 p1)
-    (clear c1)
-    (available h1)
-  )
-  (:goal (in c1 t1))
-)"""
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/satellite-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/satellite-strips-automatic/instances/instance-1.pddl"
+        )
     ),
 
-    # =========================================================================
-    # 5. SATELLITE DOMAIN FAMILY
-    # =========================================================================
-
-    # 5.1 Elicitation & Domain Evolution Task
+    # 4.2 Synthetic Fault Repair Task (Missing Power Condition)
     BenchmarkTask(
-        task_id="satellite_evolution_01",
+        task_id="satellite_repair_power_01",
         domain_family="satellite",
-        task_type=LifecycleTaskType.DOMAIN_EVOLUTION,
-        title="Satellite Domain Evolution: Adding Infrared Imaging Mode",
-        natural_language_requirements="""
-        Extend existing Satellite domain to support dual imaging modes (spectrograph and infrared).
-        Satellites turn to directions, switch on instruments, calibrate instruments, and take images.
-        Ensure backward compatibility with legacy single-mode problems.
-        """,
+        task_type=LifecycleTaskType.SYNTHETIC_FAULT_REPAIR,
+        title="Satellite Repair: Missing power-avail Precondition in switch-on",
+        fault_category="GROUNDING_UNSOLVABILITY",
+        gold_fault_element="switch-on",
+        natural_language_requirements="Turning on an instrument requires power to be available on satellite.",
         initial_domain_pddl="""(define (domain satellite)
   (:requirements :strips :typing)
   (:types satellite direction instrument mode - object)
@@ -455,16 +368,16 @@ BENCHMARK_TASKS: List[BenchmarkTask] = [
     (have-image ?d - direction ?m - mode)
   )
 
-  (:action turn-to
-    :parameters (?s - satellite ?d-new - direction ?d-prev - direction)
-    :precondition (and (pointing ?s ?d-prev))
-    :effect (and (pointing ?s ?d-new) (not (pointing ?s ?d-prev)))
-  )
-
   (:action switch-on
     :parameters (?i - instrument ?s - satellite)
-    :precondition (and (on-board ?i ?s) (power-avail ?s))
+    :precondition (and (on-board ?i ?s)) ;; FAULT: Missing (power-avail ?s)!
     :effect (and (power-on ?i) (not (power-avail ?s)) (not (calibrated ?i)))
+  )
+
+  (:action switch-off
+    :parameters (?i - instrument ?s - satellite)
+    :precondition (and (on-board ?i ?s) (power-on ?i))
+    :effect (and (not (power-on ?i)) (power-avail ?s))
   )
 
   (:action take-image
@@ -473,73 +386,168 @@ BENCHMARK_TASKS: List[BenchmarkTask] = [
     :effect (have-image ?d ?m)
   )
 )""",
-        initial_problem_pddl="""(define (problem sat_prob_01)
+        initial_problem_pddl="""(define (problem sat_prob_power)
   (:domain satellite)
-  (:objects
-    sat1 - satellite
-    dir1 dir2 - direction
-    inst1 - instrument
-    spectrograph - mode
-  )
-  (:init
-    (on-board inst1 sat1)
-    (supports inst1 spectrograph)
-    (pointing sat1 dir1)
-    (power-avail sat1)
-    (power-on inst1)
-    (calibrated inst1)
-  )
-  (:goal (have-image dir2 spectrograph))
+  (:objects sat1 - satellite dir1 dir2 - direction inst1 inst2 - instrument mode1 - mode)
+  (:init (on-board inst1 sat1) (on-board inst2 sat1) (power-avail sat1) (pointing sat1 dir1))
+  (:goal (and (power-on inst1) (power-on inst2))) ;; Unsolvable if only 1 power unit exists!
 )""",
-        ground_truth_domain_pddl="""(define (domain satellite)
-  (:requirements :strips :typing)
-  (:types satellite direction instrument mode - object)
-  (:predicates
-    (on-board ?i - instrument ?s - satellite)
-    (supports ?i - instrument ?m - mode)
-    (pointing ?s - satellite ?d - direction)
-    (power-avail ?s - satellite)
-    (power-on ?i - instrument)
-    (calibrated ?i - instrument)
-    (have-image ?d - direction ?m - mode)
-  )
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/satellite-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/satellite-strips-automatic/instances/instance-1.pddl"
+        )
+    ),
 
-  (:action turn-to
-    :parameters (?s - satellite ?d-new - direction ?d-prev - direction)
-    :precondition (and (pointing ?s ?d-prev))
-    :effect (and (pointing ?s ?d-new) (not (pointing ?s ?d-prev)))
-  )
+    # 4.3 Domain Evolution Task (Adding Infrared Imaging Mode)
+    BenchmarkTask(
+        task_id="satellite_evolve_01",
+        domain_family="satellite",
+        task_type=LifecycleTaskType.DOMAIN_EVOLUTION,
+        title="Satellite Evolution: Dual Imaging Modes",
+        natural_language_requirements="""
+        Extend existing Satellite domain to support dual imaging modes (spectrograph and infrared).
+        Ensure backward compatibility with legacy single-mode problems.
+        """,
+        initial_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/satellite-strips-automatic/domain.pddl"),
+        initial_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/satellite-strips-automatic/instances/instance-2.pddl"),
+        ground_truth_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/satellite-strips-automatic/domain.pddl"),
+        ground_truth_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/satellite-strips-automatic/instances/instance-2.pddl")
+    ),
 
-  (:action switch-on
-    :parameters (?i - instrument ?s - satellite)
-    :precondition (and (on-board ?i ?s) (power-avail ?s))
-    :effect (and (power-on ?i) (not (power-avail ?s)) (not (calibrated ?i)))
-  )
+    # =========================================================================
+    # 5. ROVERS DOMAIN FAMILY (IPC-2002 Typed)
+    # =========================================================================
 
-  (:action take-image
-    :parameters (?s - satellite ?d - direction ?i - instrument ?m - mode)
-    :precondition (and (calibrated ?i) (on-board ?i ?s) (supports ?i ?m) (power-on ?i) (pointing ?s ?d))
-    :effect (have-image ?d ?m)
-  )
-)""",
-        ground_truth_problem_pddl="""(define (problem sat_prob_01)
-  (:domain satellite)
-  (:objects
-    sat1 - satellite
-    dir1 dir2 - direction
-    inst1 - instrument
-    spectrograph infrared - mode
-  )
-  (:init
-    (on-board inst1 sat1)
-    (supports inst1 spectrograph)
-    (supports inst1 infrared)
-    (pointing sat1 dir1)
-    (power-avail sat1)
-    (power-on inst1)
-    (calibrated inst1)
-  )
-  (:goal (and (have-image dir2 spectrograph) (have-image dir1 infrared)))
-)"""
+    # 5.1 Elicitation Task
+    BenchmarkTask(
+        task_id="rovers_elicit_01",
+        domain_family="rovers",
+        task_type=LifecycleTaskType.ELICITATION,
+        title="Rovers Planetary Exploration Domain & Problem Elicitation",
+        natural_language_requirements="""
+        A planetary exploration domain with autonomous rovers, waypoints, stores, cameras, modes, landers, and objectives.
+        Rovers navigate between connected waypoints.
+        Rovers equipped with soil analysis can sample soil at a waypoint if the rover store is empty.
+        Rovers equipped with rock analysis can sample rock at a waypoint if the rover store is empty.
+        Rovers can drop samples from their store to empty it.
+        Rovers can calibrate cameras pointing at calibration target objectives.
+        Rovers can take images of objectives in specific modes if camera is calibrated, on board, and mode is supported.
+        Rovers can communicate soil, rock, and image data to a lander if at a waypoint with line-of-sight to lander.
+        Define a scenario with lander general at waypoint0, rover0 with camera0 at waypoint3, waypoint0..3, and communicate soil data from waypoint2.
+        """,
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/rovers-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/rovers-strips-automatic/instances/instance-1.pddl"
+        )
+    ),
+
+    # 5.2 Synthetic Fault Repair Task (Missing store empty precondition)
+    BenchmarkTask(
+        task_id="rovers_repair_store_01",
+        domain_family="rovers",
+        task_type=LifecycleTaskType.SYNTHETIC_FAULT_REPAIR,
+        title="Rovers Repair: Missing (empty ?s) Precondition in sample_soil",
+        fault_category="GROUNDING_UNSOLVABILITY",
+        gold_fault_element="sample_soil",
+        natural_language_requirements="Rovers soil sampling requires the rover store to be empty before collecting a new sample.",
+        initial_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/rovers-strips-automatic/domain.pddl").replace(
+            "(store_of ?s ?x) (empty ?s)",
+            "(store_of ?s ?x)"  # FAULT: Missing (empty ?s)!
+        ),
+        initial_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/rovers-strips-automatic/instances/instance-1.pddl"
+        ),
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/rovers-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/rovers-strips-automatic/instances/instance-1.pddl"
+        )
+    ),
+
+    # 5.3 Domain Evolution Task (Enhanced Direct Uplink)
+    BenchmarkTask(
+        task_id="rovers_evolve_01",
+        domain_family="rovers",
+        task_type=LifecycleTaskType.DOMAIN_EVOLUTION,
+        title="Rovers Evolution: High-Gain Direct Satellite Uplink",
+        natural_language_requirements="""
+        Extend Rovers domain to support direct satellite uplink communication channels.
+        Ensure backward compatibility with historical lander communication instances.
+        """,
+        initial_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/rovers-strips-automatic/domain.pddl"),
+        initial_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/rovers-strips-automatic/instances/instance-2.pddl"),
+        ground_truth_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/rovers-strips-automatic/domain.pddl"),
+        ground_truth_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/rovers-strips-automatic/instances/instance-2.pddl")
+    ),
+
+    # =========================================================================
+    # 6. FREECELL DOMAIN FAMILY (IPC-2002 Typed)
+    # =========================================================================
+
+    # 6.1 Elicitation Task
+    BenchmarkTask(
+        task_id="freecell_elicit_01",
+        domain_family="freecell",
+        task_type=LifecycleTaskType.ELICITATION,
+        title="FreeCell Solitaire Domain & Problem Elicitation",
+        natural_language_requirements="""
+        A card game solitaire domain with cards, suits, denominations, columns, and free cells.
+        Cards can be moved to an empty free cell if free cells are available.
+        Cards can be moved from a free cell or column to a home cell if of the same suit and in ascending numerical sequence.
+        Cards can be moved between columns if the target column card has opposite suit color and one denomination higher.
+        Define scenario with 2 free cells, 4 columns, denominations N0 to N4, suits diamond, club, heart, spade,
+        and cards spadeA, diamondA, club2, heart2, etc. Goal is to move all aces to home cells.
+        """,
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/freecell-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/freecell-strips-automatic/instances/instance-1.pddl"
+        )
+    ),
+
+    # 6.2 Synthetic Fault Repair Task (Missing Available Cell Condition)
+    BenchmarkTask(
+        task_id="freecell_repair_unbound_col_01",
+        domain_family="freecell",
+        task_type=LifecycleTaskType.SYNTHETIC_FAULT_REPAIR,
+        title="FreeCell Repair: Missing (cellspace) Precondition in sendtofree",
+        fault_category="GROUNDING_UNSOLVABILITY",
+        gold_fault_element="sendtofree",
+        natural_language_requirements="Moving a card to a free cell requires free cell capacity to be available.",
+        initial_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/freecell-strips-automatic/domain.pddl").replace(
+            "(cellspace ?cells)",
+            ""
+        ),
+        initial_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/freecell-strips-automatic/instances/instance-1.pddl"
+        ),
+        ground_truth_domain_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/freecell-strips-automatic/domain.pddl"
+        ),
+        ground_truth_problem_pddl=load_pddl_file(
+            "pddl_benchmark_instances/ipc-2002/domains/freecell-strips-automatic/instances/instance-1.pddl"
+        )
+    ),
+
+    # 6.3 Domain Evolution Task (Multi-Card Column Move Extension)
+    BenchmarkTask(
+        task_id="freecell_evolve_01",
+        domain_family="freecell",
+        task_type=LifecycleTaskType.DOMAIN_EVOLUTION,
+        title="FreeCell Evolution: Multi-Card Sequence Moves",
+        natural_language_requirements="""
+        Extend FreeCell domain to support multi-card sequence moves between columns.
+        Ensure backward compatibility with single-card moves and historical game instances.
+        """,
+        initial_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/freecell-strips-automatic/domain.pddl"),
+        initial_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/freecell-strips-automatic/instances/instance-2.pddl"),
+        ground_truth_domain_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/freecell-strips-automatic/domain.pddl"),
+        ground_truth_problem_pddl=load_pddl_file("pddl_benchmark_instances/ipc-2002/domains/freecell-strips-automatic/instances/instance-2.pddl")
     )
 ]

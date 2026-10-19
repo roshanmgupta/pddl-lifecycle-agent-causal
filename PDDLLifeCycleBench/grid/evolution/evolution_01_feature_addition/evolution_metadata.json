@@ -1,0 +1,11 @@
+{
+  "evolution_category": "INCREMENTAL_CAPABILITY_EXTENSION",
+  "domain": "grid",
+  "historical_regression_instances": [
+    "instance-1.pddl",
+    "instance-10.pddl",
+    "instance-12.pddl"
+  ],
+  "target_problem": "instance-10.pddl",
+  "gatekeeper_requirement": "All historical problem instances must remain solvable without regression."
+}

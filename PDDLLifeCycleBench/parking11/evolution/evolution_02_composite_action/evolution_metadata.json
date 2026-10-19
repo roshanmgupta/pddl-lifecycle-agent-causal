@@ -1,0 +1,11 @@
+{
+  "evolution_category": "COMPOSITE_ACTION_PIPELINE",
+  "domain": "parking11",
+  "historical_regression_instances": [
+    "instance-10.pddl",
+    "instance-11.pddl",
+    "instance-12.pddl"
+  ],
+  "target_problem": "instance-12.pddl",
+  "gatekeeper_requirement": "Zero regression on legacy problems; Phase 4 verification mandatory."
+}

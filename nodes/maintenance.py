@@ -17,6 +17,8 @@ def run_maintenance_node(state: Dict[str, Any]) -> Dict[str, Any]:
     Verifies that an updated/repaired domain blueprint maintains backward compatibility
     with all historical problem instances stored in the regression suite.
     """
+    import time
+    start_t = time.time()
     domain_blueprint = state.get("pddl_domain_blueprint")
     domain_pddl = state.get("generated_domain_pddl")
     regression_suite = state.get("historical_regression_suite", [])
@@ -27,6 +29,12 @@ def run_maintenance_node(state: Dict[str, Any]) -> Dict[str, Any]:
 
     print(f"[Maintenance Node]: Running Phase 4 Backward Compatibility Suite on {len(regression_suite)} historical problem(s)...")
 
+    # Ensure domain_blueprint is a dictionary if passed as a Pydantic model
+    if hasattr(domain_blueprint, "model_dump"):
+        domain_blueprint = domain_blueprint.model_dump()
+    elif hasattr(domain_blueprint, "dict"):
+        domain_blueprint = domain_blueprint.dict()
+
     # Ensure domain PDDL is compiled
     if not domain_pddl and domain_blueprint:
         domain_pddl = compile_pddl_programmatically(domain_blueprint)
@@ -35,8 +43,9 @@ def run_maintenance_node(state: Dict[str, Any]) -> Dict[str, Any]:
         print("[Maintenance Node Warning]: No compiled domain PDDL available for maintenance verification.")
         return state
 
-    verification_errors = list(state.get("verification_errors", []))
-    diagnostic_reports = list(state.get("diagnostic_reports", []))
+    # Isolate Phase 4 error collectors to prevent inheriting stale errors
+    verification_errors = []
+    diagnostic_reports = []
     has_regression_failure = False
 
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -47,16 +56,20 @@ def run_maintenance_node(state: Dict[str, Any]) -> Dict[str, Any]:
         for case_idx, case_data in enumerate(regression_suite):
             if isinstance(case_data, dict):
                 case_id = case_data.get("case_id", f"historical_case_{case_idx+1}")
-                prob_bp = case_data.get("problem_blueprint", {})
+                prob_bp = dict(case_data.get("problem_blueprint", {}))
             elif isinstance(case_data, HistoricalProblemCase):
                 case_id = case_data.case_id
                 prob_bp = case_data.problem_blueprint.model_dump()
             else:
                 continue
 
+            # Ensure problem domain_name strictly matches active domain_blueprint domain_name
+            if domain_blueprint and "domain_name" in domain_blueprint:
+                prob_bp["domain_name"] = domain_blueprint["domain_name"]
+
             # Compile historical problem PDDL
             try:
-                hist_prob_pddl = compile_problem_pddl(prob_bp)
+                hist_prob_pddl = compile_problem_pddl(prob_bp, domain_blueprint_data=domain_blueprint)
             except Exception as e:
                 err_msg = f"[REGRESSION_ERROR]: Failed to compile historical problem '{case_id}': {str(e)}"
                 verification_errors.append(err_msg)
@@ -72,6 +85,13 @@ def run_maintenance_node(state: Dict[str, Any]) -> Dict[str, Any]:
             if not val_ok:
                 err_text = f"[REGRESSION_BREAKAGE]: Historical case '{case_id}' failed VAL syntax validation.\nLog: {val_log}"
                 print(f"  [FAIL] {err_text}")
+                import re
+                missing_pred_m = re.search(r"Predicate\s+(\w+)\s+not found", val_log)
+                hint = f"Historical test case '{case_id}' failed syntax validation with updated domain. Check for broken predicate definitions or arities."
+                if missing_pred_m:
+                    pname = missing_pred_m.group(1)
+                    hint = f"Historical test case '{case_id}' failed because predicate '{pname}' is missing in the evolved domain. Declare '({pname} ...)' in domain 'predicates' with matching argument types to restore backward compatibility."
+
                 verification_errors.append(err_text)
                 diagnostic_reports.append(
                     DiagnosticReport(
@@ -80,14 +100,18 @@ def run_maintenance_node(state: Dict[str, Any]) -> Dict[str, Any]:
                         faulty_element=case_id,
                         suspiciousness_score=1.0,
                         raw_log=val_log,
-                        suggested_repair_hint=f"Historical test case '{case_id}' failed syntax validation with updated domain. Check for broken predicate definitions or arities."
+                        suggested_repair_hint=hint
                     )
                 )
                 has_regression_failure = True
                 continue
 
             # Step 2: Check Plan Reachability with Fast Downward
-            fd_ok, fd_log = run_fast_downward(domain_file_path, problem_file_path)
+            from tools.symbolic_oracles import run_fast_downward_with_plan
+            plan_res = run_fast_downward_with_plan(domain_file_path, problem_file_path)
+            fd_ok = plan_res["is_solvable"]
+            fd_log = plan_res.get("raw_fd_log", "")
+            
             if not fd_ok:
                 err_text = f"[REGRESSION_BREAKAGE]: Historical case '{case_id}' failed Fast Downward plan reachability.\nLog: {fd_log}"
                 print(f"  [FAIL] {err_text}")
@@ -105,11 +129,22 @@ def run_maintenance_node(state: Dict[str, Any]) -> Dict[str, Any]:
                 has_regression_failure = True
             else:
                 print(f"  [PASS] Historical case '{case_id}' passed backward compatibility check!")
+                hist_plans = list(state.get("historical_plan_results", []))
+                hist_plans.append({
+                    "case_id": case_id,
+                    "plan_result": plan_res
+                })
+                state["historical_plan_results"] = hist_plans
 
-    state["verification_errors"] = verification_errors
-    state["diagnostic_reports"] = diagnostic_reports
-    
-    if not has_regression_failure:
+    if has_regression_failure:
+        state["verification_errors"] = verification_errors
+        state["diagnostic_reports"] = diagnostic_reports
+    else:
+        state["verification_errors"] = []
+        state["diagnostic_reports"] = []
         print("[Maintenance Node]: All historical regression test cases passed successfully!")
         
+    latencies = state.get("node_latencies", {})
+    latencies["maintenance"] = round(latencies.get("maintenance", 0.0) + (time.time() - start_t), 3)
+    state["node_latencies"] = latencies
     return state

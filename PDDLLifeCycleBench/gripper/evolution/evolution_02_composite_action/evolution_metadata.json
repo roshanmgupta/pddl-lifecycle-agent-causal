@@ -1,0 +1,11 @@
+{
+  "evolution_category": "COMPOSITE_ACTION_PIPELINE",
+  "domain": "gripper",
+  "historical_regression_instances": [
+    "instance-1.pddl",
+    "instance-11.pddl",
+    "instance-13.pddl"
+  ],
+  "target_problem": "instance-13.pddl",
+  "gatekeeper_requirement": "Zero regression on legacy problems; Phase 4 verification mandatory."
+}

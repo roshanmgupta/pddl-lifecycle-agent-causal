@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "move-up-slow",
+  "deleted_effect": "(lift-at ?lift ?f2)",
+  "description": "Deleted required causal add effect '(lift-at ?lift ?f2)' from action 'move-up-slow', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(lift-at ?lift ?f2)' into action 'move-up-slow'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

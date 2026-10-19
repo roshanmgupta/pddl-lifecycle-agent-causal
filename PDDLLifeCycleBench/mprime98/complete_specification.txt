@@ -1,0 +1,92 @@
+================================================================================
+DOMAIN CAPABILITIES & ACTION RULES: MPRIME98
+================================================================================
+I can carry out the following actions:
+overcome a pain A with a pleasure B by using a food C from a planet D orbiting a planet E
+feast with a pleasure A on a food B and a food C moving from a location E to a location D
+succumb to a pleasure B with a pain A craving a food C transitioning harmony from an object D to an object E
+drink from an object A in an object C to an object D and from an object B in an object F to an object G with an object E attacking an object D and an object F attacking an object G
+
+I have the following restrictions on my actions:
+I can only overcome a pain A with a pleasure B by using a food C from a planet D orbiting a planet E if it is the case that A is a pain and B is a pleasure and A craves C and B craves C and C is food and B is in harmony with E and E is a planet and D orbits E and D is a planet
+I can only feast with a pleasure A on a food B and a food C moving from a location E to a location D if it is the case that A craves B and B is food and A is a pleasure and B eats C and C is food and B is located in E and D attacks E
+I can only succumb to a pleasure B with a pain A craving a food C transitioning harmony from an object D to an object E if it is the case that A fears B and A is a pain and B is a pleasure and B craves C and C is food and B is in harmony with D and D orbits E
+I can only drink from an object A in an object C to an object D and from an object B in an object F to an object G with an object E attacking an object D and an object F attacking an object G if it is the case that A is located in C and D attacks C and E attacks D and B is located in F and F attacks G
+I can only drink from an object A in an object C to an object D and from an object B in an object F to an object G with an object E attacking an object D and an object F attacking an object G if it is not the case that A is equal to B
+
+The actions have the following effects on the state:
+Once I overcome a pain A with a pleasure B by using a food C from a planet D orbiting a planet E, it is the case that A fears B and B is in harmony with D
+Once I overcome a pain A with a pleasure B by using a food C from a planet D orbiting a planet E, it is not the case anymore that A craves C and it is not the case anymore that B is in harmony with E
+Once I feast with a pleasure A on a food B and a food C moving from a location E to a location D, it is the case that A craves C and B is located in D
+Once I feast with a pleasure A on a food B and a food C moving from a location E to a location D, it is not the case anymore that A craves B and it is not the case anymore that B is located in E
+Once I succumb to a pleasure B with a pain A craving a food C transitioning harmony from an object D to an object E, it is the case that A craves C and B is in harmony with E
+Once I succumb to a pleasure B with a pain A craving a food C transitioning harmony from an object D to an object E, it is not the case anymore that A fears B and it is not the case anymore that B is in harmony with D
+Once I drink from an object A in an object C to an object D and from an object B in an object F to an object G with an object E attacking an object D and an object F attacking an object G, it is the case that A is located in D and B is located in G
+Once I drink from an object A in an object C to an object D and from an object B in an object F to an object G with an object E attacking an object D and an object F attacking an object G, it is not the case anymore that A is located in C and it is not the case anymore that B is located in F
+
+================================================================================
+OPERATIONAL TASK SCENARIO & GOAL SPECIFICATION: MPRIME98
+================================================================================
+The following objects exist in this problem instance:
+- rice, pear, flounder, okra, pork, lamb, rest, hangover, depression, abrasion, kentucky, bosnia, surrey, pennsylvania, alsace, quebec, guanabara, mars, earth, uranus and venus are of type object
+
+The initial state of the world is as follows:
+- rice is food
+- pear is food
+- flounder is food
+- okra is food
+- pork is food
+- lamb is food
+- rest is a pleasure
+- hangover is a pain
+- depression is a pain
+- abrasion is a pain
+- kentucky is a province
+- bosnia is a province
+- surrey is a province
+- pennsylvania is a province
+- alsace is a province
+- quebec is a province
+- guanabara is a province
+- mars is a planet
+- earth is a planet
+- uranus is a planet
+- venus is a planet
+- lamb eats pork
+- pork eats okra
+- okra is located in guanabara
+- pork is located in quebec
+- pork eats lamb
+- rest is in harmony with venus
+- lamb eats flounder
+- depression craves flounder
+- okra eats pear
+- rice eats rice
+- rice eats flounder
+- kentucky attacks bosnia
+- pennsylvania attacks alsace
+- alsace attacks quebec
+- abrasion craves pork
+- rice is located in bosnia
+- mars orbits earth
+- flounder eats lamb
+- rest craves pork
+- earth orbits uranus
+- pear is located in surrey
+- hangover craves rice
+- bosnia attacks surrey
+- surrey attacks pennsylvania
+- lamb is located in pennsylvania
+- flounder eats rice
+- rice eats pear
+- quebec attacks guanabara
+- pear eats okra
+- pear eats rice
+- okra eats pork
+- uranus orbits venus
+- flounder is located in alsace
+
+My goal is to achieve the following state:
+- (No explicit goal specified)
+
+Please model and solve this classical PDDL 2.1 planning domain and task.

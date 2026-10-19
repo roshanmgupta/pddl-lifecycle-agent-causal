@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "turn_to",
+  "deleted_effect": "(pointing ?s ?d_new)",
+  "description": "Deleted required causal add effect '(pointing ?s ?d_new)' from action 'turn_to', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(pointing ?s ?d_new)' into action 'turn_to'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

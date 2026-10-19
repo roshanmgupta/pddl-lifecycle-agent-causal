@@ -1,0 +1,39 @@
+================================================================================
+DOMAIN CAPABILITIES & ACTION RULES: VISITALL
+================================================================================
+I can carry out the following actions:
+move the robot from a place A to a place B
+
+I have the following restrictions on my actions:
+I can only move the robot from a place A to a place B if it is the case that the robot is at A and A is connected to B
+
+The actions have the following effects on the state:
+Once I move the robot from a place A to a place B, it is the case that the robot is at B and B has been visited
+Once I move the robot from a place A to a place B, it is not the case anymore that the robot is at A
+
+
+Everything that is a place is also a object
+
+================================================================================
+OPERATIONAL TASK SCENARIO & GOAL SPECIFICATION: VISITALL
+================================================================================
+The following objects exist in this problem instance:
+- loc-x0-y0, loc-x0-y1, loc-x1-y0 and loc-x1-y1 are of type place
+
+The initial state of the world is as follows:
+- the robot is at loc-x1-y0
+- loc-x1-y0 has been visited
+- loc-x0-y0 is connected to loc-x1-y0
+- loc-x0-y0 is connected to loc-x0-y1
+- loc-x0-y1 is connected to loc-x1-y1
+- loc-x0-y1 is connected to loc-x0-y0
+- loc-x1-y0 is connected to loc-x0-y0
+- loc-x1-y0 is connected to loc-x1-y1
+- loc-x1-y1 is connected to loc-x0-y1
+- loc-x1-y1 is connected to loc-x1-y0
+
+My goal is to achieve the following state:
+- loc-x0-y1 has been visited
+- loc-x1-y0 has been visited
+
+Please model and solve this classical PDDL 2.1 planning domain and task.

@@ -1,0 +1,7 @@
+{
+  "flaw_category": "PRECONDITION_MISALIGNMENT",
+  "target_action": "turn_to",
+  "description": "Injected unreachable precondition (unreachable_precondition_clause) in action 'turn_to'.",
+  "ground_truth_fix": "Remove (unreachable_precondition_clause) from action 'turn_to' preconditions.",
+  "expected_oracle_signal": "Fast Downward SAS+ reachability search halts with goal unreachable from initial state."
+}

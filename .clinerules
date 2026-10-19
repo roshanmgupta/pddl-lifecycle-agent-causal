@@ -14,3 +14,9 @@ This project implements an Autonomous Lifecycle Agent for PDDL domain files base
 - `tools/`: Python subprocess wrappers for VAL & Fast Downward.
 - `nodes/`: Individual LangGraph node functions (elicitation, generation, triage).
 - `graph.py`: LangGraph state graph & conditional routing logic.
+
+## Strict Research Constraints (See GEMINI.md for full specification)
+1. Pure PDDL 2.1 STRIPS+Typing Only: Never add ad-hoc, bespoke, or handcrafted domain rules to prompts. If an LLM fails a domain under standard STRIPS rules, record it honestly as an empirical failure.
+2. Single-Model OpenRouter Policy: OpenRouter is the sole provider. Strictly invoke only the designated model for each phase from `.env` without fallback cascades.
+3. Continuous Evolution Cleanliness: No forced default descriptions, clean placeholders, manual file upload/selection, and clean side-by-side Tab 1 PDDL view.
+4. Python Environment: Strictly use Conda environment `agent_env` (`C:\Users\Srushti\miniconda3\envs\agent_env\python.exe`) for all script executions, tests, and Streamlit runs.

@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "jump-new-move",
+  "deleted_effect": "(free ?from)",
+  "description": "Deleted required causal add effect '(free ?from)' from action 'jump-new-move', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(free ?from)' into action 'jump-new-move'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

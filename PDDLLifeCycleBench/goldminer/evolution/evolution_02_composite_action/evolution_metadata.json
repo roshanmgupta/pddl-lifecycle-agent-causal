@@ -1,0 +1,11 @@
+{
+  "evolution_category": "COMPOSITE_ACTION_PIPELINE",
+  "domain": "goldminer",
+  "historical_regression_instances": [
+    "instance-1.pddl",
+    "instance-10.pddl",
+    "instance-11.pddl"
+  ],
+  "target_problem": "instance-11.pddl",
+  "gatekeeper_requirement": "Zero regression on legacy problems; Phase 4 verification mandatory."
+}

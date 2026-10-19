@@ -1,0 +1,7 @@
+{
+  "flaw_category": "TYPE_SIGNATURE_ARITY_INVERSION",
+  "target_action": "PUSH-START",
+  "description": "Mutated parameter signature in action 'PUSH-START' creating an arity mismatch or unbound parameter.",
+  "ground_truth_fix": "Restore original parameter signature: (\n    ;; Pipeline segment that will be moved\n    ?pipe - pipe\n    ;; Unitary batch that will be inserted into the pipeline\n    ;; segment\n    ?batch-atom-in - batch-atom\n    ?from-area - area\n    ?to-area - area\n    ?first-batch-atom - batch-atom\n    ?product-batch-atom-in - product\n    ?product-first-batch - product\n  )",
+  "expected_oracle_signal": "Fast Downward parser aborts during translation with parameter arity error."
+}

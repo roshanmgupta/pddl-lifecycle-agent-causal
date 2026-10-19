@@ -1,0 +1,7 @@
+{
+  "flaw_category": "TYPE_SIGNATURE_ARITY_INVERSION",
+  "target_action": "analyze-2",
+  "description": "Mutated parameter signature in action 'analyze-2' creating an arity mismatch or unbound parameter.",
+  "ground_truth_fix": "Restore original parameter signature: (?s1 ?s2 - segment ?c1 ?c2 - car)",
+  "expected_oracle_signal": "Fast Downward parser aborts during translation with parameter arity error."
+}

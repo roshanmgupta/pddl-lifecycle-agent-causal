@@ -1,0 +1,90 @@
+================================================================================
+DOMAIN CAPABILITIES & ACTION RULES: PARKING11
+================================================================================
+I can carry out the following actions:
+move a car A from curb number a B to curb number a C
+move a car A from curb number a B to behind a car C
+move a car A from behind a car B to curb number a C
+move a car A from behind a car B to behind a car C
+
+I have the following restrictions on my actions:
+I can only move a car A from curb number a B to curb number a C if it is the case that the car A is clear and the curb C is clear and A is at curb number B
+I can only move a car A from curb number a B to behind a car C if it is the case that the car A is clear and the car C is clear and A is at curb number B and C is at the curb
+I can only move a car A from behind a car B to curb number a C if it is the case that the car A is clear and the curb C is clear and A is behind the car B
+I can only move a car A from behind a car B to behind a car C if it is the case that the car A is clear and the car C is clear and A is behind the car B and C is at the curb
+
+The actions have the following effects on the state:
+Once I move a car A from curb number a B to curb number a C, it is the case that the curb B is clear and A is at curb number C
+Once I move a car A from curb number a B to curb number a C, it is not the case anymore that the curb C is clear and it is not the case anymore that A is at curb number B
+Once I move a car A from curb number a B to behind a car C, it is the case that the curb B is clear and A is behind the car C
+Once I move a car A from curb number a B to behind a car C, it is not the case anymore that the car C is clear and it is not the case anymore that A is at curb number B and it is not the case anymore that A is at the curb
+Once I move a car A from behind a car B to curb number a C, it is the case that the car B is clear and A is at curb number C and A is at the curb
+Once I move a car A from behind a car B to curb number a C, it is not the case anymore that the curb C is clear and it is not the case anymore that A is behind the car B
+Once I move a car A from behind a car B to behind a car C, it is the case that the car B is clear and A is behind the car C
+Once I move a car A from behind a car B to behind a car C, it is not the case anymore that the car C is clear and it is not the case anymore that A is behind the car B
+
+
+Everything that is a car or a curb is also a object
+
+[NOTE: Action 'move-car-to-curb' has been modified with an over-constraining restriction that breaks legacy problem compatibility.]
+
+================================================================================
+OPERATIONAL TASK SCENARIO & GOAL SPECIFICATION: PARKING11
+================================================================================
+The following objects exist in this problem instance:
+- car_00, car_01, car_02, car_03, car_04, car_05, car_06, car_07, car_08, car_09, car_10, car_11, car_12, car_13, car_14 and car_15 are of type car
+- curb_0, curb_1, curb_2, curb_3, curb_4, curb_5, curb_6, curb_7 and curb_8 are of type curb
+
+The initial state of the world is as follows:
+- car_13 is at the curb
+- car_13 is at curb number curb_0
+- car_07 is behind the car car_13
+- the car car_07 is clear
+- car_04 is at the curb
+- car_04 is at curb number curb_1
+- car_08 is behind the car car_04
+- the car car_08 is clear
+- car_12 is at the curb
+- car_12 is at curb number curb_2
+- car_06 is behind the car car_12
+- the car car_06 is clear
+- car_10 is at the curb
+- car_10 is at curb number curb_3
+- car_05 is behind the car car_10
+- the car car_05 is clear
+- car_14 is at the curb
+- car_14 is at curb number curb_4
+- car_01 is behind the car car_14
+- the car car_01 is clear
+- car_15 is at the curb
+- car_15 is at curb number curb_5
+- car_11 is behind the car car_15
+- the car car_11 is clear
+- car_03 is at the curb
+- car_03 is at curb number curb_6
+- car_09 is behind the car car_03
+- the car car_09 is clear
+- car_00 is at the curb
+- car_00 is at curb number curb_7
+- the car car_00 is clear
+- car_02 is at the curb
+- car_02 is at curb number curb_8
+- the car car_02 is clear
+
+My goal is to achieve the following state:
+- car_09 is behind the car car_00
+- car_01 is at curb number curb_1
+- car_10 is behind the car car_01
+- car_02 is at curb number curb_2
+- car_11 is behind the car car_02
+- car_03 is at curb number curb_3
+- car_12 is behind the car car_03
+- car_04 is at curb number curb_4
+- car_13 is behind the car car_04
+- car_05 is at curb number curb_5
+- car_14 is behind the car car_05
+- car_06 is at curb number curb_6
+- car_15 is behind the car car_06
+- car_07 is at curb number curb_7
+
+Please model and solve this classical PDDL 2.1 planning domain and task.

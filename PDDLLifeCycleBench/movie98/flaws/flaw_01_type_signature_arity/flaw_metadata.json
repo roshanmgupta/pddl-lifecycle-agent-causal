@@ -1,0 +1,7 @@
+{
+  "flaw_category": "TYPE_SIGNATURE_ARITY_INVERSION",
+  "target_action": "rewind-movie-2",
+  "description": "Mutated parameter signature in action 'rewind-movie-2' creating an arity mismatch or unbound parameter.",
+  "ground_truth_fix": "Restore original parameter signature: ()",
+  "expected_oracle_signal": "Fast Downward parser aborts during translation with parameter arity error."
+}

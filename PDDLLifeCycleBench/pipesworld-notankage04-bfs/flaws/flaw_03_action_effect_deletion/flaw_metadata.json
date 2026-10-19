@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "PUSH-START",
+  "deleted_effect": "(push-updating ?pipe)",
+  "description": "Deleted required causal add effect '(push-updating ?pipe)' from action 'PUSH-START', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(push-updating ?pipe)' into action 'PUSH-START'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

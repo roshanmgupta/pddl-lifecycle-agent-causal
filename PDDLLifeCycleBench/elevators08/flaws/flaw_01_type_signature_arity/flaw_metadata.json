@@ -1,0 +1,7 @@
+{
+  "flaw_category": "TYPE_SIGNATURE_ARITY_INVERSION",
+  "target_action": "move-up-slow",
+  "description": "Mutated parameter signature in action 'move-up-slow' creating an arity mismatch or unbound parameter.",
+  "ground_truth_fix": "Restore original parameter signature: (?lift - slow-elevator ?f1 - count ?f2 - count )",
+  "expected_oracle_signal": "Fast Downward parser aborts during translation with parameter arity error."
+}

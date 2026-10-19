@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "change-color",
+  "deleted_effect": "(robot-has ?r ?c2)",
+  "description": "Deleted required causal add effect '(robot-has ?r ?c2)' from action 'change-color', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(robot-has ?r ?c2)' into action 'change-color'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

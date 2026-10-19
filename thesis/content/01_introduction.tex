@@ -1,0 +1,36 @@
+\chapter{Introduction}
+\label{chap:introduction}
+
+\section{Motivation \& Problem Statement}
+Automated planning is a core discipline of Artificial Intelligence concerned with synthesizing sequence of actions to achieve specified goals from an initial state~\cite{ghallab2004}. At the heart of domain-independent automated planning is the Planning Domain Definition Language (\gls{pddl})~\cite{mcdermott1998}, which provides a formal syntax to model types, predicates, actions, parameters, preconditions, and state transition effects.
+
+Despite the expressive power of classical planning algorithms (e.g., Fast Downward~\cite{helmert2006}), constructing correct PDDL domain models remains a significant bottleneck. Traditionally, domain modeling requires specialized expertise in formal logic, state-space representations, and symbolic reasoning. This manual process is time-consuming, prone to human error, and difficult to scale across dynamic real-world environments.
+
+Recent advances in Large Language Models (\gls{llm}s) have prompted researchers to explore automated text-to-PDDL generation, world model acquisition, and domain repair~\cite{oswald2024,guan2023,tantakoun2025,bavandpour2026llmonly}. As surveyed by Tantakoun et al.~\cite{tantakoun2025}, LLMs can act as effective planning formalizers to reduce human modeling effort. However, recent empirical evaluations on open-weight LLMs demonstrate that unconstrained "LLM-Only" domain repair fails to provide formal correctness guarantees, with test pass rates collapsing to as low as $6\%$ on complex domains such as \texttt{Thoughtful}~\cite{bavandpour2026llmonly}. Drawing inspiration from unified agent architectures in software engineering (e.g., USEagent~\cite{applis2026useagent}), existing PDDL formalization approaches present four fundamental challenges:
+\begin{enumerate}
+    \item \textbf{Syntax Collapse in Unconstrained Generation:} Direct text generation of Lisp-style S-expressions from raw LLMs often yields syntax errors, unmatched parentheses, missing keywords, and colon parameter hallucinations, leading to high syntax failure rates ($>50\%$)~\cite{oswald2024}.
+    \item \textbf{Lack of Verification Feedback Loops:} Open-loop approaches generate PDDL models in a single pass without validating domain solvability against symbolic verifiers (e.g., \gls{val}~\cite{howey2004} or Fast Downward~\cite{helmert2006}).
+    \item \textbf{Coarse-Grained Repair Mechanisms \& Trace Overflow:} Naive prompt-based repair supplies raw error trace strings into LLM prompts (\texttt{WITHTRACE}), causing combinatorial context overflow and inducing global regressions across previously valid action schemas~\cite{bavandpour2026llmonly}.
+    \item \textbf{Absence of SDLC Lifecycle Management:} Existing research focuses solely on initial domain drafting, ignoring continuous domain evolution, maintenance, and regression testing across changing requirements~\cite{georgievski2023}.
+\end{enumerate}
+
+To address these challenges and fulfill the call for hybrid symbolic-neural architectures posed by Bavandpour and Bercher~\cite{bavandpour2026llmonly}, this thesis presents a \textbf{Unified Autonomous Lifecycle Agent} for PDDL domain modeling that decouples natural language understanding from PDDL syntax generation through a structured intermediate representation (\gls{ast}), integrates a closed-loop verification pipeline with spectrum-based fault localization ($\sigma(n)$), and manages continuous domain maintenance across the \gls{keps} Software Development Life Cycle (\gls{sdlc}).
+
+\section{Research Questions}
+This work is guided by four primary research questions:
+\begin{description}
+    \item[RQ1 (Intermediate Representation \& Syntax Decoupling):] How effectively does an intermediate Pydantic JSON Abstract Syntax Tree (\gls{ast}) schema decouple LLM language comprehension from strict target PDDL Lisp syntax rules?
+    \item[RQ2 (Symbolic Feedback \& Oracle Integration):] What is the quantitative impact of integrating symbolic verification feedback (\gls{val} and Fast Downward) on model solvability and convergence?
+    \item[RQ3 (Spectrum-Based Fault Localization):] How does spectrum-based fault suspiciousness scoring ($\sigma(n)$) enable targeted, localized sub-AST repairs compared to unconstrained global re-prompting?
+    \item[RQ4 (Continuous Maintenance \& Regression Testing):] How effectively does an automated evolution manager preserve domain compatibility across changing requirements using a regression suite ($\mathcal{K}_{\text{maint}}$)?
+\end{description}
+
+\section{Summary of Contributions}
+The main contributions of this master thesis are as follows:
+\begin{itemize}
+    \item \textbf{Structured AST Formulation Engine:} A deterministic Pydantic AST contract (\texttt{DomainBlueprint}) that guarantees 100\% syntactically valid PDDL generation, eliminating parenthesis matching errors and keyword hallucinations.
+    \item \textbf{Closed-Loop Multi-Tiered Verification Pipeline:} Integration of \gls{val} static parsing and Fast Downward SAS+ state-space search to automatically validate compiled PDDL models.
+    \item \textbf{Layered Triage \& Fault Localization Engine:} A spectrum-based fault localization engine calculating suspiciousness scores $\sigma(n) \in [0.0, 1.0]$ across AST nodes, directing the LLM to patch only faulty action sub-schemas.
+    \item \textbf{Continuous Domain Evolution \& Maintenance Module:} An end-to-end regression evaluation suite preserving backward compatibility across evolving domain iterations.
+    \item \textbf{Empirical Benchmark (\textsc{PDDLLifeCycleBench}):} A comprehensive benchmark across 18 tasks in 6 classical IPC domain families (\texttt{Blocksworld}, \texttt{Gripper}, \texttt{Logistics}, \texttt{Depot}, \texttt{Satellite}, and \texttt{Rovers}) demonstrating state-of-the-art performance against direct and unstructured LLM baselines.
+\end{itemize}

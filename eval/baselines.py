@@ -2,91 +2,9 @@ import os
 import re
 import time
 from typing import Tuple, Dict, Any, Optional
-from langchain_openai import ChatOpenAI
 from benchmark.schema import BenchmarkTask, LifecycleTaskType
-from tools.symbolic_oracles import run_val_validator, run_fast_downward
-
-FALLBACK_MODEL_LIST = [
-    "openrouter/free",
-    "google/gemma-4-26b-a4b-it:free",
-    "google/gemma-4-31b-it:free",
-    "nvidia/nemotron-3-nano-30b-a3b:free",
-    "liquid/lfm-2.5-2.6b:free"
-]
-
-
-def invoke_raw_llm(prompt: str) -> str:
-    """Helper to invoke LLM for raw string output with provider fallback."""
-    openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
-    gemini_api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
-
-    last_exception = None
-
-    if openrouter_api_key:
-        for model_name in FALLBACK_MODEL_LIST:
-            try:
-                llm = ChatOpenAI(
-                    model_name=model_name,
-                    openai_api_key=openrouter_api_key,
-                    openai_api_base="https://openrouter.ai/api/v1",
-                    temperature=0.0,
-                    max_retries=2
-                )
-                response = llm.invoke(prompt)
-                return str(response.content)
-            except Exception as e:
-                last_exception = e
-                time.sleep(1)
-                continue
-
-    if gemini_api_key:
-        try:
-            from langchain_google_genai import ChatGoogleGenerativeAI
-            gemini_llm = ChatGoogleGenerativeAI(
-                model="gemini-2.0-flash",
-                google_api_key=gemini_api_key,
-                temperature=0.0
-            )
-            response = gemini_llm.invoke(prompt)
-            return str(response.content)
-        except Exception as e:
-            last_exception = e
-
-    # 3. Rate Limit / Offline Raw PDDL Fallback
-    print("[LLM Provider Notice]: API rate limits hit across providers. Invoking fallback raw PDDL text generator...")
-    return """
-    ```pddl
-    (define (domain blocksworld)
-      (:requirements :strips :typing)
-      (:types block - object)
-      (:predicates (on ?x - block ?y - block) (ontable ?x - block) (clear ?x - block) (handempty) (holding ?x - block))
-      (:action pick_up
-        :parameters (?x - block)
-        :precondition (and (clear ?x) (ontable ?x) (handempty))
-        :effect (and (not (ontable ?x)) (not (clear ?x)) (not (handempty)) (holding ?x)))
-      (:action put_down
-        :parameters (?x - block)
-        :precondition (holding ?x)
-        :effect (and (not (holding ?x)) (clear ?x) (handempty) (ontable ?x)))
-      (:action stack
-        :parameters (?x - block ?y - block)
-        :precondition (and (holding ?x) (clear ?y))
-        :effect (and (not (holding ?x)) (not (clear ?y)) (clear ?x) (handempty) (on ?x ?y)))
-      (:action unstack
-        :parameters (?x - block ?y - block)
-        :precondition (and (on ?x ?y) (clear ?x) (handempty))
-        :effect (and (holding ?x) (clear ?y) (not (clear ?x)) (not (handempty)) (not (on ?x ?y)))))
-    ```
-    ```pddl
-    (define (problem blocks_prob)
-      (:domain blocksworld)
-      (:objects a b c - block)
-      (:init (ontable a) (ontable b) (clear a) (clear b) (handempty))
-      (:goal (on a b)))
-    ```
-    """
-
-
+from config.model_config import invoke_raw_llm_with_telemetry
+from tools.symbolic_oracles import run_val_validator, run_fast_downward_with_plan
 
 def extract_pddl_blocks(raw_text: str) -> Tuple[str, str]:
     """Extracts domain.pddl and problem.pddl code blocks from raw LLM output text."""
@@ -116,82 +34,147 @@ def run_zero_shot_baseline(task: BenchmarkTask) -> Dict[str, Any]:
     """
     Baseline 1: Zero-Shot Direct LLM Generation.
     Requests raw PDDL code directly from natural language prompt without Pydantic AST or validation loops.
+    Strictly NO fallback to ground truth.
     """
-    prompt = f"""
-    You are a PDDL domain generator.
-    Requirements:
-    {task.natural_language_requirements}
+    prompt = f"""You are an automated PDDL domain and problem generator.
+Requirements:
+{task.natural_language_requirements}
 
-    Write a valid PDDL domain definition and problem definition.
-    Provide both in raw PDDL code blocks.
-    """
-    raw_response = invoke_raw_llm(prompt)
+Generate two separate, syntactically valid PDDL files:
+1. A domain definition block: (define (domain ...) ...)
+2. A problem definition block: (define (problem ...) ...)
+
+Format your output using markdown code fences:
+```pddl
+(define (domain ...) ...)
+```
+```pddl
+(define (problem ...) ...)
+```
+Respond ONLY with the PDDL code blocks.
+"""
+    try:
+        raw_response, telemetry = invoke_raw_llm_with_telemetry(prompt)
+    except Exception as e:
+        print(f"[Baseline Zero-Shot Error]: LLM call failed: {e}")
+        return {
+            "generated_domain_pddl": "",
+            "generated_problem_pddl": "",
+            "iterations_used": 1,
+            "total_tokens": 0,
+            "estimated_cost_usd": 0.0,
+            "raw_response": str(e),
+            "error": str(e)
+        }
+
     domain_pddl, problem_pddl = extract_pddl_blocks(raw_response)
 
-    # Fallback to ground truth if parser missed block delimiters but raw code is plain
     if not domain_pddl and "(define (domain" in raw_response.lower():
         domain_pddl = raw_response
 
     return {
         "generated_domain_pddl": domain_pddl,
-        "generated_problem_pddl": problem_pddl if problem_pddl else task.ground_truth_problem_pddl,
+        "generated_problem_pddl": problem_pddl,
         "iterations_used": 1,
+        "total_tokens": telemetry.get("total_tokens", 0),
+        "estimated_cost_usd": telemetry.get("estimated_cost_usd", 0.0),
         "raw_response": raw_response
     }
 
 def run_unstructured_retry_baseline(task: BenchmarkTask, max_retries: int = 5) -> Dict[str, Any]:
     """
     Baseline 2: Direct LLM Generation + Raw Unstructured Error Feedback Retry.
-    Retries generation by passing raw validator output without Pydantic AST or diagnostic triage.
+    Passes raw validator compiler logs directly back to the LLM without Pydantic AST,
+    triage fault localization, or causal analysis.
+    Strictly NO fallback to ground truth.
     """
-    prompt = f"""
-    You are a PDDL domain generator.
-    Requirements:
-    {task.natural_language_requirements}
+    base_prompt = f"""You are an automated PDDL domain and problem generator.
+Requirements:
+{task.natural_language_requirements}
 
-    Write a valid PDDL domain definition and problem definition.
-    """
-    
-    current_prompt = prompt
+Generate two separate, syntactically valid PDDL files:
+1. A domain definition block: (define (domain ...) ...)
+2. A problem definition block: (define (problem ...) ...)
+
+Format your output using markdown code fences:
+```pddl
+(define (domain ...) ...)
+```
+```pddl
+(define (problem ...) ...)
+```
+Respond ONLY with the PDDL code blocks.
+"""
+    current_prompt = base_prompt
     last_domain = ""
     last_problem = ""
-    
+    cumulative_tokens = 0
+    cumulative_cost = 0.0
+    last_raw_response = ""
+
+    os.makedirs("Streamlit_output_file", exist_ok=True)
+    dom_file = f"Streamlit_output_file/temp_baseline_unstructured_dom_{task.task_id}.pddl"
+    prob_file = f"Streamlit_output_file/temp_baseline_unstructured_prob_{task.task_id}.pddl"
+
     for iteration in range(1, max_retries + 1):
-        raw_response = invoke_raw_llm(current_prompt)
+        try:
+            raw_response, telemetry = invoke_raw_llm_with_telemetry(current_prompt)
+            cumulative_tokens += telemetry.get("total_tokens", 0)
+            cumulative_cost += telemetry.get("estimated_cost_usd", 0.0)
+            last_raw_response = raw_response
+        except Exception as e:
+            print(f"[Baseline Unstructured Retry Error]: LLM call failed on iter {iteration}: {e}")
+            break
+
         domain_pddl, problem_pddl = extract_pddl_blocks(raw_response)
-        
         if domain_pddl:
             last_domain = domain_pddl
         if problem_pddl:
             last_problem = problem_pddl
-            
-        # Write temporary files to validate
-        os.makedirs("PDDL_file", exist_ok=True)
-        dom_file = "PDDL_file/temp_baseline_dom.pddl"
-        prob_file = "PDDL_file/temp_baseline_prob.pddl"
-        
-        with open(dom_file, "w") as f:
-            f.write(last_domain if last_domain else task.ground_truth_domain_pddl)
-        with open(prob_file, "w") as f:
-            f.write(last_problem if last_problem else task.ground_truth_problem_pddl)
+
+        # If LLM failed to produce any code, retry with warning
+        if not last_domain or not last_problem:
+            current_prompt = f"{base_prompt}\n\nError: You did not provide both domain and problem PDDL code blocks. Please output both."
+            continue
+
+        with open(dom_file, "w", encoding="utf-8") as f:
+            f.write(last_domain)
+        with open(prob_file, "w", encoding="utf-8") as f:
+            f.write(last_problem)
 
         is_valid, val_log = run_val_validator(dom_file, prob_file)
         if is_valid:
-            return {
-                "generated_domain_pddl": last_domain,
-                "generated_problem_pddl": last_problem,
-                "iterations_used": iteration,
-                "validation_passed": True
-            }
+            # Check solvability
+            fd_res = run_fast_downward_with_plan(dom_file, prob_file)
+            if fd_res["is_solvable"]:
+                return {
+                    "generated_domain_pddl": last_domain,
+                    "generated_problem_pddl": last_problem,
+                    "iterations_used": iteration,
+                    "total_tokens": cumulative_tokens,
+                    "estimated_cost_usd": cumulative_cost,
+                    "validation_passed": True,
+                    "is_solvable": True,
+                    "val_plan_valid": fd_res.get("val_plan_valid", False),
+                    "raw_response": last_raw_response
+                }
 
-        # Feedback raw unparsed error string for retry
-        clean_val_log = val_log.encode("ascii", "ignore").decode("ascii")
-        current_prompt = f"{prompt}\n\nPrevious validation attempt failed with raw error:\n{clean_val_log}\nPlease fix the PDDL code."
+            # If syntax valid but unsolvable, pass raw Fast Downward output
+            raw_error = fd_res.get("raw_fd_log", "Fast Downward found no plan.")
+        else:
+            raw_error = val_log
+
+        # Feed raw unparsed error string directly back into prompt
+        clean_err = raw_error.encode("ascii", "ignore").decode("ascii")[:1500]
+        current_prompt = f"{base_prompt}\n\nPrevious attempt failed with the following oracle output:\n{clean_err}\n\nPlease revise and correct the PDDL domain and problem definitions."
 
     return {
         "generated_domain_pddl": last_domain,
         "generated_problem_pddl": last_problem,
         "iterations_used": max_retries,
-        "validation_passed": False
+        "total_tokens": cumulative_tokens,
+        "estimated_cost_usd": cumulative_cost,
+        "validation_passed": False,
+        "is_solvable": False,
+        "raw_response": last_raw_response
     }
-

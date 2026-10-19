@@ -1,0 +1,7 @@
+{
+  "flaw_category": "INITIAL_GOAL_DEADLOCK",
+  "target_action": "feast",
+  "description": "Mutually exclusive deadlock constraint injected into action 'feast' rendering goal state unreachable from initial state.",
+  "ground_truth_fix": "Eliminate contradictory deadlock predicate '(state_deadlock_mutex_lock)' from action 'feast' preconditions.",
+  "expected_oracle_signal": "Fast Downward SAS+ translator or forward search halts; goal is provably unreachable from initial state."
+}

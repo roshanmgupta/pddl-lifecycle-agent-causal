@@ -19,6 +19,7 @@ class BenchmarkTask(BaseModel):
         description="Lifecycle task category: ELICITATION, SYNTHETIC_FAULT_REPAIR, DOMAIN_EVOLUTION"
     )
     title: str = Field(
+        default="",
         description="Short human-readable summary of the evaluation scenario"
     )
     natural_language_requirements: str = Field(
@@ -36,9 +37,31 @@ class BenchmarkTask(BaseModel):
         default=None,
         description="Injected fault category for REPAIR tasks: 'SYNTAX_PARSE', 'TYPE_SIGNATURE', 'GROUNDING_UNSOLVABILITY'"
     )
+    gold_fault_element: Optional[str] = Field(
+        default=None,
+        description="Exact ground-truth AST node/element that contains the fault (e.g., 'pick_up', 'clear', '(on ?x ?y)') for Top-k fault localization"
+    )
+    gold_fault_category: Optional[str] = Field(
+        default=None,
+        description="Formal ErrorCategory ground truth (e.g. 'ACTION_PRECONDITION_INSUFFICIENT')"
+    )
+    expected_repair_behavior: Optional[str] = Field(
+        default=None,
+        description="Description or specification of the intended behavior to be restored"
+    )
+    historical_regression_problems: List[str] = Field(
+        default_factory=list,
+        description="List of legacy problem PDDL strings that must remain solvable after domain evolution"
+    )
+    evolution_target_problem_pddl: Optional[str] = Field(
+        default=None,
+        description="New capability problem PDDL string introduced during domain evolution"
+    )
     ground_truth_domain_pddl: str = Field(
+        default="",
         description="Reference correct domain PDDL string for evaluation comparison"
     )
     ground_truth_problem_pddl: str = Field(
+        default="",
         description="Reference correct problem PDDL string for evaluation comparison"
     )

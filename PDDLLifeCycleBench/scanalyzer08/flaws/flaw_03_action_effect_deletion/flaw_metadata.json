@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "analyze-2",
+  "deleted_effect": "(on ?c1 ?s2)",
+  "description": "Deleted required causal add effect '(on ?c1 ?s2)' from action 'analyze-2', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(on ?c1 ?s2)' into action 'analyze-2'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

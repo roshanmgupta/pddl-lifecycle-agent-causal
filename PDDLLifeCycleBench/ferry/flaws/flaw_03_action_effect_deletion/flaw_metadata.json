@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "sail",
+  "deleted_effect": "(at-ferry ?to)",
+  "description": "Deleted required causal add effect '(at-ferry ?to)' from action 'sail', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(at-ferry ?to)' into action 'sail'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

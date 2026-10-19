@@ -1,0 +1,7 @@
+{
+  "flaw_category": "TYPE_SIGNATURE_ARITY_INVERSION",
+  "target_action": "turn_to",
+  "description": "Mutated parameter signature in action 'turn_to' creating an arity mismatch or unbound parameter.",
+  "ground_truth_fix": "Restore original parameter signature: (?s - satellite ?d_new - direction ?d_prev - direction)",
+  "expected_oracle_signal": "Fast Downward parser aborts during translation with parameter arity error."
+}

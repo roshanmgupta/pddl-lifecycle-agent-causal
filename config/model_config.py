@@ -9,22 +9,42 @@ from langchain_openai import ChatOpenAI
 
 T = TypeVar("T", bound=BaseModel)
 
-# FALLBACK_MODEL_LIST = [
-#     "openrouter/free",
-#     "google/gemma-4-26b-a4b-it:free",
-#     "google/gemma-4-31b-it:free",
-#     "nvidia/nemotron-3-nano-30b-a3b:free",
-#     "liquid/lfm-2.5-2.6b:free"
-# ]
+# Dedicated LLM Models per KEPS Lifecycle Phase with dynamic .env resolution
+def get_phase_model(phase: int = 1) -> str:
+    """
+    Dynamically reads the dedicated LLM model configured for each KEPS phase from .env.
+    Enables empirical research and independent model selection per phase:
+    - Phase 1 (Elicitation): Natural language extraction to relational AST schema
+    - Phase 3 (Repair): Targeted repair guided by symbolic oracle triage diagnostics
+    - Phase 4 (Maintenance): Historical regression and backward compatibility verification
+    """
+    load_dotenv(override=True)
+    if phase == 1:
+        val = os.getenv("LLM_PHASE_1", "deepseek/deepseek-chat")
+    elif phase == 3:
+        val = os.getenv("LLM_PHASE_3", "deepseek/deepseek-chat")
+    elif phase == 4:
+        val = os.getenv("LLM_PHASE_4", "deepseek/deepseek-chat")
+    else:
+        val = os.getenv(f"LLM_PHASE_{phase}", "deepseek/deepseek-chat")
+    return str(val).strip().strip('"').strip("'")
 
-# Dedicated LLM Models per KEPS Lifecycle Phase
-LLM_MODEL_PHASE_1_ELICITATION = os.getenv("LLM_PHASE_1", "openrouter/free")
-LLM_MODEL_PHASE_3_REPAIR = os.getenv("LLM_PHASE_3", "openrouter/free")
-LLM_MODEL_PHASE_4_MAINTENANCE = os.getenv("LLM_PHASE_4", "openrouter/free")
+LLM_MODEL_PHASE_1_ELICITATION = get_phase_model(1)
+LLM_MODEL_PHASE_3_REPAIR = get_phase_model(3)
+LLM_MODEL_PHASE_4_MAINTENANCE = get_phase_model(4)
+
+import json
 
 def extract_and_parse_json(schema: Type[T], raw_text: str) -> T:
     """Extracts JSON object substring from raw LLM output text and validates against Pydantic schema."""
-    text = str(raw_text).strip()
+    text = str(raw_text).strip() if raw_text is not None else ""
+    
+    if not text:
+        raise ValueError(
+            "The model returned an empty response. "
+            "This usually happens when the model times out, exhausts output tokens during internal reasoning, "
+            "or the upstream free-tier endpoint is temporarily congested."
+        )
     
     # Strip markdown code fences
     text = re.sub(r"^```json\s*", "", text, flags=re.MULTILINE)
@@ -33,191 +53,241 @@ def extract_and_parse_json(schema: Type[T], raw_text: str) -> T:
     
     # Extract outermost JSON object { ... }
     json_match = re.search(r"(\{.*\})", text, re.DOTALL)
-    if json_match:
-        json_str = json_match.group(1).strip()
-        try:
-            return schema.model_validate_json(json_str)
-        except Exception:
-            pass
-            
-    # Try direct validation
-    return schema.model_validate_json(text)
+    json_str = json_match.group(1).strip() if json_match else text
+
+    # Direct validation attempt
+    try:
+        return schema.model_validate_json(json_str)
+    except Exception:
+        pass
+
+    # Helper function to normalize domain/problem keys
+    def _normalize_and_validate(raw_data):
+        if not isinstance(raw_data, dict):
+            return None
+        # Handle $defs or definitions wrappers
+        if "$defs" in raw_data and "domain" not in raw_data:
+            defs = raw_data["$defs"]
+            dom = defs.get("DomainBlueprint") or defs.get("domain") or {}
+            prob = defs.get("ProblemBlueprint") or defs.get("problem") or {}
+            if dom:
+                raw_data = {"domain": dom, "problem": prob}
+        elif "definitions" in raw_data and "domain" not in raw_data:
+            defs = raw_data["definitions"]
+            dom = defs.get("DomainBlueprint") or defs.get("domain") or {}
+            prob = defs.get("ProblemBlueprint") or defs.get("problem") or {}
+            if dom:
+                raw_data = {"domain": dom, "problem": prob}
+
+        schema_fields = getattr(schema, "__fields__", {}) or getattr(schema, "model_fields", {})
+        if "domain" in schema_fields and "problem" in schema_fields:
+            if "domain" not in raw_data and ("domain_name" in raw_data or "actions" in raw_data):
+                domain_name = raw_data.get("domain_name", "generated_domain")
+                raw_data = {
+                    "domain": raw_data,
+                    "problem": {
+                        "domain_name": domain_name,
+                        "problem_name": f"{domain_name}_prob",
+                        "objects": {},
+                        "initial_state": [],
+                        "goal_state": []
+                    }
+                }
+            elif "domain" in raw_data and "problem" not in raw_data:
+                domain_dict = raw_data.get("domain", {})
+                domain_name = domain_dict.get("domain_name", "generated_domain") if isinstance(domain_dict, dict) else "generated_domain"
+                raw_data["problem"] = {
+                    "domain_name": domain_name,
+                    "problem_name": f"{domain_name}_prob",
+                    "objects": {},
+                    "initial_state": [],
+                    "goal_state": []
+                }
+        return schema.model_validate(raw_data)
+
+    # 1. Fast Path: Standard Python json.loads
+    try:
+        data = json.loads(json_str)
+        validated = _normalize_and_validate(data)
+        if validated:
+            return validated
+    except Exception:
+        pass
+
+    # 2. Resilient Path: Professional json_repair
+    # Automatically fixes unquoted keys, unclosed brackets, and trailing commas
+    try:
+        import json_repair
+        data = json_repair.repair_json(json_str, return_objects=True)
+        if isinstance(data, dict):
+            validated = _normalize_and_validate(data)
+            if validated:
+                return validated
+    except Exception:
+        pass
+
+    # 3. If both fail, raise clear diagnostic error
+    snippet = text[:200] if len(text) > 200 else text
+    raise ValueError(
+        f"Failed to parse LLM output into schema {getattr(schema, '__name__', str(schema))}.\n"
+        f"Received: {repr(snippet)}"
+    )
+
+def extract_telemetry_from_response(raw_resp) -> dict:
+    """Extracts prompt_tokens, completion_tokens, total_tokens and estimates USD cost."""
+    prompt_tokens = 0
+    completion_tokens = 0
+    total_tokens = 0
+
+    if hasattr(raw_resp, "usage_metadata") and raw_resp.usage_metadata:
+        um = raw_resp.usage_metadata
+        prompt_tokens = um.get("input_tokens", 0) or um.get("prompt_tokens", 0) or 0
+        completion_tokens = um.get("output_tokens", 0) or um.get("completion_tokens", 0) or 0
+        total_tokens = um.get("total_tokens", 0) or (prompt_tokens + completion_tokens)
+    elif hasattr(raw_resp, "response_metadata") and raw_resp.response_metadata:
+        rm = raw_resp.response_metadata
+        tu = rm.get("token_usage") or rm.get("usage") or {}
+        if isinstance(tu, dict):
+            prompt_tokens = tu.get("prompt_tokens", 0) or tu.get("input_tokens", 0) or 0
+            completion_tokens = tu.get("completion_tokens", 0) or tu.get("output_tokens", 0) or 0
+            total_tokens = tu.get("total_tokens", 0) or (prompt_tokens + completion_tokens)
+
+    if total_tokens == 0:
+        raw_text = str(raw_resp.content if hasattr(raw_resp, "content") else raw_resp)
+        prompt_tokens = max(100, len(raw_text) // 4)
+        completion_tokens = max(50, len(raw_text) // 4)
+        total_tokens = prompt_tokens + completion_tokens
+
+    cost = (prompt_tokens * 0.00000010) + (completion_tokens * 0.00000040)
+    return {
+        "prompt_tokens": prompt_tokens,
+        "completion_tokens": completion_tokens,
+        "total_tokens": total_tokens,
+        "estimated_cost_usd": round(cost, 6)
+    }
 
 def invoke_structured_llm(schema: Type[T], prompt: str, target_model: str = None) -> T:
+    """Invokes LLM with structured Pydantic schema validation."""
+    result, _ = invoke_structured_llm_with_telemetry(schema, prompt, target_model=target_model)
+    return result
+
+def invoke_structured_llm_with_telemetry(schema: Type[T], prompt: str, target_model: str = None) -> tuple[T, dict]:
     """
-    Invokes the selected LLM provider (Groq, OpenRouter, or Gemini) with structured Pydantic output.
-    Forces override=True to dynamically detect any changes made to .env without restarting.
+    Invokes OpenRouter with structured Pydantic output AND returns usage telemetry dict (tokens & estimated cost).
+    Strictly invokes only the requested model without switching or falling back to other models.
     """
     load_dotenv(override=True)
-    provider = os.getenv("LLM_PROVIDER", "").strip().lower()
     openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
-    groq_api_key = os.getenv("GROQ_API_KEY") or os.getenv("Groq_API_KEY")
-    gemini_api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+    if not openrouter_api_key:
+        raise RuntimeError("[ALERT] OPENROUTER_API_KEY is missing from your .env file!")
 
-    # Determine effective provider strictly
-    if provider == "groq":
-        effective_provider = "groq"
-    elif provider == "openrouter":
-        effective_provider = "openrouter"
-    elif provider == "gemini":
-        effective_provider = "gemini"
-    else:
-        # Default auto-detection precedence if LLM_PROVIDER is omitted in .env
-        if groq_api_key:
-            effective_provider = "groq"
-        elif openrouter_api_key:
-            effective_provider = "openrouter"
-        elif gemini_api_key:
-            effective_provider = "gemini"
-        else:
-            raise RuntimeError("[ALERT] No LLM API Keys Found in .env file.")
+    model_name = target_model or get_phase_model(1)
+    if model_name and model_name.endswith(":batch"):
+        model_name = model_name[:-6]
 
-    print(f"[LLM Config]: Active Provider selected -> '{effective_provider.upper()}'")
+    openrouter_max_tokens = int(os.getenv("OPENROUTER_MAX_TOKENS", "8192"))
 
-    # 1. Groq Execution
-    if effective_provider == "groq":
-        if not groq_api_key:
-            raise RuntimeError("[ALERT] LLM_PROVIDER is set to 'groq' but no GROQ_API_KEY was found in your .env file!")
-        
-        # Production active models on Groq
-        groq_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
-        last_err = None
-        for g_model in groq_models:
-            try:
-                print(f"[LLM Provider]: Invoking Groq API ('{g_model}')...")
-                llm = ChatOpenAI(
-                    model_name=g_model,
-                    openai_api_key=groq_api_key,
-                    openai_api_base="https://api.groq.com/openai/v1",
-                    temperature=0.0,
-                    max_retries=1
-                )
-                try:
-                    structured_llm = llm.with_structured_output(schema)
-                    result = structured_llm.invoke(prompt)
-                    print(f"[LLM Provider]: Successfully obtained response from Groq ('{g_model}').")
-                    return result
-                except Exception as parse_err:
-                    err_str = str(parse_err)
-                    if "json" in err_str.lower() or "validation" in err_str.lower() or "expected value" in err_str.lower():
-                        print(f"[LLM Provider]: Groq structured parse warning ({err_str[:60]}...). Running JSON extraction fallback...")
-                        raw_resp = llm.invoke(prompt)
-                        raw_text = raw_resp.content if hasattr(raw_resp, "content") else str(raw_resp)
-                        result = extract_and_parse_json(schema, raw_text)
-                        print(f"[LLM Provider]: Successfully extracted JSON from Groq response.")
-                        return result
-                    else:
-                        raise parse_err
-            except Exception as e:
-                last_err = e
-                err_msg = str(e)
-                if "decommissioned" in err_msg.lower() or "not found" in err_msg.lower() or "404" in err_msg:
-                    print(f"[LLM Provider Warning]: Groq model '{g_model}' unavailable ({err_msg[:60]}...). Trying next Groq model...")
-                    continue
-                if "rate_limit" in err_msg.lower() or "429" in err_msg or "token" in err_msg.lower():
-                    raise RuntimeError(f"[ALERT] TOKEN LIMIT REACHED on Groq! Execution aborted.\nDetails: {err_msg}")
-                print(f"[LLM Provider Warning]: Groq model '{g_model}' failed ({err_msg[:80]}). Trying next Groq model...")
+    schema_json_hint = ""
+    if hasattr(schema, "model_json_schema"):
+        schema_json_hint = f"\n\nCRITICAL REQUIREMENT: Respond ONLY with a valid JSON object strictly matching this schema. Do not write markdown explanations or conversational text outside the JSON:\n{json.dumps(schema.model_json_schema())}"
+    json_prompt = prompt + schema_json_hint
 
-        raise RuntimeError(f"[ALERT] Groq API Error: All Groq models failed ({last_err}). Please check your Groq API key in .env at https://console.groq.com/keys")
-
-    # 2. OpenRouter Execution
-    elif effective_provider == "openrouter":
-        if not openrouter_api_key:
-            raise RuntimeError("[ALERT] LLM_PROVIDER is set to 'openrouter' but no OPENROUTER_API_KEY was found in your .env file!")
-        
-        model_name = target_model or LLM_MODEL_PHASE_1_ELICITATION
+    try:
+        print(f"[LLM Provider]: Invoking OpenRouter Model '{model_name}' (max_tokens={openrouter_max_tokens})...")
+        llm = ChatOpenAI(
+            model_name=model_name,
+            openai_api_key=openrouter_api_key,
+            openai_api_base="https://openrouter.ai/api/v1",
+            temperature=0.0,
+            max_tokens=openrouter_max_tokens,
+            timeout=120.0,
+            max_retries=1
+        )
+        import asyncio
         try:
-            print(f"[LLM Provider]: Invoking OpenRouter Model '{model_name}'...")
-            llm = ChatOpenAI(
-                model_name=model_name,
-                openai_api_key=openrouter_api_key,
-                openai_api_base="https://openrouter.ai/api/v1",
-                temperature=0.0,
-                max_retries=1
-            )
-            try:
-                structured_llm = llm.with_structured_output(schema)
-                result = structured_llm.invoke(prompt)
-                print(f"[LLM Provider]: Successfully obtained response from OpenRouter ('{model_name}').")
-                return result
-            except Exception as parse_err:
-                err_str = str(parse_err)
-                if "length limit" in err_str.lower() or "token" in err_str.lower():
-                    raise RuntimeError(
-                        f"[ALERT] TOKEN LIMIT REACHED for model '{model_name}' on OpenRouter! Execution aborted.\n\n"
-                        f"👉 TO FIX: Change 'LLM_PROVIDER=groq' or 'LLM_PROVIDER=gemini' in your .env file!"
-                    )
-                elif "json" in err_str.lower() or "validation" in err_str.lower() or "expected value" in err_str.lower() or "user safety" in err_str.lower():
-                    print(f"[LLM Provider]: Structured parsing encountered non-JSON preamble ({err_str[:60]}...). Running robust JSON extraction fallback...")
-                    raw_resp = llm.invoke(prompt)
-                    raw_text = raw_resp.content if hasattr(raw_resp, "content") else str(raw_resp)
-                    result = extract_and_parse_json(schema, raw_text)
-                    print(f"[LLM Provider]: Successfully extracted and validated JSON from OpenRouter response.")
-                    return result
-                else:
-                    raise parse_err
-        except Exception as e:
-            err_msg = str(e)
-            if "length limit" in err_msg.lower() or "token" in err_msg.lower() or "429" in err_msg or "rate limit" in err_msg.lower():
+            loop = asyncio.get_event_loop()
+            if loop.is_closed():
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+        except Exception:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+        raw_resp = llm.invoke(json_prompt)
+        telemetry = extract_telemetry_from_response(raw_resp)
+        raw_text = raw_resp.content if hasattr(raw_resp, "content") else str(raw_resp)
+
+        # If content is empty, check reasoning_content, response_metadata or refusal
+        if not raw_text or not raw_text.strip():
+            ak = getattr(raw_resp, "additional_kwargs", {}) or {}
+            rm = getattr(raw_resp, "response_metadata", {}) or {}
+            finish_reason = rm.get("finish_reason")
+            if ak.get("reasoning_content"):
+                raw_text = ak.get("reasoning_content")
+            elif ak.get("refusal"):
+                raise RuntimeError(f"OpenRouter model '{model_name}' refused the request: {ak.get('refusal')}")
+            elif finish_reason == "length":
                 raise RuntimeError(
-                    f"[ALERT] TOKEN LIMIT REACHED for model '{model_name}' on OpenRouter! Execution aborted.\n\n"
-                    f"👉 TO FIX: Change 'LLM_PROVIDER=groq' or 'LLM_PROVIDER=gemini' in your .env file!"
+                    f"OpenRouter model '{model_name}' exhausted max_tokens ({openrouter_max_tokens}) during internal reasoning. "
+                    f"Please set OPENROUTER_MAX_TOKENS=16384 in your .env file or choose a non-reasoning chat model."
                 )
-            else:
-                raise RuntimeError(f"[ALERT] OpenRouter LLM API Error for Model '{model_name}': {err_msg}")
 
-    # 3. Google Gemini API Execution
-    elif effective_provider == "gemini":
-        if not gemini_api_key:
-            raise RuntimeError("[ALERT] LLM_PROVIDER is set to 'gemini' but no GEMINI_API_KEY (or GOOGLE_API_KEY) was found in your .env file!")
+        result = extract_and_parse_json(schema, raw_text)
+        print(f"[LLM Provider]: Successfully obtained response from OpenRouter ('{model_name}').")
+        return result, telemetry
+    except Exception as e:
+        err_msg = str(e)
+        if "429" in err_msg or "rate limit" in err_msg.lower() or "rate_limit" in err_msg.lower() or "insufficient_quota" in err_msg.lower():
+            raise RuntimeError(
+                f"[ALERT] RATE / QUOTA LIMIT REACHED for model '{model_name}' on OpenRouter! Execution aborted.\n\n"
+                f"Details: {err_msg}\n"
+                f"[FIX]: Check your OpenRouter credits or rate limits, or switch provider in your .env file!"
+            )
+        else:
+            raise RuntimeError(f"[ALERT] OpenRouter LLM API Error for Model '{model_name}': {err_msg}")
 
+def invoke_raw_llm_with_telemetry(prompt: str, target_model: str = None) -> tuple[str, dict]:
+    """
+    Invokes OpenRouter for unstructured/raw string output (used by Zero-Shot and Unstructured-Retry baselines)
+    and returns (raw_text, telemetry_dict).
+    Strictly invokes only the requested model without switching or falling back to other models.
+    """
+    load_dotenv(override=True)
+    openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+    if not openrouter_api_key:
+        raise RuntimeError("[ALERT] OPENROUTER_API_KEY is missing from your .env file!")
+
+    model_name = target_model or get_phase_model(1)
+    if model_name and model_name.endswith(":batch"):
+        model_name = model_name[:-6]
+
+    openrouter_max_tokens = int(os.getenv("OPENROUTER_MAX_TOKENS", "8192"))
+
+    try:
+        print(f"[LLM Provider]: Invoking OpenRouter (Raw) Model '{model_name}'...")
+        llm = ChatOpenAI(
+            model_name=model_name,
+            openai_api_key=openrouter_api_key,
+            openai_api_base="https://openrouter.ai/api/v1",
+            temperature=0.0,
+            max_tokens=openrouter_max_tokens,
+            timeout=90.0,
+        )
+        import asyncio
         try:
-            from langchain_google_genai import ChatGoogleGenerativeAI
-            gemini_models = [
-                os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
-                "gemini-2.5-flash",
-                "gemini-2.0-flash",
-                "gemini-3.6-flash"
-            ]
-            last_err = None
-            for g_model in gemini_models:
-                try:
-                    print(f"[LLM Provider]: Invoking Google Gemini API ('{g_model}')...")
-                    gemini_llm = ChatGoogleGenerativeAI(
-                        model=g_model,
-                        google_api_key=gemini_api_key,
-                        temperature=0.0,
-                        timeout=30.0
-                    )
-                    
-                    schema_json_hint = ""
-                    if hasattr(schema, "model_json_schema"):
-                        schema_json_hint = f"\n\nRespond ONLY with a valid JSON object matching this schema:\n{schema.model_json_schema()}"
-                    
-                    json_prompt = prompt + schema_json_hint
-                    raw_resp = gemini_llm.invoke(json_prompt)
-                    raw_content = raw_resp.content if hasattr(raw_resp, "content") else str(raw_resp)
-                    if isinstance(raw_content, list):
-                        raw_text = "".join([b.get("text", "") if isinstance(b, dict) else str(b) for b in raw_content])
-                    else:
-                        raw_text = str(raw_content)
+            loop = asyncio.get_event_loop()
+            if loop.is_closed():
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+        except Exception:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
 
-                    result = extract_and_parse_json(schema, raw_text)
-                    print(f"[LLM Provider]: Successfully obtained and validated response from Google Gemini API ('{g_model}').")
-                    return result
-                except Exception as e:
-                    last_err = e
-                    err_msg = str(e)
-                    if any(k in err_msg.lower() for k in ["not_found", "404", "no longer available", "resource_exhausted", "429", "quota"]):
-                        print(f"[LLM Provider Warning]: Gemini model '{g_model}' rate-limited/unavailable ({err_msg[:60]}...). Automatic fallback to next available model...")
-                        continue
-                    raise RuntimeError(f"[ALERT] Google Gemini API Error for Model '{g_model}': {err_msg}")
+        raw_resp = llm.invoke(prompt)
+        telemetry = extract_telemetry_from_response(raw_resp)
+        raw_text = raw_resp.content if hasattr(raw_resp, "content") else str(raw_resp)
+        return raw_text, telemetry
+    except Exception as e:
+        raise RuntimeError(f"[ALERT] OpenRouter (Raw) LLM API Error for Model '{model_name}': {str(e)}")
 
-            raise RuntimeError(f"[ALERT] Google Gemini API Error: All Gemini models failed ({last_err}). Please verify your GEMINI_API_KEY at https://aistudio.google.com/")
-        except ImportError:
-            raise RuntimeError("[ALERT] Package 'langchain-google-genai' is missing. Please run: pip install langchain-google-genai")
-        except Exception as e:
-            raise RuntimeError(f"[ALERT] Google Gemini API Error: {str(e)}")
 
-    else:
-        raise RuntimeError("[ALERT] No LLM API Keys Found. Please configure GROQ_API_KEY, OPENROUTER_API_KEY, or GEMINI_API_KEY in your .env file.")

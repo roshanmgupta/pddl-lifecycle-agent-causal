@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "unlock",
+  "deleted_effect": "(open ?lockpos)",
+  "description": "Deleted required causal add effect '(open ?lockpos)' from action 'unlock', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(open ?lockpos)' into action 'unlock'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

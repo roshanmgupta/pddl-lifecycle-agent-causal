@@ -1,0 +1,56 @@
+\babel@toc {english}{}\relax 
+\babel@toc {ngerman}{}\relax 
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{Abbreviations}{13}{section*.5}%
+\contentsline {chapter}{\numberline {1}Introduction}{15}{chapter*.7}%
+\contentsline {section}{\numberline {1.1}Motivation \& Problem Statement}{15}{section*.8}%
+\contentsline {section}{\numberline {1.2}Research Questions}{16}{section*.13}%
+\contentsline {section}{\numberline {1.3}Summary of Contributions}{16}{section*.14}%
+\contentsline {chapter}{\numberline {2}Related Work \& Theoretical Foundation}{19}{chapter*.15}%
+\contentsline {section}{\numberline {2.1}LLM Reasoning vs. Symbolic Planning}{19}{section*.16}%
+\contentsline {subsection}{\numberline {2.1.1}Empirical Limits of LLM Planning}{19}{subsection*.17}%
+\contentsline {section}{\numberline {2.2}Neuro-Symbolic PDDL Domain Generation}{20}{section*.18}%
+\contentsline {subsection}{\numberline {2.2.1}Open-Loop Direct Code Generation}{20}{subsection*.19}%
+\contentsline {subsection}{\numberline {2.2.2}LLM-Only PDDL Domain Repair \& Consistency Verification}{20}{subsection*.21}%
+\contentsline {subsection}{\numberline {2.2.3}Grounded Verification, Multi-Agent Orchestration \& Canonical Alignment}{21}{subsection*.24}%
+\contentsline {section}{\numberline {2.3}Automated Program Repair \& Fault Localization}{21}{section*.27}%
+\contentsline {section}{\numberline {2.4}Knowledge Engineering \& SDLC for AI Planning}{22}{section*.28}%
+\contentsline {section}{\numberline {2.5}Symbolic Oracles: VAL \& Fast Downward}{22}{section*.29}%
+\contentsline {chapter}{\numberline {3}System Architecture \& Lifecycle Phases}{23}{chapter*.32}%
+\contentsline {section}{\numberline {3.1}Architectural Overview}{23}{section*.33}%
+\contentsline {section}{\numberline {3.2}Phase 1: Knowledge Ingestion \& AST Extraction}{23}{section*.40}%
+\contentsline {subsection}{\numberline {3.2.1}Ingestion Contracts}{23}{subsection*.41}%
+\contentsline {section}{\numberline {3.3}Phase 2: Formulation \& Encoding (Deterministic Compiler)}{24}{section*.42}%
+\contentsline {subsection}{\numberline {3.3.1}Intermediate AST Contract: \texttt {DomainBlueprint}}{24}{subsection*.43}%
+\contentsline {subsection}{\numberline {3.3.2}Deterministic Programmatic Lisp Compiler}{24}{subsection*.44}%
+\contentsline {section}{\numberline {3.4}Phase 3: Verification, Layered Triage \& Targeted Repair}{25}{section*.53}%
+\contentsline {subsection}{\numberline {3.4.1}Symbolic Tool Oracles (VAL \& Fast Downward)}{25}{subsection*.54}%
+\contentsline {subsection}{\numberline {3.4.2}Layered Diagnostic Triage}{25}{subsection*.55}%
+\contentsline {subsection}{\numberline {3.4.3}Spectrum-Based Fault Suspiciousness Scoring $\mitsigma (n)$}{26}{subsection*.57}%
+\contentsline {subsection}{\numberline {3.4.4}Targeted AST Repair \& Feedback Loop}{26}{subsection*.59}%
+\contentsline {section}{\numberline {3.5}Phase 4: Maintenance, Evolution \& Regression Testing}{26}{section*.60}%
+\contentsline {chapter}{\numberline {4}Implementation Details}{27}{chapter*.61}%
+\contentsline {section}{\numberline {4.1}Pydantic AST Schemas (\texttt {DomainBlueprint})}{27}{section*.62}%
+\contentsline {subsection}{\numberline {4.1.1}Domain Blueprint Schema}{27}{subsection*.63}%
+\contentsline {section}{\numberline {4.2}Deterministic Programmatic Lisp Compiler}{28}{section*.88}%
+\contentsline {section}{\numberline {4.3}Symbolic Oracle Wrappers}{28}{section*.101}%
+\contentsline {section}{\numberline {4.4}Agent Orchestration via LangGraph}{29}{section*.102}%
+\contentsline {chapter}{\numberline {5}Evaluation \& Benchmark Results}{31}{chapter*.108}%
+\contentsline {section}{\numberline {5.1}Experimental Setup: \textsc {PDDLLifeCycleBench}}{31}{section*.109}%
+\contentsline {section}{\numberline {5.2}Comparative Baselines}{31}{section*.116}%
+\contentsline {section}{\numberline {5.3}Evaluation Metrics}{32}{section*.121}%
+\contentsline {section}{\numberline {5.4}Empirical Results \& Discussion}{33}{section*.135}%
+\contentsline {subsection}{\numberline {5.4.1}Syntax Decoupling (RQ1)}{33}{subsection*.138}%
+\contentsline {subsection}{\numberline {5.4.2}Symbolic Oracle Feedback \& Solvability (RQ2)}{34}{subsection*.139}%
+\contentsline {subsection}{\numberline {5.4.3}Spectrum-Based Fault Localization \& Repair Convergence (RQ3)}{34}{subsection*.140}%
+\contentsline {subsection}{\numberline {5.4.4}Continuous Maintenance \& Regression Testing (RQ4)}{34}{subsection*.141}%
+\contentsline {subsection}{\numberline {5.4.5}Token \& Inference Cost Efficiency}{35}{subsection*.142}%
+\contentsline {chapter}{\numberline {6}Conclusion \& Future Work}{37}{chapter*.143}%
+\contentsline {section}{\numberline {6.1}Summary of Findings}{37}{section*.144}%
+\contentsline {section}{\numberline {6.2}Limitations}{37}{section*.145}%
+\contentsline {section}{\numberline {6.3}Future Research Directions}{38}{section*.148}%
+\contentsline {chapter}{\nonumberline Bibliography}{39}{chapter*.149}%
+\def \@chapapp {\appendixname }
+\contentsline {part}{Appendix}{42}{chapter*.149}%
+\contentsline {chapter}{\numberline {A}My first appendix}{43}{chapter*.150}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

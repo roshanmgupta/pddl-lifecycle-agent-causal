@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "pick-up",
+  "deleted_effect": "(holding ?ob)",
+  "description": "Deleted required causal add effect '(holding ?ob)' from action 'pick-up', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(holding ?ob)' into action 'pick-up'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

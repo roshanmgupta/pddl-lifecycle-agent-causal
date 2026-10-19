@@ -1,0 +1,11 @@
+{
+  "evolution_category": "COMPOSITE_ACTION_PIPELINE",
+  "domain": "driverlog02-bfs",
+  "historical_regression_instances": [
+    "instance-1.pddl",
+    "instance-12.pddl",
+    "instance-14.pddl"
+  ],
+  "target_problem": "instance-14.pddl",
+  "gatekeeper_requirement": "Zero regression on legacy problems; Phase 4 verification mandatory."
+}

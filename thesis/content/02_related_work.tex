@@ -1,0 +1,82 @@
+\chapter{Related Work \& Theoretical Foundation}
+\label{chap:related_work}
+
+The development of an autonomous lifecycle agent for PDDL domain modeling builds upon literature spanning automated planning, Large Language Models (\gls{llm}s), neuro-symbolic program synthesis, Automated Program Repair (\gls{apr}), and Knowledge Engineering for Planning and Scheduling (\gls{keps}). This chapter presents a systematic review of foundational research, categorized into five taxonomy dimensions.
+
+\section{LLM Reasoning vs. Symbolic Planning}
+A central debate in AI research concerns whether generative language models possess intrinsic causal planning capabilities or act primarily as approximate pattern-matching engines over text corpora~\cite{kambhampati2024}.
+
+\subsection{Empirical Limits of LLM Planning}
+Kambhampati et al.~\cite{kambhampati2024} and Valmeekam et al.~\cite{valmeekam2023} systematically evaluated top-performing LLMs (e.g., GPT-4) on classical IPC planning tasks, such as \texttt{Blocksworld} and \texttt{Logistics}. Their empirical findings demonstrate that zero-shot LLM plan generation achieves poor success rates ($<3\%$) when task descriptions are anonymized or modified from public pre-training datasets. Lin et al.~\cite{lin2023} reached similar conclusions, highlighting that LLMs lack internal state-transition tracking mechanisms required to guarantee valid search trajectories over long horizon plans.
+
+These results motivate an \textbf{LLM-Modulo / Neuro-Symbolic paradigm}: rather than expecting an LLM to serve as an unconstrained planner, the LLM is leveraged for high-level semantic translation and formal model drafting, while a deterministic, sound symbolic planner (e.g., Fast Downward~\cite{helmert2006}) performs rigorous state-space search.
+
+\section{Neuro-Symbolic PDDL Domain Generation}
+Recent efforts have explored leveraging LLMs to automatically draft PDDL domain files from informal natural language descriptions.
+
+\subsection{Open-Loop Direct Code Generation}
+Oswald et al.~\cite{oswald2024} established a landmark baseline by evaluating unconstrained LLM generation of PDDL code across multiple IPC benchmark domains. In their framework:
+\begin{equation}
+\text{Natural Language Description } R_{\text{nl}} \xrightarrow{\text{LLM Prompting}} \text{Raw PDDL Lisp Code } S_{\text{pddl}}
+\end{equation}
+Their benchmark revealed that open-loop direct generation suffers from a \textbf{55\% syntax error rate}, caused by parenthesis imbalance, illegal colon keywords, missing variable type signatures, and inconsistent predicate definitions. Furthermore, because open-loop models operate without automated feedback, plan solvability rates remained below $15\%$.
+
+\subsection{LLM-Only PDDL Domain Repair \& Consistency Verification}
+Smirnov et al.~\cite{smirnov2024} introduced consistency-checking pipelines for LLM-generated PDDL domains, highlighting that while LLMs generate plausible markup, automated error detection via reachability feedback reduces human correction time from hours to minutes. Huang et al.~\cite{huang2025} proposed an end-to-end LLM-symbolic planning pipeline ("Planning in the Dark") that operates without human experts.
+
+Bavandpour and Bercher~\cite{bavandpour2026llmonly} evaluated the capabilities of recent open-weight LLMs (e.g., DeepSeek, GLM, Qwen, Mistral) on automated PDDL domain model repair using positive (whitelist) and negative (blacklist) test plans. Their study revealed two key insights:
+\begin{enumerate}
+    \item \textbf{High Structural Accuracy ($F_1 = 0.87$):} Recent open-weight LLMs with high reasoning effort achieve an $F_1$ structural repair score of $0.87$, significantly outperforming pure symbolic hitting-set baselines ($F_1 = 0.49$).
+    \item \textbf{The Reliability Gap:} Despite high $F_1$ scores, unconstrained LLMs fail to satisfy test constraints reliably (mean Test Pass Rate $\text{TR} = 0.82$, collapsing to $\text{TR} = 0.06$ on complex domains like \texttt{Thoughtful}). Furthermore, supplying raw test traces into LLM context induces combinatorial trace overflow.
+\end{enumerate}
+
+\subsection{Grounded Verification, Multi-Agent Orchestration \& Canonical Alignment}
+Recent literature has converged on the necessity of multi-agent and grounded verification pipelines to overcome the stochastic failure modes of raw language models:
+\begin{itemize}
+    \item \textbf{Grounded Evaluation and Repair (Rosa et al.~\cite{rosa2026grounded}):} Rosa et al. demonstrated that standard evaluation criteria—such as syntactic parseability or single-instance planner solvability—frequently overestimate task faithfulness. A generated PDDL model may be syntactically valid and solvable while completely corrupting the intended initial state or action dynamics. They established an iterative pipeline combining VAL verification, an LLM critic, and reference-based comparisons against curated benchmark PDDL descriptions, directly validating our thesis design of canonical reference comparison and semantic predicate alignment.
+    \item \textbf{Multi-Agent Verifier Loops (La Malfa et al.~\cite{lamalfa2025endtoend}):} La Malfa et al. introduced an end-to-end framework where an orchestrator coordinates specialized hardcoded sub-agents informed by error traces from symbolic engines (Fast Downward, VAL) to iteratively resolve syntax, semantic contradictions, and temporal constraints.
+    \item \textbf{Empirical Model Selection for PDDL (Balyo et al.~\cite{balyo2026whichllm}):} Balyo, Chrpa, and Youngblood conducted a systematic study assessing which LLMs are most effective at translating natural language specifications into formal PDDL representations. Their findings showed significant variations in accuracy, response latency, and error tendencies across model families, justifying our thesis architecture's modular, phase-specific model configuration (\texttt{LLM\_PHASE\_1}, \texttt{LLM\_PHASE\_3}, \texttt{LLM\_PHASE\_4}).
+    \item \textbf{Agentic Planning and Domain Translation (G{\"o}bel et al.~\cite{gobel2026agentic}, Cui et al.~\cite{cui2026cve2ap}):} G{\"o}bel et al. evaluated agentic LLMs interacting with PDDL engines over standard tool protocols (MCP) against Fast Downward baselines, proving that agentic gains strictly depend on externally grounded symbolic feedback rather than internal self-assessment. Cui et al.~\cite{cui2026cve2ap} demonstrated that structured prompting paired with iterative planner-reported error feedback achieves up to 86.9\% syntax correctness and 78.6\% solvability in automated natural-language-to-PDDL translation.
+\end{itemize}
+
+\begin{table}[htbp]
+\centering
+\caption{Taxonomy Matrix of Related Domain Generation \& Repair Frameworks}
+\label{tab:literature_taxonomy}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Framework} & \textbf{Representation} & \textbf{Syntax Guarantee} & \textbf{Oracle Feedback} & \textbf{Fault Localization} & \textbf{SDLC Phase} \\
+\midrule
+Oswald et al.~\cite{oswald2024} & Raw Text & \dingcross & None & None & Drafting \\
+MoRe~\cite{more2024} & Raw Text & \dingcross & Parser Logs & Global Prompt & Drafting \\
+Plan2Evolve~\cite{plan2evolve2024} & Intermediate Text & \dingcross & Symbolic & Global Prompt & Refinement \\
+Smirnov et al.~\cite{smirnov2024} & Function Signatures & Partial & Consistency Check & Rule-Based & Drafting \\
+Huang et al.~\cite{huang2025} & Raw PDDL & \dingcross & Fast Downward & Global Loop & Planning \\
+Bavandpour et al.~\cite{bavandpour2026llmonly} & Raw PDDL & \dingcross & Test Traces & None & Repair \\
+La Malfa et al.~\cite{lamalfa2025endtoend} & Multi-Agent Text & \dingcross & VAL + FD & Sub-Agent Dispatch & Repair \\
+Rosa et al.~\cite{rosa2026grounded} & Raw PDDL & \dingcross & VAL + Critic & Reference Grounding & Problem Repair \\
+TIC~\cite{agarwal2024} & Logic Rules & Partial & Parser & None & Drafting \\
+AutoStructor~\cite{autostructor2024} & Code AST & \dingcheck & Compiler & Deep Learning & Repair \\
+OrcaLoca~\cite{orcaloca2024} & Repository & N/A & Issue Reports & LLM Agent & Localization \\
+\midrule
+\textbf{Our Framework} & \textbf{Pydantic AST} & \textbf{\dingcheck{} (100\%)} & \textbf{VAL + Fast Downward} & \textbf{Spectrum $\sigma(n)$} & \textbf{Full Lifecycle} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\section{Automated Program Repair \& Fault Localization}
+Automated Program Repair (\gls{apr}) focuses on isolating and patching errors in code artifacts. Spectrum-Based Fault Localization (\gls{sbfl})~\cite{abreu2007,wong2016} evaluates program component execution traces across passing and failing test cases to compute suspiciousness rankings.
+
+In LLM agent architectures, AutoStructor~\cite{autostructor2024} and OrcaLoca~\cite{orcaloca2024} demonstrated that isolating suspicious code blocks before prompting the LLM significantly improves patch precision and prevents unintended side effects in non-faulty code modules. Our thesis extends spectrum-based fault localization to PDDL Abstract Syntax Trees (\gls{ast}s).
+
+\section{Knowledge Engineering \& SDLC for AI Planning}
+Georgievski~\cite{georgievski2023,georgievski2024} formalized the Software Development Life Cycle (\gls{sdlc}) for engineering AI planning systems, emphasizing that domain modeling must not be viewed as a one-off scripting exercise, but as a continuous software engineering lifecycle comprising formulation, verification, validation, deployment, and evolution. Our framework operationalizes this vision through an integrated 4-phase architecture.
+
+\section{Symbolic Oracles: VAL \& Fast Downward}
+To guarantee semantic validity, our architecture integrates established symbolic tools as external Oracles:
+\begin{enumerate}
+    \item \textbf{VAL (Automatic Plan Validator)}~\cite{howey2004}: Performs static PDDL parsing, type matching, and plan verification, evaluating state transitions $S_{i+1} = (S_i \setminus \text{eff}^-(a_i)) \cup \text{eff}^+(a_i)$.
+    \item \textbf{Fast Downward Planner}~\cite{helmert2006}: Translates PDDL domain/problem files into Multi-Valued Task (\gls{sas}) representations, constructs causal graphs, and executes $A^*$ heuristic search to verify plan solvability.
+\end{enumerate}

@@ -1,0 +1,7 @@
+{
+  "flaw_category": "PRECONDITION_MISALIGNMENT",
+  "target_action": "put_down",
+  "description": "Injected unreachable precondition (unreachable_precondition_clause) in action 'put_down'.",
+  "ground_truth_fix": "Remove (unreachable_precondition_clause) from action 'put_down' preconditions.",
+  "expected_oracle_signal": "Fast Downward SAS+ reachability search halts with goal unreachable from initial state."
+}

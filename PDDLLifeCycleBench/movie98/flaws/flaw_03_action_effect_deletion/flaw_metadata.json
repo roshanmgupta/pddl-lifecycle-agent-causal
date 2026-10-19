@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "rewind-movie-2",
+  "deleted_effect": "(movie-rewound)",
+  "description": "Deleted required causal add effect '(movie-rewound)' from action 'rewind-movie-2', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(movie-rewound)' into action 'rewind-movie-2'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

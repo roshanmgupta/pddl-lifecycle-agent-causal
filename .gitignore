@@ -7,12 +7,6 @@ agent_env/
 venv/
 .venv/
 
-# Temporary PDDL files
-temp_domain.pddl
-temp_problem.pddl
-temp_domain_2.pddl
-temp_problem_2.pddl
-
 # PDDL_files 
 PDDL_file/*eval*.pddl
 
@@ -22,3 +16,25 @@ PDDL_file/*eval*.pddl
 # Secrets file
 .env
 config/setting.py
+
+#folder not needed
+/Dummy
+/ARMS
+/excalidraw-mcp
+/scratch
+/scientific-thesis-template
+tec.md
+/tools/bin
+/paper
+/Streamlit_output_file
+/PDDL_file
+
+# External Baselines & Datasets
+/NL2PDDL
+/autoplanbench
+/prompt_NL2PDDL
+/prompt_autoplanbench
+/PDDLLifeCycleBench_Output_Flaw
+/PDDLLifeCycleBench_Output__Evolve
+/output
+.licenses/

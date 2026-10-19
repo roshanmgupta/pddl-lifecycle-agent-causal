@@ -1,0 +1,7 @@
+{
+  "flaw_category": "TYPE_SIGNATURE_ARITY_INVERSION",
+  "target_action": "make_sandwich_no_gluten",
+  "description": "Mutated parameter signature in action 'make_sandwich_no_gluten' creating an arity mismatch or unbound parameter.",
+  "ground_truth_fix": "Restore original parameter signature: (?s - sandwich ?b - bread-portion ?c - content-portion)",
+  "expected_oracle_signal": "Fast Downward parser aborts during translation with parameter arity error."
+}

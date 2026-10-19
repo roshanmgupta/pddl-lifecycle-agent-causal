@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "overcome",
+  "deleted_effect": "(fears ?c ?v)",
+  "description": "Deleted required causal add effect '(fears ?c ?v)' from action 'overcome', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(fears ?c ?v)' into action 'overcome'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

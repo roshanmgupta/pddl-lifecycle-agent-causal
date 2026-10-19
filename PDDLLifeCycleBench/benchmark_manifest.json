@@ -1,0 +1,182 @@
+{
+  "benchmark_name": "PDDLLifeCycleBench",
+  "version": "2.0",
+  "description": "Comprehensive benchmark suite across 24 canonical domains for classical PDDL 2.1 lifecycle evaluation.",
+  "taxonomy": {
+    "elicitation": "Initial Elicitation (24 tasks)",
+    "flaws": "Synthetic Fault Repair across 5 error classes (120 tasks)",
+    "evolution": "Continuous Domain Evolution with Phase 4 Regression Gatekeeper (48 tasks)"
+  },
+  "total_domains": 24,
+  "total_tasks": 192,
+  "domains": [
+    {
+      "domain": "barman14-bfs",
+      "instances": 3,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "blocksworld",
+      "instances": 21,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "childsnack14",
+      "instances": 17,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "depot",
+      "instances": 21,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "driverlog02-bfs",
+      "instances": 8,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "elevators08",
+      "instances": 30,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "ferry",
+      "instances": 21,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "floortile",
+      "instances": 21,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "goldminer",
+      "instances": 21,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "grid",
+      "instances": 21,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "gripper",
+      "instances": 21,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "hiking14",
+      "instances": 20,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "logistics",
+      "instances": 21,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "movie98",
+      "instances": 29,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "mprime98",
+      "instances": 35,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "mystery98",
+      "instances": 18,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "parking11",
+      "instances": 19,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "pegsol08",
+      "instances": 29,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "pipesworld-notankage04-bfs",
+      "instances": 19,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "rovers",
+      "instances": 21,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "satellite",
+      "instances": 21,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "scanalyzer08",
+      "instances": 28,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "visitall",
+      "instances": 21,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    },
+    {
+      "domain": "zenotravel02",
+      "instances": 20,
+      "category_a_elicitation": 1,
+      "flaws": 5,
+      "evolution": 2
+    }
+  ]
+}

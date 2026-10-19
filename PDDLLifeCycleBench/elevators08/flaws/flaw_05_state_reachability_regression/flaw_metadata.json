@@ -1,0 +1,8 @@
+{
+  "flaw_category": "BACKWARD_COMPATIBILITY_REGRESSION",
+  "target_action": "move-up-fast",
+  "injected_restriction": "(specialized_mode_enabled)",
+  "description": "Modified action 'move-up-fast' to require an over-constrained precondition '(specialized_mode_enabled)' satisfying an ad-hoc feature but breaking all legacy regression instances.",
+  "ground_truth_fix": "Decouple specialized requirement from core legacy action 'move-up-fast' to restore backward compatibility across historical problems.",
+  "expected_oracle_signal": "Fast Downward planner fails on historical regression problems (instance-1 to instance-5); Phase 4 Regression Gatekeeper halts deployment."
+}

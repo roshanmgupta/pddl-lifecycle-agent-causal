@@ -39,14 +39,14 @@ Before "Done"    → Empirical proof captured
 
 These rules integrate with the GSD workflows:
 
-| Workflow | Rules Enforced |
-|----------|----------------|
-| `/map` | Updates ARCHITECTURE.md, STACK.md |
-| `/plan` | Enforces Planning Lock, creates ROADMAP |
+| Workflow   | Rules Enforced                             |
+| ---------- | ------------------------------------------ |
+| `/map`     | Updates ARCHITECTURE.md, STACK.md          |
+| `/plan`    | Enforces Planning Lock, creates ROADMAP    |
 | `/execute` | Enforces State Persistence after each task |
-| `/verify` | Enforces Empirical Validation |
-| `/pause` | Triggers Context Hygiene state dump |
-| `/resume` | Loads state from STATE.md |
+| `/verify`  | Enforces Empirical Validation              |
+| `/pause`   | Triggers Context Hygiene state dump        |
+| `/resume`  | Loads state from STATE.md                  |
 
 ---
 
@@ -65,3 +65,11 @@ Key recommendations:
 *Canonical rules: [PROJECT_RULES.md](../PROJECT_RULES.md)*
 *Source: https://github.com/glittercowboy/get-shit-done*
 
+
+
+---
+
+## Output Formatting Rules
+
+- **No LaTeX Math:** Never output formulas, variables, conditions, or math logic using LaTeX delimiters (`$` or `$$`), `\neq`, `\times`, or TeX commands.
+- **Readable Plain Text:** Always express mathematical statements in plain text, standard code blocks, or simple Unicode characters (e.g., write `m != k`, `m is not equal to k`, `x^2`, `sqrt(x)`).

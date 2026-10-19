@@ -1,0 +1,8 @@
+{
+  "flaw_category": "BACKWARD_COMPATIBILITY_REGRESSION",
+  "target_action": "sample_rock",
+  "injected_restriction": "(specialized_mode_enabled)",
+  "description": "Modified action 'sample_rock' to require an over-constrained precondition '(specialized_mode_enabled)' satisfying an ad-hoc feature but breaking all legacy regression instances.",
+  "ground_truth_fix": "Decouple specialized requirement from core legacy action 'sample_rock' to restore backward compatibility across historical problems.",
+  "expected_oracle_signal": "Fast Downward planner fails on historical regression problems (instance-1 to instance-5); Phase 4 Regression Gatekeeper halts deployment."
+}

@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "LOAD-TRUCK",
+  "deleted_effect": "(in ?obj ?truck)",
+  "description": "Deleted required causal add effect '(in ?obj ?truck)' from action 'LOAD-TRUCK', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(in ?obj ?truck)' into action 'LOAD-TRUCK'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

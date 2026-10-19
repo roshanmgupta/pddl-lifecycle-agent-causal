@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "move-curb-to-curb",
+  "deleted_effect": "(curb-clear ?curbsrc)",
+  "description": "Deleted required causal add effect '(curb-clear ?curbsrc)' from action 'move-curb-to-curb', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(curb-clear ?curbsrc)' into action 'move-curb-to-curb'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

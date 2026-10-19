@@ -1,0 +1,13 @@
+================================================================================
+CATEGORY C: CONTINUOUS DOMAIN EVOLUTION SPECIFICATION (TASK 1: CAPABILITY EXTENSION)
+DOMAIN: FERRY
+================================================================================
+REQUIREMENT SUMMARY:
+Extend the existing operational model of ferry with an incremental feature request.
+The domain must now support high-throughput express operations with specialized tooling prerequisites.
+
+EVOLUTION RULES:
+1. Synthesize an extended action schema or specialized capability flag supporting advanced operations.
+2. CRITICAL PRESERVATION MANDATE: Backward compatibility across historical legacy problem instances
+   (instance-1 to instance-3) must be 100% strictly preserved.
+3. The Phase 4 Regression Gatekeeper will evaluate both the target problem and all historical test cases.

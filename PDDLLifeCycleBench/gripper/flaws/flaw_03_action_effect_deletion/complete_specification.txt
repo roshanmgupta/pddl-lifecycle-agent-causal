@@ -1,0 +1,51 @@
+================================================================================
+DOMAIN CAPABILITIES & ACTION RULES: GRIPPER
+================================================================================
+I can carry out the following actions:
+move a robot A from a room B to a room C
+pick an object B with a robot A using a gripper D in a room C
+drop an object B with a robot A using a gripper D in a room C
+
+I have the following restrictions on my actions:
+I can only move a robot A from a room B to a room C if it is the case that A is at B
+I can only pick an object B with a robot A using a gripper D in a room C if it is the case that B is at C and A is at C and A is free from D
+I can only drop an object B with a robot A using a gripper D in a room C if it is the case that A is carrying B to D and A is at C
+
+The actions have the following effects on the state:
+Once I move a robot A from a room B to a room C, it is the case that A is at C
+Once I move a robot A from a room B to a room C, it is not the case anymore that A is at B
+Once I pick an object B with a robot A using a gripper D in a room C, it is the case that A is carrying B to D
+Once I pick an object B with a robot A using a gripper D in a room C, it is not the case anymore that B is at C and it is not the case anymore that A is free from D
+Once I drop an object B with a robot A using a gripper D in a room C, it is the case that B is at C and A is free from D
+Once I drop an object B with a robot A using a gripper D in a room C, it is not the case anymore that A is carrying B to D
+
+
+Everything that is a room or a robot or a gripper is also a object
+
+[NOTE: Action 'move' is missing one of its critical state transition effects.]
+
+================================================================================
+OPERATIONAL TASK SCENARIO & GOAL SPECIFICATION: GRIPPER
+================================================================================
+The following objects exist in this problem instance:
+- robot1 is of type robot
+- rgripper1 and lgripper1 are of type gripper
+- room1 and room2 are of type room
+- ball1, ball2, ball3, ball4 and ball5 are of type object
+
+The initial state of the world is as follows:
+- robot1 is at room2
+- robot1 is free from rgripper1
+- robot1 is free from lgripper1
+- ball1 is at room2
+- ball2 is at room2
+- ball3 is at room1
+- ball4 is at room2
+- ball5 is at room1
+
+My goal is to achieve the following state:
+- ball2 is at room1
+- ball3 is at room1
+- ball4 is at room1
+
+Please model and solve this classical PDDL 2.1 planning domain and task.

@@ -1,0 +1,28 @@
+\chapter{Conclusion \& Future Work}
+\label{chap:conclusion}
+
+\section{Summary of Findings}
+This thesis introduced a \textbf{Unified Autonomous Lifecycle Agent} for PDDL domain modeling that addresses key limitations in existing LLM-based planning frameworks. By structuring the system around the 4-phase KEPS Software Development Life Cycle, the agent achieves robust, syntactically guaranteed, and semantically validated domain models.
+
+Our findings directly answer the four research questions:
+\begin{itemize}
+    \item \textbf{RQ1 (Syntax Decoupling):} Enforcing intermediate Pydantic JSON AST contracts (\texttt{DomainBlueprint}) completely eliminates syntax collapse, increasing syntax validity from $45.2\%$ (unconstrained text) to \textbf{100.0\%}.
+    \item \textbf{RQ2 (Symbolic Oracle Integration):} Incorporating closed-loop symbolic feedback from \gls{val} and Fast Downward increases domain plan solvability from $53.3\%$ to \textbf{93.3\%}.
+    \item \textbf{RQ3 (Spectrum-Based Fault Localization):} Calculating suspiciousness scores $\sigma(n)$ achieves a \textbf{93.3\% Top-1 fault localization accuracy}, enabling localized sub-schema repairs with a \textbf{100.0\% repair success rate} that converges in an average of \textbf{1.20 iterations}.
+    \item \textbf{RQ4 (Continuous Maintenance):} Automated regression testing across historical problem suites $\mathcal{K}_{\text{maint}}$ maintains a \textbf{96.8\% pass rate} during domain evolution.
+\end{itemize}
+
+\section{Limitations}
+Despite strong empirical results, the framework exhibits specific limitations:
+\begin{enumerate}
+    \item \textbf{Expressive Scope:} The current implementation focuses on classical STRIPS and typed PDDL (PDDL 1.2/2.1 numeric fluents). Advanced extensions such as durative actions, temporal constraints (PDDL 2.2+), and continuous dynamics are not yet fully modeled in the AST schema.
+    \item \textbf{Oracle Overhead:} Executing full Fast Downward search during verification introduces computational latency on complex IPC domain instances.
+\end{enumerate}
+
+\section{Future Research Directions}
+Future work will explore several promising avenues:
+\begin{itemize}
+    \item \textbf{Temporal \& Numeric PDDL AST Extensions:} Expanding \texttt{DomainBlueprint} to support temporal planning constructs, durative actions, and non-linear numeric constraints.
+    \item \textbf{Multi-Agent Domain Formulation:} Extending the lifecycle agent to support multi-agent planning domain generation (MA-PDDL).
+    \item \textbf{Reinforcement Learning from Symbolic Feedback (RLSF):} Fine-tuning open-weights LLMs using VAL validation signals as reward functions for direct PDDL AST generation.
+\end{itemize}

@@ -1,0 +1,67 @@
+================================================================================
+DOMAIN CAPABILITIES & ACTION RULES: LOGISTICS
+================================================================================
+I can carry out the following actions:
+load an object A into a truck B at a location C
+load an object A into an airplane B at a location C
+unload an object A from a truck B at a location C
+unload an object A from an airplane B at a location C
+drive a truck A from a location B to a location C within a city D
+fly an airplane A from an airport B to an airport C
+
+I have the following restrictions on my actions:
+I can only load an object A into a truck B at a location C if it is the case that A is an obj and B is a truck and C is a location and B is at C and A is at C
+I can only load an object A into an airplane B at a location C if it is the case that A is an obj and B is an airplane and C is a location and A is at C and B is at C
+I can only unload an object A from a truck B at a location C if it is the case that A is an obj and B is a truck and C is a location and B is at C and A is in B
+I can only unload an object A from an airplane B at a location C if it is the case that A is an obj and B is an airplane and C is a location and A is in B and B is at C
+I can only drive a truck A from a location B to a location C within a city D if it is the case that A is a truck and B is a location and C is a location and D is a city and A is at B and B is in the city D and C is in the city D
+I can only fly an airplane A from an airport B to an airport C if it is the case that A is an airplane and B is an airport and C is an airport and A is at B
+
+The actions have the following effects on the state:
+Once I load an object A into a truck B at a location C, it is the case that A is in B
+Once I load an object A into a truck B at a location C, it is not the case anymore that A is at C
+Once I load an object A into an airplane B at a location C, it is the case that A is in B
+Once I load an object A into an airplane B at a location C, it is not the case anymore that A is at C
+Once I unload an object A from a truck B at a location C, it is the case that A is at C
+Once I unload an object A from a truck B at a location C, it is not the case anymore that A is in B
+Once I unload an object A from an airplane B at a location C, it is the case that A is at C
+Once I unload an object A from an airplane B at a location C, it is not the case anymore that A is in B
+Once I drive a truck A from a location B to a location C within a city D, it is the case that A is at C
+Once I drive a truck A from a location B to a location C within a city D, it is not the case anymore that A is at B
+Once I fly an airplane A from an airport B to an airport C, it is the case that A is at C
+Once I fly an airplane A from an airport B to an airport C, it is not the case anymore that A is at B
+
+
+
+[NOTE: Action 'LOAD-TRUCK' contains an invalid extraneous restriction.]
+
+================================================================================
+OPERATIONAL TASK SCENARIO & GOAL SPECIFICATION: LOGISTICS
+================================================================================
+The following objects exist in this problem instance:
+- a0, a1, c0, c1, t0, t1, l0-0, l1-0 and p0 are of type object
+
+The initial state of the world is as follows:
+- a0 is AIRPLANE
+- a1 is AIRPLANE
+- c0 is CITY
+- c1 is CITY
+- t0 is TRUCK
+- t1 is TRUCK
+- l0-0 is LOCATION
+- l0-0 is in the city c0
+- l1-0 is LOCATION
+- l1-0 is in the city c1
+- l0-0 is AIRPORT
+- l1-0 is AIRPORT
+- p0 is OBJ
+- t0 is at l0-0
+- t1 is at l1-0
+- p0 is at l1-0
+- a0 is at l0-0
+- a1 is at l0-0
+
+My goal is to achieve the following state:
+- (No explicit goal specified)
+
+Please model and solve this classical PDDL 2.1 planning domain and task.

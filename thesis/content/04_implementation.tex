@@ -1,0 +1,73 @@
+\chapter{Implementation Details}
+\label{chap:implementation}
+
+This chapter details the concrete implementation of the autonomous lifecycle agent, including Pydantic Abstract Syntax Tree (\gls{ast}) data structures, the deterministic Lisp compiler, symbolic oracle wrappers, and agent orchestration.
+
+\section{Pydantic AST Schemas (\texttt{DomainBlueprint})}
+The intermediate representation is defined using Pydantic models in Python, enforcing strict structural type-checking and schema validation prior to compilation.
+
+\subsection{Domain Blueprint Schema}
+Listing~\ref{lst:pydantic_schema} illustrates the core Pydantic data structures defining domain predicates, action parameters, preconditions, and state-transition effects.
+
+\begin{lstlisting}[language=Python, caption=Pydantic AST Data Structures for Domain Modeling, label=lst:pydantic_schema]
+from typing import List, Dict, Optional
+from pydantic import BaseModel, Field
+
+class ParameterBlueprint(BaseModel):
+    name: str = Field(description="Variable name with leading ?, e.g., ?v")
+    type_name: str = Field(description="Target object type, e.g., truck")
+
+class PredicateBlueprint(BaseModel):
+    name: str
+    parameters: List[ParameterBlueprint]
+
+class ActionBlueprint(BaseModel):
+    name: str
+    parameters: List[ParameterBlueprint]
+    precondition: List[str] = Field(description="Lisp S-expression preconditions")
+    effect: List[str] = Field(description="Lisp S-expression state effects")
+
+class DomainBlueprint(BaseModel):
+    domain_name: str
+    requirements: List[str] = Field(default_factory=lambda: [":strips", ":typing"])
+    types: Dict[str, Optional[str]] = Field(description="Child to parent type dictionary")
+    predicates: List[PredicateBlueprint]
+    actions: List[ActionBlueprint]
+\end{lstlisting}
+
+\section{Deterministic Programmatic Lisp Compiler}
+The programmatic compiler iterates over the validated \texttt{DomainBlueprint} instance and formats each section into valid PDDL S-expressions:
+
+\begin{lstlisting}[language=Python, caption=Deterministic PDDL Compiler Snippet]
+def compile_action(action: ActionBlueprint) -> str:
+    params_str = " ".join([f"{p.name} - {p.type_name}" for p in action.parameters])
+    precond_str = f"(and {' '.join(action.precondition)})" if len(action.precondition) > 1 else action.precondition[0]
+    effect_str = f"(and {' '.join(action.effect)})" if len(action.effect) > 1 else action.effect[0]
+    
+    return (
+        f"  (:action {action.name}\n"
+        f"    :parameters ({params_str})\n"
+        f"    :precondition {precond_str}\n"
+        f"    :effect {effect_str})\n"
+    )
+\end{lstlisting}
+
+Because string interpolation directly uses structured lists, parenthesis imbalance is physically impossible during compilation.
+
+\section{Symbolic Oracle Wrappers}
+The verification engine encapsulates external binary tools (\texttt{VAL} and \texttt{fast-downward}) via Python subprocess wrappers:
+
+\begin{itemize}
+    \item \textbf{VAL Integration:} Invokes \texttt{Validate -v domain.pddl problem.pddl plan.val}, capturing stdout for parsing state transition errors and predicate mismatch warnings.
+    \item \textbf{Fast Downward Integration:} Executes \texttt{fast-downward --alias seq-sat-lama-2011 domain.pddl problem.pddl}, checking exit status codes and extracting search node expansion logs.
+\end{itemize}
+
+\section{Agent Orchestration via LangGraph}
+The 4-phase lifecycle is orchestrated using LangGraph state graphs. The global agent state retains:
+\begin{enumerate}
+    \item \texttt{domain\_blueprint}: Current JSON \texttt{DomainBlueprint} AST.
+    \item \texttt{compiled\_pddl}: Latest generated PDDL domain string.
+    \item \texttt{verification\_status}: Oracle status (\texttt{VALID}, \texttt{SYNTAX\_ERROR}, \texttt{UNSOLVABLE}).
+    \item \texttt{suspiciousness\_map}: Calculated fault scores $\sigma(n)$ across action nodes.
+    \item \texttt{iteration\_count}: Feedback loop counter (max iterations = 5).
+\end{enumerate}

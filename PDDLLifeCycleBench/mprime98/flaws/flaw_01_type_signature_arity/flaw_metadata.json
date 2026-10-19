@@ -1,0 +1,7 @@
+{
+  "flaw_category": "TYPE_SIGNATURE_ARITY_INVERSION",
+  "target_action": "overcome",
+  "description": "Mutated parameter signature in action 'overcome' creating an arity mismatch or unbound parameter.",
+  "ground_truth_fix": "Restore original parameter signature: (?c ?v ?n ?s1 ?s2)",
+  "expected_oracle_signal": "Fast Downward parser aborts during translation with parameter arity error."
+}

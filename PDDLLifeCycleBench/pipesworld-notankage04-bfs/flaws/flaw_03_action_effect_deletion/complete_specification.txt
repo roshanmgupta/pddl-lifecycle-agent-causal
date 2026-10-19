@@ -1,0 +1,93 @@
+================================================================================
+DOMAIN CAPABILITIES & ACTION RULES: PIPESWORLD-NOTANKAGE04-BFS
+================================================================================
+I can carry out the following actions:
+push start a pipe A with a batch-atom B from an area C to an area D using a batch-atom E and a product F and a product G
+push end a pipe A from an area B to an area C with a batch-atom D and a batch-atom E
+pop start a pipe A from an area C to an area D with a batch-atom B, a batch-atom E, a product F, and a product G
+pop end a pipe A from an area B to an area C with a batch-atom D and a batch-atom E
+push an unitary pipe A with a batch-atom B from an area C to an area D replacing a batch-atom E using a product F and a product G
+pop an unitary pipe A with a batch-atom B from an area D to an area C replacing a batch-atom E using a product F and a product G
+
+I have the following restrictions on my actions:
+I can only push start a pipe A with a batch-atom B from an area C to an area D using a batch-atom E and a product F and a product G if it is the case that A is normal and E is the first in A and connect C to D using A and B is on C and A is not unitary and B is a product of F and E is a product of G and F may interface with G
+I can only push end a pipe A from an area B to an area C with a batch-atom D and a batch-atom E if it is the case that A is being push-updated and D is the last in A and connect B to C using A and A is not unitary and D follows E
+I can only pop start a pipe A from an area C to an area D with a batch-atom B, a batch-atom E, a product F, and a product G if it is the case that A is normal and E is the last in A and connect C to D using A and B is on D and A is not unitary and B is a product of F and E is a product of G and F may interface with G
+I can only pop end a pipe A from an area B to an area C with a batch-atom D and a batch-atom E if it is the case that A is being pop-updated and D is the first in A and connect B to C using A and A is not unitary and E follows D
+I can only push an unitary pipe A with a batch-atom B from an area C to an area D replacing a batch-atom E using a product F and a product G if it is the case that E is the first in A and connect C to D using A and B is on C and A is unitary and B is a product of F and E is a product of G and F may interface with G
+I can only pop an unitary pipe A with a batch-atom B from an area D to an area C replacing a batch-atom E using a product F and a product G if it is the case that E is the last in A and connect C to D using A and B is on D and A is unitary and B is a product of F and E is a product of G and F may interface with G
+
+The actions have the following effects on the state:
+Once I push start a pipe A with a batch-atom B from an area C to an area D using a batch-atom E and a product F and a product G, it is the case that A is being push-updated and B is the first in A and E follows B
+Once I push start a pipe A with a batch-atom B from an area C to an area D using a batch-atom E and a product F and a product G, it is not the case anymore that A is normal and it is not the case anymore that E is the first in A and it is not the case anymore that B is on C
+Once I push end a pipe A from an area B to an area C with a batch-atom D and a batch-atom E, it is the case that A is normal and E is the last in A and D is on C
+Once I push end a pipe A from an area B to an area C with a batch-atom D and a batch-atom E, it is not the case anymore that A is being push-updated and it is not the case anymore that D follows E and it is not the case anymore that D is the last in A
+Once I pop start a pipe A from an area C to an area D with a batch-atom B, a batch-atom E, a product F, and a product G, it is the case that A is being pop-updated and B is the last in A and B follows E
+Once I pop start a pipe A from an area C to an area D with a batch-atom B, a batch-atom E, a product F, and a product G, it is not the case anymore that A is normal and it is not the case anymore that E is the last in A and it is not the case anymore that B is on D
+Once I pop end a pipe A from an area B to an area C with a batch-atom D and a batch-atom E, it is the case that A is normal and E is the first in A and D is on B
+Once I pop end a pipe A from an area B to an area C with a batch-atom D and a batch-atom E, it is not the case anymore that A is being pop-updated and it is not the case anymore that E follows D and it is not the case anymore that D is the first in A
+Once I push an unitary pipe A with a batch-atom B from an area C to an area D replacing a batch-atom E using a product F and a product G, it is the case that B is the first in A and B is the last in A and E is on D
+Once I push an unitary pipe A with a batch-atom B from an area C to an area D replacing a batch-atom E using a product F and a product G, it is not the case anymore that E is the first in A and it is not the case anymore that E is the last in A and it is not the case anymore that B is on C
+Once I pop an unitary pipe A with a batch-atom B from an area D to an area C replacing a batch-atom E using a product F and a product G, it is the case that B is the last in A and B is the first in A and E is on C
+Once I pop an unitary pipe A with a batch-atom B from an area D to an area C replacing a batch-atom E using a product F and a product G, it is not the case anymore that E is the last in A and it is not the case anymore that E is the first in A and it is not the case anymore that B is on D
+
+
+Everything that is a pipe or a area or a product or a batch-atom is also a object
+
+[NOTE: Action 'PUSH-START' is missing one of its critical state transition effects.]
+
+================================================================================
+OPERATIONAL TASK SCENARIO & GOAL SPECIFICATION: PIPESWORLD-NOTANKAGE04-BFS
+================================================================================
+The following objects exist in this problem instance:
+- B0, B3, B1, B4, B2 and B5 are of type batch-atom
+- A1, A2 and A3 are of type area
+- S12 and S13 are of type pipe
+
+The initial state of the world is as follows:
+- S12 is normal
+- S13 is normal
+- lco may interface with lco
+- gasoleo may interface with gasoleo
+- rat-a may interface with rat-a
+- oca1 may interface with oca1
+- oc1b may interface with oc1b
+- lco may interface with gasoleo
+- gasoleo may interface with lco
+- lco may interface with oca1
+- oca1 may interface with lco
+- lco may interface with oc1b
+- oc1b may interface with lco
+- lco may interface with rat-a
+- rat-a may interface with lco
+- gasoleo may interface with rat-a
+- rat-a may interface with gasoleo
+- gasoleo may interface with oca1
+- oca1 may interface with gasoleo
+- gasoleo may interface with oc1b
+- oc1b may interface with gasoleo
+- oca1 may interface with oc1b
+- oc1b may interface with oca1
+- connect A1 to A2 using S12
+- connect A1 to A3 using S13
+- B0 is a product of oc1b
+- B3 is a product of rat-a
+- B1 is a product of lco
+- B4 is a product of lco
+- B2 is a product of gasoleo
+- B5 is a product of oca1
+- B0 is on A1
+- B3 is on A1
+- B1 is on A3
+- B2 is on A1
+- B4 is the first in S12
+- B4 is the last in S12
+- B5 is the first in S13
+- B5 is the last in S13
+- S12 is unitary
+- S13 is unitary
+
+My goal is to achieve the following state:
+- (No explicit goal specified)
+
+Please model and solve this classical PDDL 2.1 planning domain and task.

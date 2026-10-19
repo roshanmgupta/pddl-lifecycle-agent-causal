@@ -1,0 +1,178 @@
+================================================================================
+DOMAIN CAPABILITIES & ACTION RULES: PEGSOL08
+================================================================================
+I can carry out the following actions:
+perform jump-new-move from a location A over a location B to a location C
+continue jump from a location A over a location B to a location C
+end move at a location A
+
+I have the following restrictions on my actions:
+I can only perform jump-new-move from a location A over a location B to a location C if it is the case that the move has ended and A, B, and C are in line and A is occupied and B is occupied and C is free
+I can only continue jump from a location A over a location B to a location C if it is the case that the last visited location is A and A, B, and C are in line and A is occupied and B is occupied and C is free
+I can only end move at a location A if it is the case that the last visited location is A
+
+The actions have the following effects on the state:
+Once I perform jump-new-move from a location A over a location B to a location C, it is the case that A is free and B is free and C is occupied and the last visited location is C
+Once I perform jump-new-move from a location A over a location B to a location C, it is not the case anymore that the move has ended and it is not the case anymore that A is occupied and it is not the case anymore that B is occupied and it is not the case anymore that C is free
+Once I continue jump from a location A over a location B to a location C, it is the case that A is free and B is free and C is occupied and the last visited location is C
+Once I continue jump from a location A over a location B to a location C, it is not the case anymore that A is occupied and it is not the case anymore that B is occupied and it is not the case anymore that C is free and it is not the case anymore that the last visited location is A
+Once I end move at a location A, it is the case that the move has ended
+Once I end move at a location A, it is not the case anymore that the last visited location is A
+
+
+Everything that is a location is also a object
+
+[NOTE: Action 'end-move' has been modified with an over-constraining restriction that breaks legacy problem compatibility.]
+
+================================================================================
+OPERATIONAL TASK SCENARIO & GOAL SPECIFICATION: PEGSOL08
+================================================================================
+The following objects exist in this problem instance:
+- pos-0-2, pos-0-3, pos-0-4, pos-1-2, pos-1-3, pos-1-4, pos-2-0, pos-2-1, pos-2-2, pos-2-3, pos-2-4, pos-2-5, pos-2-6, pos-3-0, pos-3-1, pos-3-2, pos-3-3, pos-3-4, pos-3-5, pos-3-6, pos-4-0, pos-4-1, pos-4-2, pos-4-3, pos-4-4, pos-4-5, pos-4-6, pos-5-2, pos-5-3, pos-5-4, pos-6-2, pos-6-3 and pos-6-4 are of type location
+
+The initial state of the world is as follows:
+- the move has ended
+- IN-LINE between pos-0-2, pos-0-3, pos-0-4
+- IN-LINE between pos-0-4, pos-0-3, pos-0-2
+- IN-LINE between pos-0-2, pos-1-2, pos-2-2
+- IN-LINE between pos-2-2, pos-1-2, pos-0-2
+- IN-LINE between pos-0-3, pos-1-3, pos-2-3
+- IN-LINE between pos-2-3, pos-1-3, pos-0-3
+- IN-LINE between pos-0-4, pos-1-4, pos-2-4
+- IN-LINE between pos-2-4, pos-1-4, pos-0-4
+- IN-LINE between pos-1-2, pos-1-3, pos-1-4
+- IN-LINE between pos-1-4, pos-1-3, pos-1-2
+- IN-LINE between pos-1-2, pos-2-2, pos-3-2
+- IN-LINE between pos-3-2, pos-2-2, pos-1-2
+- IN-LINE between pos-1-3, pos-2-3, pos-3-3
+- IN-LINE between pos-3-3, pos-2-3, pos-1-3
+- IN-LINE between pos-1-4, pos-2-4, pos-3-4
+- IN-LINE between pos-3-4, pos-2-4, pos-1-4
+- IN-LINE between pos-2-0, pos-2-1, pos-2-2
+- IN-LINE between pos-2-2, pos-2-1, pos-2-0
+- IN-LINE between pos-2-0, pos-3-0, pos-4-0
+- IN-LINE between pos-4-0, pos-3-0, pos-2-0
+- IN-LINE between pos-2-1, pos-2-2, pos-2-3
+- IN-LINE between pos-2-3, pos-2-2, pos-2-1
+- IN-LINE between pos-2-1, pos-3-1, pos-4-1
+- IN-LINE between pos-4-1, pos-3-1, pos-2-1
+- IN-LINE between pos-2-2, pos-2-3, pos-2-4
+- IN-LINE between pos-2-4, pos-2-3, pos-2-2
+- IN-LINE between pos-2-2, pos-3-2, pos-4-2
+- IN-LINE between pos-4-2, pos-3-2, pos-2-2
+- IN-LINE between pos-2-3, pos-2-4, pos-2-5
+- IN-LINE between pos-2-5, pos-2-4, pos-2-3
+- IN-LINE between pos-2-3, pos-3-3, pos-4-3
+- IN-LINE between pos-4-3, pos-3-3, pos-2-3
+- IN-LINE between pos-2-4, pos-2-5, pos-2-6
+- IN-LINE between pos-2-6, pos-2-5, pos-2-4
+- IN-LINE between pos-2-4, pos-3-4, pos-4-4
+- IN-LINE between pos-4-4, pos-3-4, pos-2-4
+- IN-LINE between pos-2-5, pos-3-5, pos-4-5
+- IN-LINE between pos-4-5, pos-3-5, pos-2-5
+- IN-LINE between pos-2-6, pos-3-6, pos-4-6
+- IN-LINE between pos-4-6, pos-3-6, pos-2-6
+- IN-LINE between pos-3-0, pos-3-1, pos-3-2
+- IN-LINE between pos-3-2, pos-3-1, pos-3-0
+- IN-LINE between pos-3-1, pos-3-2, pos-3-3
+- IN-LINE between pos-3-3, pos-3-2, pos-3-1
+- IN-LINE between pos-3-2, pos-3-3, pos-3-4
+- IN-LINE between pos-3-4, pos-3-3, pos-3-2
+- IN-LINE between pos-3-2, pos-4-2, pos-5-2
+- IN-LINE between pos-5-2, pos-4-2, pos-3-2
+- IN-LINE between pos-3-3, pos-3-4, pos-3-5
+- IN-LINE between pos-3-5, pos-3-4, pos-3-3
+- IN-LINE between pos-3-3, pos-4-3, pos-5-3
+- IN-LINE between pos-5-3, pos-4-3, pos-3-3
+- IN-LINE between pos-3-4, pos-3-5, pos-3-6
+- IN-LINE between pos-3-6, pos-3-5, pos-3-4
+- IN-LINE between pos-3-4, pos-4-4, pos-5-4
+- IN-LINE between pos-5-4, pos-4-4, pos-3-4
+- IN-LINE between pos-4-0, pos-4-1, pos-4-2
+- IN-LINE between pos-4-2, pos-4-1, pos-4-0
+- IN-LINE between pos-4-1, pos-4-2, pos-4-3
+- IN-LINE between pos-4-3, pos-4-2, pos-4-1
+- IN-LINE between pos-4-2, pos-4-3, pos-4-4
+- IN-LINE between pos-4-4, pos-4-3, pos-4-2
+- IN-LINE between pos-4-2, pos-5-2, pos-6-2
+- IN-LINE between pos-6-2, pos-5-2, pos-4-2
+- IN-LINE between pos-4-3, pos-4-4, pos-4-5
+- IN-LINE between pos-4-5, pos-4-4, pos-4-3
+- IN-LINE between pos-4-3, pos-5-3, pos-6-3
+- IN-LINE between pos-6-3, pos-5-3, pos-4-3
+- IN-LINE between pos-4-4, pos-4-5, pos-4-6
+- IN-LINE between pos-4-6, pos-4-5, pos-4-4
+- IN-LINE between pos-4-4, pos-5-4, pos-6-4
+- IN-LINE between pos-6-4, pos-5-4, pos-4-4
+- IN-LINE between pos-5-2, pos-5-3, pos-5-4
+- IN-LINE between pos-5-4, pos-5-3, pos-5-2
+- IN-LINE between pos-6-2, pos-6-3, pos-6-4
+- IN-LINE between pos-6-4, pos-6-3, pos-6-2
+- pos-0-4 is free
+- pos-1-4 is free
+- pos-2-0 is free
+- pos-2-1 is free
+- pos-2-4 is free
+- pos-2-5 is free
+- pos-2-6 is free
+- pos-3-0 is free
+- pos-3-2 is free
+- pos-3-3 is free
+- pos-3-6 is free
+- pos-4-0 is free
+- pos-4-1 is free
+- pos-4-4 is free
+- pos-4-5 is free
+- pos-4-6 is free
+- pos-5-4 is free
+- pos-6-2 is free
+- pos-6-3 is free
+- pos-6-4 is free
+- pos-0-2 is occupied
+- pos-0-3 is occupied
+- pos-1-2 is occupied
+- pos-1-3 is occupied
+- pos-2-2 is occupied
+- pos-2-3 is occupied
+- pos-3-1 is occupied
+- pos-3-4 is occupied
+- pos-3-5 is occupied
+- pos-4-2 is occupied
+- pos-4-3 is occupied
+- pos-5-2 is occupied
+- pos-5-3 is occupied
+
+My goal is to achieve the following state:
+- pos-0-3 is free
+- pos-0-4 is free
+- pos-1-2 is free
+- pos-1-3 is free
+- pos-1-4 is free
+- pos-2-0 is free
+- pos-2-1 is free
+- pos-2-2 is free
+- pos-2-3 is free
+- pos-2-4 is free
+- pos-2-5 is free
+- pos-2-6 is free
+- pos-3-0 is free
+- pos-3-1 is free
+- pos-3-2 is free
+- pos-3-4 is free
+- pos-3-5 is free
+- pos-3-6 is free
+- pos-4-0 is free
+- pos-4-1 is free
+- pos-4-2 is free
+- pos-4-3 is free
+- pos-4-4 is free
+- pos-4-5 is free
+- pos-4-6 is free
+- pos-5-2 is free
+- pos-5-3 is free
+- pos-5-4 is free
+- pos-6-2 is free
+- pos-6-3 is free
+- pos-6-4 is free
+
+Please model and solve this classical PDDL 2.1 planning domain and task.

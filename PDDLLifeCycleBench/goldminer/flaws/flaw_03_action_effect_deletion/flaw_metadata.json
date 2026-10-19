@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "move",
+  "deleted_effect": "(robot-at ?y)",
+  "description": "Deleted required causal add effect '(robot-at ?y)' from action 'move', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(robot-at ?y)' into action 'move'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

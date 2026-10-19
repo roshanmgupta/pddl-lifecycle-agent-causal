@@ -1,0 +1,7 @@
+{
+  "flaw_category": "TYPE_SIGNATURE_ARITY_INVERSION",
+  "target_action": "navigate",
+  "description": "Mutated parameter signature in action 'navigate' creating an arity mismatch or unbound parameter.",
+  "ground_truth_fix": "Restore original parameter signature: (?x - rover ?y - waypoint ?z - waypoint)",
+  "expected_oracle_signal": "Fast Downward parser aborts during translation with parameter arity error."
+}

@@ -1,0 +1,18 @@
+{
+    "mcpServers": {
+        "excalidraw": {
+            "type": "sse",
+            "url": "https://excalidraw-mcp-app.vercel.app/mcp"
+        },
+        "notebooklm": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "notebooklm-mcp@latest"
+            ],
+            "env": {
+                "BROWSER_CHANNEL": "chromium"
+            }
+        }
+    }
+}

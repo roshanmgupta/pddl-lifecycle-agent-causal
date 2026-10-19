@@ -1,0 +1,7 @@
+{
+  "flaw_category": "INITIAL_GOAL_DEADLOCK",
+  "target_action": "move-curb-to-car",
+  "description": "Mutually exclusive deadlock constraint injected into action 'move-curb-to-car' rendering goal state unreachable from initial state.",
+  "ground_truth_fix": "Eliminate contradictory deadlock predicate '(state_deadlock_mutex_lock)' from action 'move-curb-to-car' preconditions.",
+  "expected_oracle_signal": "Fast Downward SAS+ translator or forward search halts; goal is provably unreachable from initial state."
+}

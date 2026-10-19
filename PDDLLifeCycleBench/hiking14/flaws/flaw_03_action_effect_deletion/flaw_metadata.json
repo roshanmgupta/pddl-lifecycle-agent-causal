@@ -1,0 +1,8 @@
+{
+  "flaw_category": "ACTION_EFFECT_DELETION",
+  "target_action": "put_down",
+  "deleted_effect": "(down ?x3)",
+  "description": "Deleted required causal add effect '(down ?x3)' from action 'put_down', breaking state transition reachability.",
+  "ground_truth_fix": "Re-insert effect '(down ?x3)' into action 'put_down'.",
+  "expected_oracle_signal": "Fast Downward Causal Graph reveals missing variable transition; search fails or plan invalid in VAL."
+}

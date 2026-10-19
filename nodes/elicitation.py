@@ -2,6 +2,7 @@ import os
 from pydantic import BaseModel
 from schemas.pddl_blueprint import DomainBlueprint, ProblemBlueprint
 from config.model_config import invoke_structured_llm
+from config.pddl_standards import STANDARD_CLASSICAL_PDDL_RULES
 
 class UnifiedBlueprint(BaseModel):
     """A container for both the domain and problem relational blueprints."""
@@ -33,6 +34,12 @@ def run_elicitation_node(state: dict) -> dict:
     elif verification_errors:
         feedback_context = f"\nPrevious Diagnostic Feedback / Verification Errors to resolve:\n{verification_errors}\n"
         print("Feedback Context for LLM:\n", feedback_context)
+    elif existing_domain_bp and existing_domain_bp.get("actions"):
+        import json
+        feedback_context = f"\nBaseline / Reference Domain Blueprint to evolve or extend:\n```json\n{json.dumps(existing_domain_bp, indent=2)}\n```\nExtend the domain to satisfy the new requirements while preserving backward compatibility with the existing actions, types, and predicates.\n"
+        if existing_problem_bp and existing_problem_bp.get("objects"):
+            feedback_context += f"\nBaseline / Reference Problem Blueprint to evolve or adapt:\n```json\n{json.dumps(existing_problem_bp, indent=2)}\n```\nExtend or adapt the problem blueprint to incorporate the evolved capabilities, objects, initial state facts, and goal objectives as specified in the requirements.\n"
+        print("[Elicitation Node]: Baseline domain and problem blueprints provided for domain evolution.")
         
     prompt = f"""
     You are an expert PDDL Knowledge Engineer. Your task is to analyze the following requirements text and construct a single, valid JSON object that strictly conforms to the provided schema.
@@ -48,25 +55,26 @@ def run_elicitation_node(state: dict) -> dict:
         "domain_name": "example_domain",
         "requirements": [":strips", ":typing"],
         "types": {{
-          "robot": "object",
-          "location": "object"
+          "entity_agent": "object",
+          "target_element": "object"
         }},
-        "predicates": ["(at ?r - robot ?l - location)"],
+        "constants": {{}},
+        "predicates": ["(relational_state ?x - entity_agent ?y - target_element)"],
         "actions": [
           {{
-            "action_name": "move",
-            "parameters": {{"?r": "robot", "?from": "location", "?to": "location"}},
-            "preconditions": ["(at ?r ?from)"],
-            "effects": ["(not (at ?r ?from))", "(at ?r ?to)"]
+            "action_name": "transition_action",
+            "parameters": {{"?x": "entity_agent", "?src": "target_element", "?dst": "target_element"}},
+            "preconditions": ["(relational_state ?x ?src)"],
+            "effects": ["(not (relational_state ?x ?src))", "(relational_state ?x ?dst)"]
           }}
         ]
       }},
       "problem": {{
         "problem_name": "example_problem",
-        "domain_name": "example_domain",
-        "objects": {{"r1": "robot", "loc_a": "location", "loc_b": "location"}},
-        "initial_state": ["(at r1 loc_a)"],
-        "goal_state": ["(at r1 loc_b)"]
+        "domain_name":  "example_domain",
+        "objects": {{"e1": "entity_agent", "t1": "target_element", "t2": "target_element"}},
+        "initial_state": ["(relational_state e1 t1)"],
+        "goal_state": ["(relational_state e1 t2)"]
       }}
     }}
     ```
@@ -75,15 +83,33 @@ def run_elicitation_node(state: dict) -> dict:
     {requirements_text}
     {feedback_context}
 
-    Ensure all domain object types are explicitly declared in "types" (e.g., {{"block": "object"}} or {{"truck": "vehicle", "vehicle": "object"}}).
-    Ensure all predicates and action parameters use explicit typed signature annotations with '?' variable names (e.g. "(on ?x - block ?y - block)", {{"?r": "robot"}}).
-    The problem's domain_name must exactly match the domain's domain_name.
+    {STANDARD_CLASSICAL_PDDL_RULES}
+
     Produce ONLY the JSON object and nothing else.
     """
     
-    unified_blueprint = invoke_structured_llm(UnifiedBlueprint, prompt)
+    import time
+    from config.model_config import get_phase_model, invoke_structured_llm_with_telemetry
+    start_t = time.time()
+    unified_blueprint, usage = invoke_structured_llm_with_telemetry(UnifiedBlueprint, prompt, target_model=get_phase_model(1))
+    elapsed = time.time() - start_t
     
     # Store Relational Blueprint inside Shared Memory State
     state["pddl_domain_blueprint"] = unified_blueprint.domain.model_dump()
-    state["pddl_problem_blueprint"] = unified_blueprint.problem.model_dump()
+    if existing_problem_bp and existing_problem_bp.get("objects") and not state.get("is_evolution_task"):
+        print("[Elicitation Node]: Preserving pre-loaded target problem blueprint.")
+        preserved_prob = dict(existing_problem_bp)
+        preserved_prob["domain_name"] = unified_blueprint.domain.domain_name
+        state["pddl_problem_blueprint"] = preserved_prob
+    else:
+        state["pddl_problem_blueprint"] = unified_blueprint.problem.model_dump()
+
+    # Update Telemetry Metrics
+    state["total_prompt_tokens"] = state.get("total_prompt_tokens", 0) + usage.get("prompt_tokens", 0)
+    state["total_completion_tokens"] = state.get("total_completion_tokens", 0) + usage.get("completion_tokens", 0)
+    state["total_tokens"] = state.get("total_tokens", 0) + usage.get("total_tokens", 0)
+    state["estimated_cost_usd"] = round(state.get("estimated_cost_usd", 0.0) + usage.get("estimated_cost_usd", 0.0), 6)
+    latencies = state.get("node_latencies", {})
+    latencies["elicit"] = round(latencies.get("elicit", 0.0) + elapsed, 3)
+    state["node_latencies"] = latencies
     return state

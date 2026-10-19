@@ -1,0 +1,179 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1.45cm,top=1.3cm,bottom=1.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{titlesec}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+
+% Clean, tight academic styling to strictly enforce the 2-page constraint
+\titleformat{\section}{\normalsize\bfseries}{\thesection.}{0.4em}{}
+\titleformat{\subsection}{\small\bfseries}{\thesubsection.}{0.3em}{}
+\titlespacing*{\section}{0pt}{0.6ex}{0.3ex}
+\titlespacing*{\subsection}{0pt}{0.4ex}{0.2ex}
+\setlist{nosep,leftmargin=1.3em}
+\setlength{\parskip}{0.2ex}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\begin{center}
+    {\large \textbf{Evaluation Methodology Description:}}\\[0.15em]
+    {\normalsize \textbf{Towards an Autonomous Lifecycle Agent for PDDL Domain Modelling}}\\[0.25em]
+    \textbf{Student:} Roshan Gupta \quad$\mid$\quad \textbf{Supervisor:} Prof. Dr. Ilche Georgievski\\[0.1em]
+    \textit{Institute of Architecture of Application Systems (IAAS), University of Stuttgart}
+\end{center}
+
+\vspace{-0.5em}
+\noindent
+This document defines the planned empirical evaluation methodology for the Master's Thesis \textit{``Towards an Autonomous Lifecycle Agent for PDDL Domain Modelling''}. Addressing the requirements in the thesis description, it specifies the research questions and hypotheses, benchmark suite and fault generation protocols, baselines and ablation studies, quantitative metrics, and explicit alignment with the project objectives.
+
+% =========================================================================
+\section{Research Questions and Hypotheses}
+% =========================================================================
+Classical automated planning defines deterministic state-transition systems $\Sigma = (S, A, \gamma)$ within STRIPS and PDDL formalisms~\cite{ghallab2004automated,mcdermott1998pddl}. While Large Language Models (LLMs) can parse natural language requirements, unconstrained generation frequently produces syntax errors, relational type mismatches, and reachability deadlocks. This evaluation investigates whether an autonomous agent orchestrating the domain modeling lifecycle—integrating symbolic oracles in an iterative closed loop—significantly improves model validity, repair efficiency, and regression resilience.
+
+\begin{itemize}[leftmargin=1.2em]
+    \item \textbf{RQ1 (Representation \& Syntax Decoupling):} Does intermediate Abstract Syntax Tree (AST) schema enforcement improve the first-pass syntactic validity and structural consistency of elicited PDDL domain models compared to unconstrained direct code generation?
+    \begin{itemize}
+        \item \textit{Hypothesis 1 ($H_1$):} Structurally constraining model synthesis to typed AST blueprints will yield a significantly higher initial Syntax Validity Rate (SVR) by preventing parenthesis mismatches, undeclared predicates, and invalid parameter typing prior to compilation.
+    \end{itemize}
+    \item \textbf{RQ2 (Diagnostic Feedback vs. Naive Re-Prompting):} Does targeted diagnostic feedback derived from symbolic oracles resolve PDDL domain defects in fewer iterations and with higher overall success than re-prompting with raw compiler error logs?
+    \begin{itemize}
+        \item \textit{Hypothesis 2 ($H_2$):} Providing localized fault indications (isolating specific action schemas, missing preconditions, or ungrounded variables) will achieve higher Repair Pass@$k$ rates ($k \le 5$) and require fewer repair cycles than naive re-prompting with unparsed solver traces.
+    \end{itemize}
+    \item \textbf{RQ3 (Continuous Evolution \& Regression Prevention):} Does an automated regression testing mechanism prevent semantic breakages on historical problem instances during iterative domain evolution?
+    \begin{itemize}
+        \item \textit{Hypothesis 3 ($H_3$):} Gating domain evolution with a historical regression suite will retain a significantly higher Regression Preservation Rate (RPR) across prior problem instances compared to ungated evolutionary modifications.
+    \end{itemize}
+\end{itemize}
+
+% =========================================================================
+\section{Benchmark Suite: Domains, Tasks, and Fault Injection}
+% =========================================================================
+The proposed benchmark suite (\textbf{PDDLLifeCycleBench}) is constructed from established classical planning domains from the International Planning Competitions (IPC)~\cite{mcdermott1998pddl,fox2003pddl21}. It comprises \textbf{18 evaluation tasks} across \textbf{6 canonical domain families}:
+\textbf{(1) Blocksworld (IPC-2000):} Table, block stacking/unstacking, clear, and gripper arm relations;
+\textbf{(2) Logistics (IPC-2000):} Multi-city package transport across trucks, airplanes, and airport hubs;
+\textbf{(3) Gripper (IPC-1998):} Multi-room object transport constrained by two-arm robotic manipulator capacity;
+\textbf{(4) Depots (IPC-2002):} Coupled domain combining Blocksworld stacking constraints with Logistics freight transport;
+\textbf{(5) Rovers (IPC-2003):} Waypoint traversal, soil/rock sampling, camera calibration, and satellite communication windows;
+\textbf{(6) Satellite (IPC-2002):} Multi-spacecraft observation tasking with instrument calibration and power constraints.
+
+\subsection{Lifecycle Task Types and Systematic Fault Generation}
+Each domain family is evaluated across three core operational activities reflecting the engineering lifecycle:
+\begin{enumerate}[label=(\alph*),leftmargin=1.4em]
+    \item \textbf{Natural Language Elicitation:} Generating complete PDDL domain and problem specifications from natural language operational requirements, evaluated against reference IPC ground-truth models.
+    \item \textbf{Systematic Fault Repair:} Evaluating the agent on domains injected with isolated, documented defects categorized according to recent empirical repair taxonomies~\cite{bavandpour2026llmonly}:
+    \begin{itemize}
+        \item \textit{Precondition Omissions:} Dropping necessary guarding conditions (e.g., omitting \texttt{(at ?t ?l)} from \texttt{load-truck} in Logistics; omitting \texttt{(calibrated ?i)} from \texttt{take\_image} in Satellite).
+        \item \textit{Corrupted/Inverted State Effects:} Incorrect state transitions (e.g., asserting \texttt{(not (at ?p ?l))} without asserting \texttt{(in ?p ?t)} in Logistics; omitting \texttt{(empty ?g)} upon drop in Gripper).
+        \item \textit{Type \& Signature Inconsistencies:} Binding variables to incompatible object types or violating predicate arity.
+        \item \textit{Unbound Variables:} Introducing action effects that reference variables not declared in action parameters.
+    \end{itemize}
+    Each faulty benchmark instance is deterministically labeled with its ground-truth defect category, target action schema, and expected corrective action, enabling objective diagnostic accuracy measurement.
+    \item \textbf{Continuous Domain Evolution:} Modifying existing valid domains to support new operational requirements (e.g., adding multi-package transport in Logistics, or dual-sensor inspection in Rovers) while verifying backward compatibility against historical task suites.
+\end{enumerate}
+
+% =========================================================================
+\section{Baselines and Ablation Studies}
+% =========================================================================
+To empirically isolate the contributions of the agent's core components, the system is evaluated against two baseline approaches and three targeted ablations under identical base LLM backends (e.g., Claude 3.5 Sonnet / GPT-4o, fixed temperature $T=0.0$):
+\begin{enumerate}[leftmargin=1.4em]
+    \item \textbf{Baseline 1 (Zero-Shot Direct Generation):} Unconstrained generation where the LLM is prompted with natural language requirements to emit raw PDDL code directly in a single pass without intermediate schemas or validation loops.
+    \item \textbf{Baseline 2 (Naive Iterative Re-Prompting):} An iterative repair loop where raw compiler logs (from VAL or Fast Downward) are fed directly back into the LLM context without structured diagnostic localization~\cite{bavandpour2026llmonly}.
+    \item \textbf{Ablation 1 (Without AST Schema / Direct PDDL Manipulation):} The agent maintains the iterative oracle feedback loop but edits raw PDDL text directly rather than operating over structured AST blueprints, isolating the value of the schema.
+    \item \textbf{Ablation 2 (Without Diagnostic Localization):} The agent receives only binary pass/fail verification outcomes without localized defect triage hints, isolating the impact of structured fault localization.
+    \item \textbf{Ablation 3 (Evolution Without Regression Gating):} The agent modifies domain models to accommodate new operational requirements without running historical regression checks, measuring susceptibility to backward-incompatible breakages.
+\end{enumerate}
+
+% =========================================================================
+\section{Evaluation Metrics and Scientific Rationale}
+% =========================================================================
+The following metrics will be measured across all benchmark tasks to evaluate the hypotheses:
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{l p{4.7cm} X}
+\toprule
+\textbf{Metric} & \textbf{Operational Definition} & \textbf{Scientific Rationale} \\
+\midrule
+\textbf{Syntax Validity (SVR)} & $\text{SVR} = \frac{\text{Valid Domains}}{\text{Total Domains}} \times 100\%$ via VAL & Evaluates compliance with formal PDDL 2.1 syntax, typing, and predicate declarations~\cite{fox2003pddl21,howey2004val}. \\
+\addlinespace[0.15ex]
+\textbf{Solvability Rate (SR)} & $\text{SR} = \frac{\text{Solvable Problems}}{\text{Total Problems}} \times 100\%$ via Fast Downward & Measures semantic reachability: whether a heuristic search planner finds a valid plan within timeout ($t = 180\,\text{s}$)~\cite{helmert2006fast}. \\
+\addlinespace[0.15ex]
+\textbf{Plan Validity (PVR)} & $\text{PVR} = \frac{\text{Valid Plans}}{\text{Synthesized Plans}} \times 100\%$ via VAL & Verifies that synthesized action trajectories execute without constraint violations under formal state transitions $\Sigma$~\cite{ghallab2004automated,howey2004val}. \\
+\addlinespace[0.15ex]
+\textbf{Repair Pass@$k$} & Success rate within $k \in \{1, 2, 3, 5\}$ repair cycles & Quantifies convergence speed and repair effectiveness under symbolic oracle feedback. \\
+\addlinespace[0.15ex]
+\textbf{Mean Iterations ($\bar{I}$)} & Average repair cycles required to reach $\text{SR} = 1$ & Measures convergence efficiency and operational token economy during model repair. \\
+\addlinespace[0.15ex]
+\textbf{Structural $F_1$ Score} & Precision, Recall, and $F_1$ of predicates, parameters, and action schemas vs. ground truth & Quantifies relational accuracy against reference IPC domain implementations~\cite{bavandpour2026llmonly}. \\
+\addlinespace[0.15ex]
+\textbf{Regression Preservation (RPR)} & $\text{RPR} = \frac{\text{Solvable Historical Cases (Post-Evol.)}}{\text{Total Historical Cases}} \times 100\%$ & Evaluates whether domain modifications preserve backward compatibility on pre-existing problem instances. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{-0.4em}
+% =========================================================================
+\section{Relation to the Official Thesis Description}
+% =========================================================================
+The proposed evaluation methodology directly operationalizes the core objectives of the approved thesis description:
+\begin{enumerate}[leftmargin=1.4em]
+    \item \textbf{Full Lifecycle Coverage:} It evaluates the key phases of the Knowledge Engineering for Planning and Scheduling (KEPS) Software Development Life Cycle~\cite{georgievski2023sdlc}: Elicitation, Synthesis, Validation, Diagnostic Repair, and Evolution.
+    \item \textbf{Grounded Neurosymbolic Integration:} Rather than relying on unverified LLM self-reflection, it integrates standard classical tools (VAL validator~\cite{howey2004val} and Fast Downward planner~\cite{helmert2006fast}) as sound, external ground-truth oracles.
+    \item \textbf{Standardized Benchmarking:} Utilizing six established IPC domain families provides objective, reproducible empirical results that directly answer the main thesis research questions.
+\end{enumerate}
+
+\vspace{-0.4em}
+% =========================================================================
+% REFERENCES (Strictly Verified, Authoritative Sources)
+% =========================================================================
+\renewcommand{\refname}{\normalsize Verified References}
+\begin{thebibliography}{7}
+\footnotesize
+\setlength{\itemsep}{0.1ex}
+
+\bibitem{ghallab2004automated}
+M.~Ghallab, D.~Nau, and P.~Traverso.
+\newblock {\em Automated Planning: Theory \& Practice}.
+\newblock Morgan Kaufmann, 2004. ISBN: 978-1-55860-856-5.
+
+\bibitem{mcdermott1998pddl}
+D.~McDermott et~al.
+\newblock {PDDL}---{T}he {P}lanning {D}omain {D}efinition {L}anguage.
+\newblock Technical Report CVC TR-98-003, Yale University, 1998.
+
+\bibitem{fox2003pddl21}
+M.~Fox and D.~Long.
+\newblock {PDDL2.1}: An extension to {PDDL} for expressing temporal and numeric planning domains.
+\newblock {\em Journal of Artificial Intelligence Research}, 20:61--124, 2003. \href{https://doi.org/10.1613/jair.1129}{doi:10.1613/jair.1129}.
+
+\bibitem{howey2004val}
+R.~Howey, D.~Long, and M.~Fox.
+\newblock {VAL}: Automatic plan validation, continuous effects and mixed initiative planning using {PDDL}.
+\newblock In {\em Proc. 16th IEEE Intl. Conf. on Tools with Artificial Intelligence (ICTAI)}, pp. 294--301, 2004.
+
+\bibitem{helmert2006fast}
+M.~Helmert.
+\newblock The {F}ast {D}ownward planning system.
+\newblock {\em Journal of Artificial Intelligence Research}, 26:191--246, 2006. \href{https://doi.org/10.1613/jair.1705}{doi:10.1613/jair.1705}.
+
+\bibitem{georgievski2023sdlc}
+I.~Georgievski.
+\newblock Software development lifecycle for engineering {AI} planning systems.
+\newblock In {\em Proc. 18th Intl. Conf. on Software Technologies (ICSOFT)}, pp. 751--760, 2023. \href{https://doi.org/10.5220/0012149100003538}{doi:10.5220/0012149100003538}.
+
+\bibitem{bavandpour2026llmonly}
+N.~K.~Bavandpour and P.~Bercher.
+\newblock {LLM}-Only {PDDL} domain repair with open-weight models.
+\newblock {\em arXiv preprint arXiv:2603.04221}, 2026.
+
+\end{thebibliography}
+
+\end{document}

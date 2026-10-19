@@ -1,0 +1,79 @@
+================================================================================
+DOMAIN CAPABILITIES & ACTION RULES: DEPOT
+================================================================================
+I can carry out the following actions:
+drive a truck A from a place B to a place C
+lift a hoist A to lift a crate B from a surface C at a place D
+drop a crate B with a hoist A onto a surface C at a place D
+load a crate B with a hoist A into a truck C at a place D
+unload a crate B with a hoist A from a truck C at a place D
+
+I have the following restrictions on my actions:
+I can only drive a truck A from a place B to a place C if it is the case that A is at B
+I can only lift a hoist A to lift a crate B from a surface C at a place D if it is the case that A is at D and A is available and B is at D and B is on C and B is clear
+I can only drop a crate B with a hoist A onto a surface C at a place D if it is the case that A is at D and C is at D and C is clear and A is lifting B
+I can only load a crate B with a hoist A into a truck C at a place D if it is the case that A is at D and C is at D and A is lifting B
+I can only unload a crate B with a hoist A from a truck C at a place D if it is the case that A is at D and C is at D and A is available and B is in C
+
+The actions have the following effects on the state:
+Once I drive a truck A from a place B to a place C, it is the case that A is at C
+Once I drive a truck A from a place B to a place C, it is not the case anymore that A is at B
+Once I lift a hoist A to lift a crate B from a surface C at a place D, it is the case that A is lifting B and C is clear
+Once I lift a hoist A to lift a crate B from a surface C at a place D, it is not the case anymore that B is at D and it is not the case anymore that B is clear and it is not the case anymore that A is available and it is not the case anymore that B is on C
+Once I drop a crate B with a hoist A onto a surface C at a place D, it is the case that A is available and B is at D and B is clear and B is on C
+Once I drop a crate B with a hoist A onto a surface C at a place D, it is not the case anymore that A is lifting B and it is not the case anymore that C is clear
+Once I load a crate B with a hoist A into a truck C at a place D, it is the case that B is in C and A is available
+Once I load a crate B with a hoist A into a truck C at a place D, it is not the case anymore that A is lifting B
+Once I unload a crate B with a hoist A from a truck C at a place D, it is the case that A is lifting B
+Once I unload a crate B with a hoist A from a truck C at a place D, it is not the case anymore that B is in C and it is not the case anymore that A is available
+
+
+Everything that is a place or a locatable is also a object
+Everything that is a depot or a distributor is also a place
+Everything that is a truck or a hoist or a surface is also a locatable
+Everything that is a pallet or a crate is also a surface
+
+[NOTE: Flawed configuration where action 'Drive' has broken parameter bindings.]
+
+================================================================================
+OPERATIONAL TASK SCENARIO & GOAL SPECIFICATION: DEPOT
+================================================================================
+The following objects exist in this problem instance:
+- depot0, depot1 and depot2 are of type Depot
+- distributor0 is of type Distributor
+- truck0, truck1 and truck2 are of type Truck
+- pallet0, pallet1, pallet2 and pallet3 are of type Pallet
+- crate0, crate1 and crate2 are of type Crate
+- hoist0, hoist1, hoist2 and hoist3 are of type Hoist
+
+The initial state of the world is as follows:
+- pallet0 is at depot0
+- pallet0 is clear
+- pallet1 is at depot1
+- crate2 is clear
+- pallet2 is at depot2
+- crate1 is clear
+- pallet3 is at distributor0
+- pallet3 is clear
+- truck0 is at depot2
+- truck1 is at depot2
+- truck2 is at depot0
+- hoist0 is at depot0
+- hoist0 is available
+- hoist1 is at depot1
+- hoist1 is available
+- hoist2 is at depot2
+- hoist2 is available
+- hoist3 is at distributor0
+- hoist3 is available
+- crate0 is at depot1
+- crate0 is on pallet1
+- crate1 is at depot2
+- crate1 is on pallet2
+- crate2 is at depot1
+- crate2 is on crate0
+
+My goal is to achieve the following state:
+- crate1 is on pallet3
+
+Please model and solve this classical PDDL 2.1 planning domain and task.
