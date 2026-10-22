@@ -1,0 +1,58 @@
+{
+  "domain_name": "logistics",
+  "run_index": 2,
+  "domain_blueprint": {
+    "domain_name": "logistics",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "package": "object",
+      "vehicle": "object",
+      "location": "object",
+      "city": "object",
+      "truck": "vehicle",
+      "airplane": "vehicle",
+      "airport": "location"
+    },
+    "predicates": [
+      "(at ?obj - object ?loc - location)",
+      "(in ?pkg - package ?veh - vehicle)"
+    ],
+    "actions": [
+      {
+        "action_name": "load-truck",
+        "parameters": {
+          "?pkg": "package",
+          "?t": "truck",
+          "?loc": "location"
+        },
+        "preconditions": [
+          "(at ?pkg ?loc)",
+          "(at ?t ?loc)"
+        ],
+        "effects": [
+          "(not (at ?pkg ?loc))",
+          "(in ?pkg ?t)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "logistics_prob_01",
+    "domain_name": "logistics",
+    "objects": {
+      "pkg1": "package",
+      "t1": "truck",
+      "loc1": "location"
+    },
+    "initial_state": [
+      "(at pkg1 loc1)",
+      "(at t1 loc1)"
+    ],
+    "goal_state": []
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

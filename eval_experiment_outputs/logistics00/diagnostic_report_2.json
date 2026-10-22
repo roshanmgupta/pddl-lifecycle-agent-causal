@@ -1,0 +1,240 @@
+{
+  "timestamp": "2026-10-15T04:14:30.044770",
+  "domain_name": "logistics00",
+  "run_index": 2,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'Streamlit_output_file\\temp_domain.pddl' 'Streamlit_output_file\\temp_problem.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing: [0.000s CPU, 0.003s wall-clock]\nNormalizing task... [0.000s CPU, 0.000s wall-clock]\nInstantiating...\nGenerating Datalog program... [0.000s CPU, 0.000s wall-clock]\nNormalizing Datalog program...\nNormalizing Datalog program: [0.000s CPU, 0.002s wall-clock]\nPreparing model... [0.000s CPU, 0.002s wall-clock]\nGenerated 51 rules.\nComputing model... [0.000s CPU, 0.002s wall-clock]\n204 relevant atoms\n219 auxiliary atoms\n423 final queue length\n452 total queue pushes\nCompleting instantiation... [0.000s CPU, 0.001s wall-clock]\nInstantiating: [0.000s CPU, 0.008s wall-clock]\nNo relaxed solution! Generating unsolvable task...\nTranslator variables: 1\nTranslator derived variables: 0\nTranslator facts: 2\nTranslator goal facts: 1\nTranslator mutex groups: 0\nTranslator total mutex groups size: 0\nTranslator operators: 0\nTranslator axioms: 0\nTranslator task size: 4\nwarning: could not determine peak memory\nWriting output... [0.000s CPU, 0.001s wall-clock]\nDone! [0.000s CPU, 0.012s wall-clock]\ntranslate exit code: 0\n\nINFO     Running search (release).\nINFO     search stdin: output.sas\nINFO     search time limit: None\nINFO     search memory limit: None\nINFO     search command line string: 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\downward.exe' --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas\n[t=0.000133s, 832 KB] reading input...\n[t=0.000243s, 836 KB] done reading input!\n[t=0.001821s, 1256 KB] Simplifying 0 unary operators... done! [0 unary operators]\n[t=0.001868s, 1256 KB] time to simplify: 0.000055s\n[t=0.001882s, 1256 KB] Initializing additive heuristic...\n[t=0.001888s, 1256 KB] Initializing FF heuristic...\n[t=0.001987s, 1256 KB] Building successor generator...done!\n[t=0.002010s, 1256 KB] peak memory difference for successor generator creation: 0 KB\n[t=0.002017s, 1256 KB] time for successor generation creation: 0.000005s\n[t=0.002027s, 1256 KB] Variables: 1\n[t=0.002034s, 1256 KB] FactPairs: 2\n[t=0.002039s, 1256 KB] Bytes per state: 4\n[t=0.002079s, 1256 KB] Conducting lazy best first search, (real) bound = 2147483647\n[t=0.002100s, 1256 KB] Initial heuristic value for ff: infinity\n[t=0.002116s, 1256 KB] Completely explored state space -- no solution!\n[t=0.002124s, 1256 KB] Actual search time: 0.000035s\n[t=0.002130s, 1256 KB] Expanded 0 state(s).\n[t=0.002130s, 1256 KB] Reopened 0 state(s).\n[t=0.002130s, 1256 KB] Evaluated 1 state(s).\n[t=0.002130s, 1256 KB] Evaluations: 1\n[t=0.002130s, 1256 KB] Generated 0 state(s).\n[t=0.002130s, 1256 KB] Dead ends: 1 state(s).\n[t=0.002130s, 1256 KB] Number of registered states: 1\n[t=0.002130s, 1256 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.002130s, 1256 KB] Int hash set resizes: 0\n[t=0.002130s, 1256 KB] Search time: 0.000051s\n[t=0.002130s, 1256 KB] Total time: 0.002130s\nSearch stopped without finding a solution.\nRemove intermediate file output.sas\nsearch exit code: 12\n\nDriver aborting after search\n\n"
+  ],
+  "final_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'Streamlit_output_file\\temp_domain.pddl' 'Streamlit_output_file\\temp_problem.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing: [0.000s CPU, 0.004s wall-clock]\nNormalizing task... [0.000s CPU, 0.000s wall-clock]\nInstantiating...\nGenerating Datalog program... [0.000s CPU, 0.000s wall-clock]\nNormalizing Datalog program...\nNormalizing Datalog program: [0.016s CPU, 0.003s wall-clock]\nPreparing model... [0.000s CPU, 0.004s wall-clock]\nGenerated 56 rules.\nComputing model... [0.000s CPU, 0.003s wall-clock]\n220 relevant atoms\n228 auxiliary atoms\n448 final queue length\n493 total queue pushes\nCompleting instantiation... [0.000s CPU, 0.002s wall-clock]\nInstantiating: [0.016s CPU, 0.012s wall-clock]\nNo relaxed solution! Generating unsolvable task...\nTranslator variables: 1\nTranslator derived variables: 0\nTranslator facts: 2\nTranslator goal facts: 1\nTranslator mutex groups: 0\nTranslator total mutex groups size: 0\nTranslator operators: 0\nTranslator axioms: 0\nTranslator task size: 4\nwarning: could not determine peak memory\nWriting output... [0.000s CPU, 0.001s wall-clock]\nDone! [0.016s CPU, 0.017s wall-clock]\ntranslate exit code: 0\n\nINFO     Running search (release).\nINFO     search stdin: output.sas\nINFO     search time limit: None\nINFO     search memory limit: None\nINFO     search command line string: 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\downward.exe' --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas\n[t=0.000351s, 844 KB] reading input...\n[t=0.000582s, 844 KB] done reading input!\n[t=0.004313s, 1252 KB] Simplifying 0 unary operators... done! [0 unary operators]\n[t=0.004354s, 1252 KB] time to simplify: 0.000048s\n[t=0.004367s, 1252 KB] Initializing additive heuristic...\n[t=0.004373s, 1252 KB] Initializing FF heuristic...\n[t=0.004437s, 1252 KB] Building successor generator...done!\n[t=0.004457s, 1252 KB] peak memory difference for successor generator creation: 0 KB\n[t=0.004465s, 1252 KB] time for successor generation creation: 0.000005s\n[t=0.004474s, 1252 KB] Variables: 1\n[t=0.004481s, 1252 KB] FactPairs: 2\n[t=0.004487s, 1252 KB] Bytes per state: 4\n[t=0.004526s, 1252 KB] Conducting lazy best first search, (real) bound = 2147483647\n[t=0.004550s, 1252 KB] Initial heuristic value for ff: infinity\n[t=0.004557s, 1252 KB] Completely explored state space -- no solution!\n[t=0.004566s, 1252 KB] Actual search time: 0.000032s\n[t=0.004578s, 1252 KB] Expanded 0 state(s).\n[t=0.004578s, 1252 KB] Reopened 0 state(s).\n[t=0.004578s, 1252 KB] Evaluated 1 state(s).\n[t=0.004578s, 1252 KB] Evaluations: 1\n[t=0.004578s, 1252 KB] Generated 0 state(s).\n[t=0.004578s, 1252 KB] Dead ends: 1 state(s).\n[t=0.004578s, 1252 KB] Number of registered states: 1\n[t=0.004578s, 1252 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.004578s, 1252 KB] Int hash set resizes: 0\n[t=0.004578s, 1252 KB] Search time: 0.000052s\n[t=0.004578s, 1252 KB] Total time: 0.004578s\nSearch stopped without finding a solution.\nRemove intermediate file output.sas\nsearch exit code: 12\n\nDriver aborting after search\n\n"
+  ],
+  "diagnostic_issues_count": 27,
+  "diagnostic_reports": [
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The planner could not find a solution, indicating potential issues with the preconditions of the 'fly_airplane' action. Ensure that the airplane is at the correct airport before attempting to fly it. Additionally, verify that the goal state is achievable given the initial state and available actions."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The initial state may be incomplete or insufficient to achieve the goal state. Ensure that all necessary initial conditions are explicitly stated, such as the locations of all packages, trucks, and airplanes. Verify that the goal state is reachable from the initial state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "load_truck",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The effects of the 'load_truck' action may not align with the expected state transitions. Ensure that loading a package into a truck correctly updates the state by removing the package from its current location and adding it to the truck. Verify that all preconditions are met before executing the action."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": null,
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The planner could not find a solution due to unachievable goals or missing preconditions. Review the goal state and ensure all necessary intermediate steps are achievable. Consider adding actions or modifying preconditions to bridge the gap between the initial state and the goal state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The planner could not find a solution because the 'fly_airplane' action requires the airplane to be at an airport, but the initial state does not specify the location of the airplane. Ensure that the airplane's initial location is explicitly stated in the initial state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "drive_truck",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'drive_truck' action requires the truck to be at a location within a city, but the initial state does not specify the city for the truck's location. Ensure that the city for each truck's location is explicitly stated in the initial state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'fly_airplane' action requires that the airplane is at the starting airport, but there is no action to move the airplane to the required starting airport. Consider adding an action to move the airplane to the starting airport or modifying the initial state to place the airplane at the correct airport."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "drive_truck",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'drive_truck' action requires that the truck is at the starting location, but there is no action to move the truck to the required starting location. Consider adding an action to move the truck to the starting location or modifying the initial state to place the truck at the correct location."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "load_truck",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'load_truck' action requires that both the package and the truck are at the same location, but there is no action to move the truck or the package to the required location. Consider adding actions to move the truck or the package to the correct location or modifying the initial state to place them at the same location."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "load_airplane",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'load_airplane' action requires that both the package and the airplane are at the same location, but there is no action to move the airplane or the package to the required location. Consider adding actions to move the airplane or the package to the correct location or modifying the initial state to place them at the same location."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 0.9,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'fly_airplane' action requires the airplane to be at the starting airport. Ensure that the airplane is correctly positioned in the initial state and that the goal state is achievable given the constraints."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "drive_truck",
+      "suspiciousness_score": 0.8,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'drive_truck' action requires the truck to be at a location within the same city as the destination. Verify that the truck's initial location and the destination are within the same city and that the goal state is achievable."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "load_truck",
+      "suspiciousness_score": 0.7,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'load_truck' action requires both the package and the truck to be at the same location. Ensure that the initial state correctly positions both the package and the truck at the same location."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "load_airplane",
+      "suspiciousness_score": 0.7,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'load_airplane' action requires both the package and the airplane to be at the same location. Verify that the initial state correctly positions both the package and the airplane at the same location."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "unload_truck",
+      "suspiciousness_score": 0.6,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'unload_truck' action requires the package to be in the truck and the truck to be at the unloading location. Ensure that the package is correctly loaded into the truck and that the truck is at the correct location in the initial state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "unload_airplane",
+      "suspiciousness_score": 0.6,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'unload_airplane' action requires the package to be in the airplane and the airplane to be at the unloading location. Verify that the package is correctly loaded into the airplane and that the airplane is at the correct location in the initial state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The planner could not find a plan due to the inability to fly the airplane 'apn1' from 'apt1' to other airports. Ensure that the airplane can reach the required destinations by verifying the connectivity between airports and relaxing any unnecessary preconditions in the 'fly_airplane' action."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "drive_truck",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The planner could not find a plan due to the inability to drive trucks between locations. Verify that all trucks can reach their required destinations by ensuring that the 'drive_truck' action's preconditions allow for movement within the same city and that the initial state correctly specifies the city for each location."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 0.9,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The planner cannot find a plan because the 'fly_airplane' action requires the airplane to be at the starting airport, but there is no action to move the airplane to the required starting location. Consider adding an action to reposition the airplane or relaxing the preconditions of 'fly_airplane' to allow flying from any location."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The initial state may not provide sufficient resources or conditions to achieve the goal. Ensure that all necessary objects are correctly positioned and that the initial state supports the required actions to reach the goal state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The planner could not find a plan because the 'fly_airplane' action lacks preconditions to ensure that the airplane is at the correct airport before flying. Add preconditions to verify the airplane's current location and ensure it is at the departure airport before executing the action."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The initial state may be incomplete or inconsistent with the goal state. Verify that all necessary initial conditions are correctly specified, especially the locations of packages, trucks, and airplanes, to ensure a valid plan can be generated."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The planner could not find a solution, indicating potential issues with the preconditions of the 'fly_airplane' action. Consider relaxing the preconditions to allow for more flexible state transitions, such as allowing the airplane to fly between any two airports regardless of its current location."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The initial state may be insufficient to achieve the goal. Ensure that all necessary initial conditions are explicitly stated, such as the locations of all packages, trucks, and airplanes, and their relationships to cities and airports."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "drive_truck",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The effects of the 'drive_truck' action may not be correctly aligned with the goal state. Ensure that the action correctly updates the truck's location and that the goal state reflects the desired final locations of all packages."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Search stopped without finding a solution.",
+      "suggested_repair_hint": "The 'fly_airplane' action lacks a precondition that the airplane must be at the starting airport. Add '(at ?a ?b)' to the preconditions of the 'fly_airplane' action to ensure the airplane is at the correct location before flying."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "Ensure all initial state facts are correctly specified, particularly the locations of packages and vehicles. Verify that all objects are correctly typed and their initial positions are consistent with the problem requirements."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: PRECONDITION_INSERTION\n  - [LOCATION / COMPONENT]: fly_airplane (Suspiciousness: 1.0)\n  - [DESCRIPTION / RAW TRACE]: Search stopped without finding a solution.\n  - [SUGGESTION FOR REPAIR]: The 'fly_airplane' action lacks a precondition that the airplane must be at the starting airport. Add '(at ?a ?b)' to the preconditions of the 'fly_airplane' action to ensure the airplane is at the correct location before flying.\n\nIssue #2:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: INITIAL_STATE_AUGMENTATION\n  - [DESCRIPTION / RAW TRACE]: Completely explored state space -- no solution!\n  - [SUGGESTION FOR REPAIR]: Ensure all initial state facts are correctly specified, particularly the locations of packages and vehicles. Verify that all objects are correctly typed and their initial positions are consistent with the problem requirements.",
+  "plan_summary": {
+    "is_solvable": false,
+    "plan_length": 0,
+    "search_time_seconds": 5.2e-05,
+    "val_plan_valid": false,
+    "plan_steps": []
+  }
+}

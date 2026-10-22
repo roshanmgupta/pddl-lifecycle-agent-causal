@@ -1,0 +1,123 @@
+{
+  "timestamp": "2026-10-18T22:43:07.568590",
+  "domain_name": "barman",
+  "run_index": 3,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 2,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking grasp\nType problem with proposition (ontable c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 6,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "grasp",
+      "suspiciousness_score": 0.85,
+      "raw_log": "Type problem with proposition (ontable c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The parameter '?c' in the 'grasp' action should be of type 'container' instead of 'object'. Update the parameter type in the action schema to ensure type consistency with the predicate '(ontable ?c - container)'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.75,
+      "raw_log": "Mutual dependency cycle detected: grasp -> leave -> grasp",
+      "suggested_repair_hint": "Review the preconditions and effects of 'grasp' and 'leave' actions to break the cyclic dependency. Ensure that the state transitions are complete and do not create deadlock conditions."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "Actions disconnected from goal reachability: clean-shaker, clean-shot, empty-shaker, empty-shot, fill-shot, grasp, leave, pour-shaker-to-shot, pour-shot-to-clean-shaker, pour-shot-to-used-shaker, refill-shot, shake",
+      "suggested_repair_hint": "Add preconditions or effects to ensure that actions are connected to the goal state. For example, ensure that 'pour-shaker-to-shot' and 'pour-shot-to-clean-shaker' actions contribute directly to achieving the goal state by adding relevant preconditions or effects."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "grasp",
+      "suspiciousness_score": 0.85,
+      "raw_log": "Type problem with proposition (ontable c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The parameter '?c' in the 'grasp' action should be of type 'container' instead of 'object'. Update the parameter type in the action definition to ensure type consistency with the 'ontable' predicate."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.75,
+      "raw_log": "Mutual dependency cycle detected: pour-shot-to-clean-shaker -> clean-shaker -> pour-shaker-to-shot -> pour-shot-to-clean-shaker",
+      "suggested_repair_hint": "Review the preconditions and effects of the actions involved in the mutual dependency cycles. Consider relaxing certain preconditions or introducing intermediate actions to break the cycles and ensure goal reachability."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "Actions disconnected from goal reachability: clean-shaker, clean-shot, empty-shaker, empty-shot, fill-shot, grasp, leave, pour-shaker-to-shot, pour-shot-to-clean-shaker, pour-shot-to-used-shaker, refill-shot, shake",
+      "suggested_repair_hint": "Ensure that all actions are connected to the goal by adding necessary preconditions or effects. For example, introduce intermediate states or actions that link disconnected actions to the goal state."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 52,
+    "search_time_seconds": 0.749332,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(grasp right shot5)",
+      "(fill-shot shot5 ingredient1 right left dispenser1)",
+      "(pour-shot-to-clean-shaker shot5 ingredient1 shaker1 right l0 l1)",
+      "(clean-shot shot5 ingredient1 right left)",
+      "(fill-shot shot5 ingredient3 right left dispenser3)",
+      "(pour-shot-to-used-shaker shot5 ingredient3 shaker1 right l1 l2)",
+      "(clean-shot shot5 ingredient3 right left)",
+      "(fill-shot shot5 ingredient2 right left dispenser2)",
+      "(grasp left shaker1)",
+      "(leave right shot5)",
+      "(shake cocktail1 ingredient3 ingredient1 shaker1 left right)",
+      "(pour-shaker-to-shot cocktail1 shot4 left shaker1 l2 l1)",
+      "(empty-shaker left shaker1 cocktail1 l1 l0)",
+      "(clean-shaker left right shaker1)",
+      "(leave left shaker1)",
+      "(grasp right shot5)",
+      "(pour-shot-to-clean-shaker shot5 ingredient2 shaker1 right l0 l1)",
+      "(clean-shot shot5 ingredient2 right left)",
+      "(fill-shot shot5 ingredient3 right left dispenser3)",
+      "(pour-shot-to-used-shaker shot5 ingredient3 shaker1 right l1 l2)",
+      "(clean-shot shot5 ingredient3 right left)",
+      "(fill-shot shot5 ingredient1 right left dispenser1)",
+      "(grasp left shaker1)",
+      "(leave right shot5)",
+      "(shake cocktail2 ingredient2 ingredient3 shaker1 left right)",
+      "(pour-shaker-to-shot cocktail2 shot2 left shaker1 l2 l1)",
+      "(empty-shaker left shaker1 cocktail2 l1 l0)",
+      "(clean-shaker left right shaker1)",
+      "(leave left shaker1)",
+      "(grasp right shot5)",
+      "(pour-shot-to-clean-shaker shot5 ingredient1 shaker1 right l0 l1)",
+      "(clean-shot shot5 ingredient1 right left)",
+      "(fill-shot shot5 ingredient3 right left dispenser3)",
+      "(pour-shot-to-used-shaker shot5 ingredient3 shaker1 right l1 l2)",
+      "(clean-shot shot5 ingredient3 right left)",
+      "(fill-shot shot5 ingredient2 right left dispenser2)",
+      "(grasp left shaker1)",
+      "(leave right shot5)",
+      "(shake cocktail4 ingredient3 ingredient1 shaker1 left right)",
+      "(pour-shaker-to-shot cocktail4 shot1 left shaker1 l2 l1)",
+      "(empty-shaker left shaker1 cocktail4 l1 l0)",
+      "(clean-shaker left right shaker1)",
+      "(leave left shaker1)",
+      "(grasp right shot5)",
+      "(pour-shot-to-clean-shaker shot5 ingredient2 shaker1 right l0 l1)",
+      "(clean-shot shot5 ingredient2 right left)",
+      "(fill-shot shot5 ingredient3 right left dispenser3)",
+      "(grasp left shaker1)",
+      "(pour-shot-to-used-shaker shot5 ingredient3 shaker1 right l1 l2)",
+      "(leave right shot5)",
+      "(shake cocktail3 ingredient3 ingredient2 shaker1 left right)",
+      "(pour-shaker-to-shot cocktail3 shot3 left shaker1 l2 l1)"
+    ]
+  }
+}

@@ -1,0 +1,3 @@
+1: (paint_down r1 t1 t3 blue)
+2: (paint_up r1 t1 t2 red)
+3: (paint_left r1 t1 t4 red)

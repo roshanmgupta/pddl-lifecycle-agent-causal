@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-10-11T23:47:35.981762",
+  "domain_name": "parking_lot",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 1,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking move_curb_to_curb\n...action passes type checking.\nType-checking move_curb_to_behind\n...action passes type checking.\nType-checking move_behind_to_curb\n...action passes type checking.\nType-checking move_behind_to_behind\nType problem with proposition (at c b) - parameter 2 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 3,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "Action 'move_behind_to_behind': proposition '(at ?c ?b)'",
+      "suspiciousness_score": 1.0,
+      "raw_log": "In action 'move_behind_to_behind', parameter '?b' has type 'car', but predicate 'at' parameter 2 expects 'curb'.",
+      "suggested_repair_hint": "WRONG TYPE USE (Smirnov et al. 2024): In action 'move_behind_to_behind', proposition '(at ?c ?b)' passes variable '?b' of type 'car', but predicate 'at' declares parameter 2 as type 'curb'. In 'types', 'car' is NOT a subtype of 'curb'! Declare \"car\": \"curb\" in domain 'types', or update predicate 'at' parameter to accept a common supertype."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "at c b",
+      "suspiciousness_score": 0.95,
+      "raw_log": "Type problem with proposition (at c b) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Type mismatch on proposition 'at c b'. The predicate declaration in (:predicates ...) does not accept the type of object passed to it. Harmonize the predicate's parameter type in (:predicates ...) to match the argument type, or declare a common supertype in (:types ...) so that the predicate accepts all valid entities."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "Predicate / Type Signature",
+      "suspiciousness_score": 0.95,
+      "raw_log": "Type problem in domain description!",
+      "suggested_repair_hint": "Check type declaration or predicate arity for 'implicated symbol'. Ensure parameter types and predicate declarations match."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 1,
+    "search_time_seconds": 0.000103,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(move_curb_to_curb car1 curb1 curb2)"
+    ]
+  }
+}

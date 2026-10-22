@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-10-18T23:37:24.370318",
+  "domain_name": "blocksworld-4ops",
+  "run_index": 2,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 2,
+  "initial_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'Streamlit_output_file\\temp_domain.pddl' 'Streamlit_output_file\\temp_problem.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #1\n\t->Parsing action #1\n\t->Parsing action 'pick-up'\n\t->Parsing precondition\n\t->Parsing condition\n\t->Parsing literal\nUndefined variable\nGot: ?ob\ntranslate exit code: 31\n\nDriver aborting after translate\n\n"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 3,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pick-up",
+      "suspiciousness_score": 0.85,
+      "raw_log": "->Parsing action 'pick-up'\n->Parsing precondition\n->Parsing condition\n->Parsing literal\nUndefined variable\nGot: ?ob",
+      "suggested_repair_hint": "The action 'pick-up' is missing parameter declarations for the variable '?ob' used in its preconditions and effects. Add the parameter '?ob' with type 'object' to the action's parameters to resolve the undefined variable error."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pick-up",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "The planner cannot find a plan due to potential deadlock cycles involving the 'pick-up' action. Ensure that the preconditions and effects of 'pick-up' are correctly aligned with other actions to break these cycles. Specifically, verify that the 'pick-up' action's preconditions and effects properly interact with 'put-down', 'stack', and 'unstack' actions."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pick-up",
+      "suspiciousness_score": 0.85,
+      "raw_log": "VAL Error: Type-checking pick-up\nx has bad type definition\nErrors: 0, warnings: 0\nError: Error in type-checking!",
+      "suggested_repair_hint": "The action 'pick-up' has a type signature mismatch. Ensure that the parameter '?ob' is correctly typed as 'object' and that all predicates used in preconditions and effects match their declared signatures. Specifically, verify that '(clear ?ob)', '(ontable ?ob)', and '(holding ?ob)' are correctly defined with '?ob' as an 'object'."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 4,
+    "search_time_seconds": 7.4e-05,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(unstack b c)",
+      "(put-down b)",
+      "(pick-up c)",
+      "(stack c b)"
+    ]
+  }
+}

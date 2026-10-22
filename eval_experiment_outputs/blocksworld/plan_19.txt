@@ -1,0 +1,6 @@
+1: (pick-up roboticarm c)
+2: (stack roboticarm c b)
+3: (pick-up roboticarm d)
+4: (stack roboticarm b a)
+5: (pick-up roboticarm b)
+6: (put-down roboticarm d)

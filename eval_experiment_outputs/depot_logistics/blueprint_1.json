@@ -1,0 +1,104 @@
+{
+  "domain_name": "depot_logistics",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "depot_logistics",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "vehicle": "object",
+      "depot": "object",
+      "crate": "object",
+      "pallet": "object",
+      "hoist": "object"
+    },
+    "predicates": [
+      "(at ?v - vehicle ?d - depot)",
+      "(at_hoist ?h - hoist ?d - depot)",
+      "(on_crate ?c - crate ?p - pallet)",
+      "(on_pallet ?p - pallet ?d - depot)",
+      "(holding ?h - hoist ?c - crate)",
+      "(in_truck ?c - crate ?t - vehicle)"
+    ],
+    "actions": [
+      {
+        "action_name": "load_hoist",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?p": "pallet",
+          "?d": "depot"
+        },
+        "preconditions": [
+          "(at_hoist ?h ?d)",
+          "(on_crate ?c ?p)",
+          "(on_pallet ?p ?d)",
+          "(not (holding ?h ?c))"
+        ],
+        "effects": [
+          "(holding ?h ?c)",
+          "(not (on_crate ?c ?p))"
+        ]
+      },
+      {
+        "action_name": "load_truck",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "vehicle",
+          "?d": "depot"
+        },
+        "preconditions": [
+          "(holding ?h ?c)",
+          "(at_hoist ?h ?d)",
+          "(at ?t ?d)",
+          "(not (in_truck ?c ?t))"
+        ],
+        "effects": [
+          "(not (holding ?h ?c))",
+          "(in_truck ?c ?t)"
+        ]
+      },
+      {
+        "action_name": "move_hoist",
+        "parameters": {
+          "?h": "hoist",
+          "?d1": "depot",
+          "?d2": "depot"
+        },
+        "preconditions": [
+          "(at_hoist ?h ?d1)",
+          "(not (at_hoist ?h ?d2))"
+        ],
+        "effects": [
+          "(not (at_hoist ?h ?d1))",
+          "(at_hoist ?h ?d2)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "crate_in_truck",
+    "domain_name": "depot_logistics",
+    "objects": {
+      "t1": "vehicle",
+      "h1": "hoist",
+      "d1": "depot",
+      "c1": "crate",
+      "p1": "pallet"
+    },
+    "initial_state": [
+      "(at t1 d1)",
+      "(at_hoist h1 d1)",
+      "(on_crate c1 p1)",
+      "(on_pallet p1 d1)"
+    ],
+    "goal_state": [
+      "(in_truck c1 t1)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

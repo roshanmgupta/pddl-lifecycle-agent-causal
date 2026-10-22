@@ -98,7 +98,6 @@ def run_maintenance_node(state: Dict[str, Any]) -> Dict[str, Any]:
                         error_category=ErrorCategory.HISTORICAL_REGRESSION,
                         repair_operation_type=RepairOperationType.REGRESSION_BACKWARD_COMPATIBILITY,
                         faulty_element=case_id,
-                        suspiciousness_score=1.0,
                         raw_log=val_log,
                         suggested_repair_hint=hint
                     )
@@ -121,7 +120,6 @@ def run_maintenance_node(state: Dict[str, Any]) -> Dict[str, Any]:
                         error_category=ErrorCategory.HISTORICAL_REGRESSION,
                         repair_operation_type=RepairOperationType.REGRESSION_BACKWARD_COMPATIBILITY,
                         faulty_element=case_id,
-                        suspiciousness_score=1.0,
                         raw_log=fd_log,
                         suggested_repair_hint=f"Historical test case '{case_id}' became unsolvable with updated domain. Ensure newly added action preconditions do not over-constrain historical state transitions."
                     )

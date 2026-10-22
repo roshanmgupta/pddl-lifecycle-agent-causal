@@ -1,0 +1,160 @@
+{
+  "domain_name": "logistics_blocksworld",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "logistics_blocksworld",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null,
+      "place": "object",
+      "locatable": "object",
+      "depot": "place",
+      "distributor": "place",
+      "truck": "locatable",
+      "hoist": "locatable",
+      "surface": "locatable",
+      "pallet": "surface",
+      "crate": "surface"
+    },
+    "predicates": [
+      "(at ?l - locatable ?p - place)",
+      "(available ?h - hoist)",
+      "(on ?c - crate ?s - surface)",
+      "(clear ?s - surface)",
+      "(lifting ?h - hoist ?c - crate)",
+      "(in ?c - crate ?t - truck)"
+    ],
+    "actions": [
+      {
+        "action_name": "drive",
+        "parameters": {
+          "?t": "truck",
+          "?from": "place",
+          "?to": "place"
+        },
+        "preconditions": [
+          "(at ?t ?from)"
+        ],
+        "effects": [
+          "(not (at ?t ?from))",
+          "(at ?t ?to)"
+        ]
+      },
+      {
+        "action_name": "lift",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?s": "surface",
+          "?p": "place"
+        },
+        "preconditions": [
+          "(at ?h ?p)",
+          "(available ?h)",
+          "(at ?c ?p)",
+          "(on ?c ?s)",
+          "(clear ?c)"
+        ],
+        "effects": [
+          "(lifting ?h ?c)",
+          "(clear ?s)",
+          "(not (at ?c ?p))",
+          "(not (clear ?c))",
+          "(not (available ?h))",
+          "(not (on ?c ?s))"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?s": "surface",
+          "?p": "place"
+        },
+        "preconditions": [
+          "(at ?h ?p)",
+          "(at ?s ?p)",
+          "(clear ?s)",
+          "(lifting ?h ?c)"
+        ],
+        "effects": [
+          "(available ?h)",
+          "(at ?c ?p)",
+          "(clear ?c)",
+          "(on ?c ?s)",
+          "(not (lifting ?h ?c))",
+          "(not (clear ?s))"
+        ]
+      },
+      {
+        "action_name": "load",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?p": "place"
+        },
+        "preconditions": [
+          "(at ?h ?p)",
+          "(at ?t ?p)",
+          "(lifting ?h ?c)"
+        ],
+        "effects": [
+          "(in ?c ?t)",
+          "(available ?h)",
+          "(not (lifting ?h ?c))"
+        ]
+      },
+      {
+        "action_name": "unload",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?p": "place"
+        },
+        "preconditions": [
+          "(at ?h ?p)",
+          "(at ?t ?p)",
+          "(available ?h)",
+          "(in ?c ?t)"
+        ],
+        "effects": [
+          "(lifting ?h ?c)",
+          "(not (in ?c ?t))",
+          "(not (available ?h))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "logistics_blocksworld_problem",
+    "domain_name": "logistics_blocksworld",
+    "objects": {
+      "t1": "truck",
+      "h1": "hoist",
+      "c1": "crate",
+      "p1": "pallet",
+      "d1": "depot",
+      "d2": "depot"
+    },
+    "initial_state": [
+      "(at t1 d1)",
+      "(at h1 d1)",
+      "(at c1 d1)",
+      "(on c1 p1)",
+      "(clear c1)",
+      "(available h1)"
+    ],
+    "goal_state": [
+      "(at t1 d2)",
+      "(in c1 t1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

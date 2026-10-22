@@ -17,15 +17,35 @@ def run_repair_node(state: dict) -> dict:
     problem_blueprint = state.get("pddl_problem_blueprint", {})
     formatted_feedback = state.get("formatted_diagnostic_feedback", "")
     verification_errors = state.get("verification_errors", [])
-    state["iteration_count"] = state.get("iteration_count", 0) + 1
+    iteration = state.get("iteration_count", 0) + 1
+    state["iteration_count"] = iteration
 
     feedback_context = formatted_feedback
     if not feedback_context and verification_errors:
         feedback_context = f"Verification Errors:\n" + "\n".join(verification_errors)
 
+    causal_context = ""
+    causal_analysis = state.get("causal_graph_analysis", {})
+    if causal_analysis:
+        summary = causal_analysis.get("diagnostic_summary", "")
+        if summary:
+            causal_context = f"\nGROUNDED ACTION-PREDICATE CAUSAL DEPENDENCY & REACHABILITY ANALYSIS:\n{summary}\n"
+
+    history_context = ""
+    hist_reports = state.get("historical_diagnostic_reports", [])
+    if iteration > 1 and hist_reports:
+        recent_history = [
+            f"- Previous Attempt Issue: [{r.get('error_category')}] in '{r.get('faulty_element')}': {r.get('suggested_repair_hint')}"
+            for r in hist_reports[-3:] if isinstance(r, dict)
+        ]
+        if recent_history:
+            history_context = "\nPREVIOUS FAILED REPAIR ATTEMPTS (DO NOT REVERT OR OSCILLATE):\n" + "\n".join(recent_history) + "\nNote: Do NOT repeat previously rejected modifications or alternate parameter types back and forth. Apply a globally consistent resolution across all actions.\n"
+
     prompt = f"""
     You are an expert PDDL Knowledge Engineer specializing in formal domain model repair.
     Your task is to repair the existing PDDL Domain and Problem blueprints to resolve the diagnostic errors reported by symbolic oracles.
+    Treat the provided blueprints as a working draft to surgically edit, not as disposable context.
+    Preserve all elements that are already correct and apply the smallest set of changes needed to satisfy oracle feedback.
 
     Original Requirements Text:
     {requirements_text}
@@ -41,6 +61,8 @@ def run_repair_node(state: dict) -> dict:
     ```
 
     {feedback_context}
+    {causal_context}
+    {history_context}
 
     {STANDARD_CLASSICAL_PDDL_RULES}
     {STANDARD_REPAIR_RULES}

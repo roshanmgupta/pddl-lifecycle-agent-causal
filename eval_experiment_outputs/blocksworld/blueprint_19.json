@@ -1,0 +1,127 @@
+{
+  "domain_name": "blocksworld",
+  "run_index": 19,
+  "domain_blueprint": {
+    "domain_name": "blocksworld",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "block": "object",
+      "table": "object",
+      "robotic-arm": "object"
+    },
+    "predicates": [
+      "(on-table ?b - block)",
+      "(on-block ?b1 - block ?b2 - block)",
+      "(clear ?b - block)",
+      "(arm-empty ?a - robotic-arm)"
+    ],
+    "actions": [
+      {
+        "action_name": "pick-up",
+        "parameters": {
+          "?a": "robotic-arm",
+          "?b": "block"
+        },
+        "preconditions": [
+          "(on-table ?b)",
+          "(clear ?b)",
+          "(arm-empty ?a)"
+        ],
+        "effects": [
+          "(not (on-table ?b))",
+          "(not (clear ?b))",
+          "(not (arm-empty ?a))"
+        ]
+      },
+      {
+        "action_name": "put-down",
+        "parameters": {
+          "?a": "robotic-arm",
+          "?b": "block"
+        },
+        "preconditions": [
+          "(not (arm-empty ?a))"
+        ],
+        "effects": [
+          "(on-table ?b)",
+          "(clear ?b)",
+          "(arm-empty ?a)"
+        ]
+      },
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?a": "robotic-arm",
+          "?b1": "block",
+          "?b2": "block"
+        },
+        "preconditions": [
+          "(clear ?b2)",
+          "(not (arm-empty ?a))"
+        ],
+        "effects": [
+          "(on-block ?b1 ?b2)",
+          "(clear ?b1)",
+          "(arm-empty ?a)",
+          "(not (clear ?b2))"
+        ]
+      },
+      {
+        "action_name": "unstack",
+        "parameters": {
+          "?a": "robotic-arm",
+          "?b1": "block",
+          "?b2": "block"
+        },
+        "preconditions": [
+          "(on-block ?b1 ?b2)",
+          "(clear ?b1)",
+          "(arm-empty ?a)"
+        ],
+        "effects": [
+          "(not (on-block ?b1 ?b2))",
+          "(not (clear ?b1))",
+          "(clear ?b2)",
+          "(not (arm-empty ?a))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "problem_azure_baml2",
+    "domain_name": "blocksworld",
+    "objects": {
+      "A": "block",
+      "B": "block",
+      "C": "block",
+      "D": "block",
+      "table": "table",
+      "roboticarm": "robotic-arm"
+    },
+    "initial_state": [
+      "(on-table A)",
+      "(clear A)",
+      "(on-table B)",
+      "(clear B)",
+      "(on-table C)",
+      "(clear C)",
+      "(on-table D)",
+      "(clear D)",
+      "(arm-empty roboticarm)"
+    ],
+    "goal_state": [
+      "(on-block B A)",
+      "(on-block C B)",
+      "(on-table A)",
+      "(on-table D)",
+      "(clear C)",
+      "(clear D)",
+      "(arm-empty roboticarm)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

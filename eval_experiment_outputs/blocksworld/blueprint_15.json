@@ -1,0 +1,75 @@
+{
+  "domain_name": "blocksworld",
+  "run_index": 15,
+  "domain_blueprint": {
+    "domain_name": "blocksworld",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "block": "object"
+    },
+    "predicates": [
+      "(on ?x - block ?y - block)",
+      "(ontable ?x - block)",
+      "(clear ?x - block)",
+      "(handempty)",
+      "(holding ?x - block)"
+    ],
+    "actions": [
+      {
+        "action_name": "pick-up",
+        "parameters": {
+          "?x": "block"
+        },
+        "preconditions": [
+          "(clear ?x)",
+          "(ontable ?x)",
+          "(handempty)"
+        ],
+        "effects": [
+          "(not (ontable ?x))",
+          "(not (clear ?x))",
+          "(not (handempty))",
+          "(holding ?x)"
+        ]
+      },
+      {
+        "action_name": "put-down",
+        "parameters": {
+          "?x": "block"
+        },
+        "preconditions": [
+          "(holding ?x)"
+        ],
+        "effects": [
+          "(not (holding ?x))",
+          "(clear ?x)",
+          "(handempty)",
+          "(ontable ?x)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "blocksworld_prob_01",
+    "domain_name": "blocksworld",
+    "objects": {
+      "a": "block",
+      "b": "block"
+    },
+    "initial_state": [
+      "(ontable a)",
+      "(ontable b)",
+      "(clear a)",
+      "(clear b)",
+      "(handempty)"
+    ],
+    "goal_state": [
+      "(holding a)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

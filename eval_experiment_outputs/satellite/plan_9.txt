@@ -1,0 +1,2 @@
+1: (switch-on inst2 sat1)
+2: (switch-on inst1 sat1)

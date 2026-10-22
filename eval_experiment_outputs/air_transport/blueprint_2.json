@@ -1,0 +1,142 @@
+{
+  "domain_name": "air_transport",
+  "run_index": 2,
+  "domain_blueprint": {
+    "domain_name": "air_transport",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "aircraft": "object",
+      "city": "object",
+      "passenger": "object",
+      "fuel_level": "object"
+    },
+    "predicates": [
+      "(at ?a - aircraft ?c - city)",
+      "(on_board ?p - passenger ?a - aircraft)",
+      "(in_city ?p - passenger ?c - city)",
+      "(target_city ?p - passenger ?c - city)",
+      "(has_fuel ?a - aircraft ?f - fuel_level)",
+      "(can_fly_normal ?a - aircraft)",
+      "(can_fly_zoom ?a - aircraft)"
+    ],
+    "actions": [
+      {
+        "action_name": "fly_normal",
+        "parameters": {
+          "?a": "aircraft",
+          "?from": "city",
+          "?to": "city",
+          "?f": "fuel_level"
+        },
+        "preconditions": [
+          "(at ?a ?from)",
+          "(has_fuel ?a ?f)",
+          "(can_fly_normal ?a)"
+        ],
+        "effects": [
+          "(not (at ?a ?from))",
+          "(at ?a ?to)",
+          "(not (has_fuel ?a ?f))"
+        ]
+      },
+      {
+        "action_name": "fly_zoom",
+        "parameters": {
+          "?a": "aircraft",
+          "?from": "city",
+          "?to": "city",
+          "?f": "fuel_level"
+        },
+        "preconditions": [
+          "(at ?a ?from)",
+          "(has_fuel ?a ?f)",
+          "(can_fly_zoom ?a)"
+        ],
+        "effects": [
+          "(not (at ?a ?from))",
+          "(at ?a ?to)",
+          "(not (has_fuel ?a ?f))"
+        ]
+      },
+      {
+        "action_name": "board",
+        "parameters": {
+          "?p": "passenger",
+          "?a": "aircraft",
+          "?c": "city"
+        },
+        "preconditions": [
+          "(at ?a ?c)",
+          "(in_city ?p ?c)"
+        ],
+        "effects": [
+          "(not (in_city ?p ?c))",
+          "(on_board ?p ?a)"
+        ]
+      },
+      {
+        "action_name": "debark",
+        "parameters": {
+          "?p": "passenger",
+          "?a": "aircraft",
+          "?c": "city"
+        },
+        "preconditions": [
+          "(at ?a ?c)",
+          "(on_board ?p ?a)"
+        ],
+        "effects": [
+          "(not (on_board ?p ?a))",
+          "(in_city ?p ?c)"
+        ]
+      },
+      {
+        "action_name": "refuel",
+        "parameters": {
+          "?a": "aircraft",
+          "?c": "city",
+          "?f": "fuel_level"
+        },
+        "preconditions": [
+          "(at ?a ?c)"
+        ],
+        "effects": [
+          "(has_fuel ?a ?f)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "transport_passengers",
+    "domain_name": "air_transport",
+    "objects": {
+      "a1": "aircraft",
+      "c1": "city",
+      "c2": "city",
+      "c3": "city",
+      "p1": "passenger",
+      "p2": "passenger",
+      "f1": "fuel_level",
+      "f2": "fuel_level"
+    },
+    "initial_state": [
+      "(at a1 c1)",
+      "(in_city p1 c1)",
+      "(in_city p2 c1)",
+      "(target_city p1 c3)",
+      "(target_city p2 c2)",
+      "(has_fuel a1 f1)",
+      "(can_fly_normal a1)",
+      "(can_fly_zoom a1)"
+    ],
+    "goal_state": [
+      "(in_city p1 c3)",
+      "(in_city p2 c2)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

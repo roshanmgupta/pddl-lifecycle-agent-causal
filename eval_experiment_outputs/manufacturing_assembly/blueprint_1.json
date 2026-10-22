@@ -1,0 +1,235 @@
+{
+  "domain_name": "manufacturing_assembly",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "manufacturing_assembly",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "part": "object",
+      "subcomponent": "part",
+      "assembly": "object",
+      "tool": "object",
+      "fixture": "object",
+      "toolpool": "object"
+    },
+    "predicates": [
+      "(available ?p - part)",
+      "(installed ?p - part ?a - assembly)",
+      "(requires_tool ?p - part ?t - tool)",
+      "(requires_fixture ?p - part ?f - fixture)",
+      "(tool_reserved ?t - tool)",
+      "(fixture_reserved ?f - fixture)",
+      "(tool_available ?t - tool)",
+      "(fixture_available ?f - fixture)",
+      "(in_toolpool ?t - tool ?pool - toolpool)",
+      "(in_fixturepool ?f - fixture ?pool - toolpool)",
+      "(precedes ?p1 - part ?p2 - part)",
+      "(transient ?p - part)",
+      "(removed ?p - part)",
+      "(first_part ?p - part)",
+      "(assembled ?a - assembly)"
+    ],
+    "actions": [
+      {
+        "action_name": "reserve_tool",
+        "parameters": {
+          "?t": "tool",
+          "?pool": "toolpool"
+        },
+        "preconditions": [
+          "(in_toolpool ?t ?pool)",
+          "(tool_available ?t)"
+        ],
+        "effects": [
+          "(not (tool_available ?t))",
+          "(tool_reserved ?t)"
+        ]
+      },
+      {
+        "action_name": "release_tool",
+        "parameters": {
+          "?t": "tool",
+          "?pool": "toolpool"
+        },
+        "preconditions": [
+          "(tool_reserved ?t)",
+          "(in_toolpool ?t ?pool)"
+        ],
+        "effects": [
+          "(not (tool_reserved ?t))",
+          "(tool_available ?t)"
+        ]
+      },
+      {
+        "action_name": "reserve_fixture",
+        "parameters": {
+          "?f": "fixture",
+          "?pool": "toolpool"
+        },
+        "preconditions": [
+          "(in_fixturepool ?f ?pool)",
+          "(fixture_available ?f)"
+        ],
+        "effects": [
+          "(not (fixture_available ?f))",
+          "(fixture_reserved ?f)"
+        ]
+      },
+      {
+        "action_name": "release_fixture",
+        "parameters": {
+          "?f": "fixture",
+          "?pool": "toolpool"
+        },
+        "preconditions": [
+          "(fixture_reserved ?f)",
+          "(in_fixturepool ?f ?pool)"
+        ],
+        "effects": [
+          "(not (fixture_reserved ?f))",
+          "(fixture_available ?f)"
+        ]
+      },
+      {
+        "action_name": "fit_first_part",
+        "parameters": {
+          "?p": "part",
+          "?a": "assembly",
+          "?t": "tool",
+          "?f": "fixture"
+        },
+        "preconditions": [
+          "(available ?p)",
+          "(requires_tool ?p ?t)",
+          "(requires_fixture ?p ?f)",
+          "(tool_reserved ?t)",
+          "(fixture_reserved ?f)",
+          "(first_part ?p)"
+        ],
+        "effects": [
+          "(not (available ?p))",
+          "(installed ?p ?a)"
+        ]
+      },
+      {
+        "action_name": "fit_subsequent_part",
+        "parameters": {
+          "?p": "part",
+          "?a": "assembly",
+          "?t": "tool",
+          "?f": "fixture",
+          "?prev": "part"
+        },
+        "preconditions": [
+          "(available ?p)",
+          "(requires_tool ?p ?t)",
+          "(requires_fixture ?p ?f)",
+          "(tool_reserved ?t)",
+          "(fixture_reserved ?f)",
+          "(precedes ?prev ?p)",
+          "(installed ?prev ?a)"
+        ],
+        "effects": [
+          "(not (available ?p))",
+          "(installed ?p ?a)"
+        ]
+      },
+      {
+        "action_name": "fit_after_removal",
+        "parameters": {
+          "?p": "part",
+          "?a": "assembly",
+          "?t": "tool",
+          "?f": "fixture",
+          "?prev": "part"
+        },
+        "preconditions": [
+          "(available ?p)",
+          "(requires_tool ?p ?t)",
+          "(requires_fixture ?p ?f)",
+          "(tool_reserved ?t)",
+          "(fixture_reserved ?f)",
+          "(precedes ?prev ?p)",
+          "(removed ?prev)"
+        ],
+        "effects": [
+          "(not (available ?p))",
+          "(installed ?p ?a)"
+        ]
+      },
+      {
+        "action_name": "remove_transient",
+        "parameters": {
+          "?p": "part",
+          "?a": "assembly"
+        },
+        "preconditions": [
+          "(transient ?p)",
+          "(installed ?p ?a)"
+        ],
+        "effects": [
+          "(not (installed ?p ?a))",
+          "(removed ?p)"
+        ]
+      },
+      {
+        "action_name": "complete_assembly",
+        "parameters": {
+          "?a": "assembly",
+          "?final": "part"
+        },
+        "preconditions": [
+          "(installed ?final ?a)"
+        ],
+        "effects": [
+          "(assembled ?a)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "assemble_product",
+    "domain_name": "manufacturing_assembly",
+    "objects": {
+      "a1": "assembly",
+      "base": "part",
+      "sub1": "subcomponent",
+      "sub2": "subcomponent",
+      "pin1": "part",
+      "wrench": "tool",
+      "fixture1": "fixture",
+      "pool1": "toolpool"
+    },
+    "initial_state": [
+      "(available base)",
+      "(available sub1)",
+      "(available sub2)",
+      "(available pin1)",
+      "(first_part base)",
+      "(precedes base sub1)",
+      "(precedes sub1 pin1)",
+      "(precedes pin1 sub2)",
+      "(transient pin1)",
+      "(requires_tool base wrench)",
+      "(requires_tool sub1 wrench)",
+      "(requires_tool sub2 wrench)",
+      "(requires_tool pin1 wrench)",
+      "(requires_fixture base fixture1)",
+      "(requires_fixture sub1 fixture1)",
+      "(requires_fixture sub2 fixture1)",
+      "(requires_fixture pin1 fixture1)",
+      "(in_toolpool wrench pool1)",
+      "(in_fixturepool fixture1 pool1)",
+      "(tool_available wrench)",
+      "(fixture_available fixture1)"
+    ],
+    "goal_state": [
+      "(assembled a1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

@@ -1,0 +1,145 @@
+{
+  "domain_name": "transport14",
+  "run_index": 4,
+  "domain_blueprint": {
+    "domain_name": "transport14",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null,
+      "location": "object",
+      "locatable": "object",
+      "vehicle": "locatable",
+      "package": "locatable",
+      "capacity-number": "object"
+    },
+    "constants": {},
+    "predicates": [
+      "(road ?from - location ?to - location)",
+      "(at ?obj - locatable ?loc - location)",
+      "(in ?pkg - package ?veh - vehicle)",
+      "(capacity-predecessor ?d - capacity-number ?e - capacity-number)",
+      "(capacity ?veh - vehicle ?cap - capacity-number)"
+    ],
+    "actions": [
+      {
+        "action_name": "drive",
+        "parameters": {
+          "?a": "vehicle",
+          "?b": "location",
+          "?c": "location"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(road ?b ?c)"
+        ],
+        "effects": [
+          "(not (at ?a ?b))",
+          "(at ?a ?c)"
+        ]
+      },
+      {
+        "action_name": "pick-up",
+        "parameters": {
+          "?a": "vehicle",
+          "?b": "location",
+          "?c": "package",
+          "?d": "capacity-number",
+          "?e": "capacity-number"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(at ?c ?b)",
+          "(capacity-predecessor ?d ?e)",
+          "(capacity ?a ?e)"
+        ],
+        "effects": [
+          "(not (at ?c ?b))",
+          "(not (capacity ?a ?e))",
+          "(in ?c ?a)",
+          "(capacity ?a ?d)"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?a": "vehicle",
+          "?b": "location",
+          "?c": "package",
+          "?d": "capacity-number",
+          "?e": "capacity-number"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(in ?c ?a)",
+          "(capacity-predecessor ?d ?e)",
+          "(capacity ?a ?d)"
+        ],
+        "effects": [
+          "(not (in ?c ?a))",
+          "(not (capacity ?a ?d))",
+          "(at ?c ?b)",
+          "(capacity ?a ?e)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "transport14",
+    "objects": {
+      "loc-1": "location",
+      "loc-2": "location",
+      "loc-3": "location",
+      "loc-4": "location",
+      "loc-5": "location",
+      "truck-1": "vehicle",
+      "truck-2": "vehicle",
+      "package-1": "package",
+      "package-2": "package",
+      "package-3": "package",
+      "package-4": "package",
+      "capacity-0": "capacity-number",
+      "capacity-1": "capacity-number",
+      "capacity-2": "capacity-number",
+      "capacity-3": "capacity-number",
+      "capacity-4": "capacity-number"
+    },
+    "initial_state": [
+      "(capacity-predecessor capacity-0 capacity-1)",
+      "(capacity-predecessor capacity-1 capacity-2)",
+      "(capacity-predecessor capacity-2 capacity-3)",
+      "(capacity-predecessor capacity-3 capacity-4)",
+      "(road loc-3 loc-1)",
+      "(road loc-1 loc-3)",
+      "(road loc-3 loc-2)",
+      "(road loc-2 loc-3)",
+      "(road loc-4 loc-1)",
+      "(road loc-1 loc-4)",
+      "(road loc-4 loc-3)",
+      "(road loc-3 loc-4)",
+      "(road loc-5 loc-2)",
+      "(road loc-2 loc-5)",
+      "(road loc-5 loc-3)",
+      "(road loc-3 loc-5)",
+      "(at package-1 loc-1)",
+      "(at package-2 loc-1)",
+      "(at package-3 loc-3)",
+      "(at package-4 loc-2)",
+      "(at truck-1 loc-2)",
+      "(capacity truck-1 capacity-3)",
+      "(at truck-2 loc-1)",
+      "(capacity truck-2 capacity-2)"
+    ],
+    "goal_state": [
+      "(at package-1 loc-2)",
+      "(at package-2 loc-2)",
+      "(at package-3 loc-1)",
+      "(at package-4 loc-5)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

@@ -1,0 +1,5 @@
+1: (switch_on instrument0 satellite0)
+2: (turn_to satellite0 groundstation1 star2)
+3: (calibrate satellite0 instrument0 groundstation1)
+4: (turn_to satellite0 star2 groundstation1)
+5: (take_image satellite0 star2 instrument0 image0)

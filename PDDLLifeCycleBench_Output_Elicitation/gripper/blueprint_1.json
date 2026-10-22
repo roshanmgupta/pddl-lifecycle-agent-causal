@@ -1,0 +1,113 @@
+{
+  "domain_name": "gripper",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "gripper",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null,
+      "robot": "object",
+      "gripper": "object",
+      "room": "object"
+    },
+    "constants": {},
+    "predicates": [
+      "(at ?r - robot ?loc - room)",
+      "(free-from ?r - robot ?g - gripper)",
+      "(at ?b - object ?loc - room)",
+      "(carrying ?r - robot ?b - object ?g - gripper)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_robot",
+        "parameters": {
+          "?r": "robot",
+          "?from": "room",
+          "?to": "room"
+        },
+        "preconditions": [
+          "(at ?r ?from)"
+        ],
+        "effects": [
+          "(at ?r ?to)",
+          "(not (at ?r ?from))"
+        ]
+      },
+      {
+        "action_name": "pick_object",
+        "parameters": {
+          "?r": "robot",
+          "?b": "object",
+          "?g": "gripper",
+          "?loc": "room"
+        },
+        "preconditions": [
+          "(at ?b ?loc)",
+          "(at ?r ?loc)",
+          "(free-from ?r ?g)"
+        ],
+        "effects": [
+          "(carrying ?r ?b ?g)",
+          "(not (at ?b ?loc))",
+          "(not (free-from ?r ?g))"
+        ]
+      },
+      {
+        "action_name": "drop_object",
+        "parameters": {
+          "?r": "robot",
+          "?b": "object",
+          "?g": "gripper",
+          "?loc": "room"
+        },
+        "preconditions": [
+          "(carrying ?r ?b ?g)",
+          "(at ?r ?loc)"
+        ],
+        "effects": [
+          "(at ?b ?loc)",
+          "(free-from ?r ?g)",
+          "(not (carrying ?r ?b ?g))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1.pddl",
+    "domain_name": "gripper",
+    "objects": {
+      "robot1": "robot",
+      "rgripper1": "gripper",
+      "lgripper1": "gripper",
+      "room1": "room",
+      "room2": "room",
+      "ball1": "object",
+      "ball2": "object",
+      "ball3": "object",
+      "ball4": "object",
+      "ball5": "object"
+    },
+    "initial_state": [
+      "(at robot1 room2)",
+      "(free-from robot1 rgripper1)",
+      "(free-from robot1 lgripper1)",
+      "(at ball1 room2)",
+      "(at ball2 room2)",
+      "(at ball3 room1)",
+      "(at ball4 room2)",
+      "(at ball5 room1)"
+    ],
+    "goal_state": [
+      "(at ball1 room2)",
+      "(at ball2 room1)",
+      "(at ball3 room1)",
+      "(at ball4 room1)",
+      "(at ball5 room1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

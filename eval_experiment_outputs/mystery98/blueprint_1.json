@@ -1,0 +1,201 @@
+{
+  "domain_name": "mystery98",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "mystery98",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null,
+      "food": "object",
+      "pleasure": "object",
+      "pain": "object",
+      "province": "object",
+      "planet": "object"
+    },
+    "predicates": [
+      "(craves ?a - pain ?f - food)",
+      "(craves ?p - pleasure ?f - food)",
+      "(fears ?a - pain ?p - pleasure)",
+      "(in_harmony ?p - pleasure ?o - object)",
+      "(eats ?f1 - food ?f2 - food)",
+      "(located_in ?f - food ?p - province)",
+      "(attacks ?p1 - province ?p2 - province)",
+      "(orbits ?p1 - planet ?p2 - planet)",
+      "(is_food ?f - food)",
+      "(is_pleasure ?p - pleasure)",
+      "(is_pain ?a - pain)",
+      "(is_province ?p - province)",
+      "(is_planet ?p - planet)"
+    ],
+    "actions": [
+      {
+        "action_name": "overcome",
+        "parameters": {
+          "?a": "pain",
+          "?b": "pleasure",
+          "?c": "food",
+          "?d": "planet",
+          "?e": "planet"
+        },
+        "preconditions": [
+          "(is_pain ?a)",
+          "(is_pleasure ?b)",
+          "(craves ?a ?c)",
+          "(craves ?b ?c)",
+          "(is_food ?c)",
+          "(in_harmony ?b ?e)",
+          "(is_planet ?e)",
+          "(orbits ?d ?e)",
+          "(is_planet ?d)"
+        ],
+        "effects": [
+          "(fears ?a ?b)",
+          "(in_harmony ?b ?d)",
+          "(not (craves ?a ?c))",
+          "(not (in_harmony ?b ?e))"
+        ]
+      },
+      {
+        "action_name": "feast",
+        "parameters": {
+          "?a": "pleasure",
+          "?b": "food",
+          "?c": "food",
+          "?d": "province",
+          "?e": "province"
+        },
+        "preconditions": [
+          "(craves ?a ?b)",
+          "(is_food ?b)",
+          "(is_pleasure ?a)",
+          "(eats ?b ?c)",
+          "(is_food ?c)",
+          "(located_in ?b ?e)",
+          "(attacks ?d ?e)"
+        ],
+        "effects": [
+          "(craves ?a ?c)",
+          "(located_in ?b ?d)",
+          "(not (craves ?a ?b))",
+          "(not (located_in ?b ?e))"
+        ]
+      },
+      {
+        "action_name": "succumb",
+        "parameters": {
+          "?a": "pain",
+          "?b": "pleasure",
+          "?c": "food",
+          "?d": "planet",
+          "?e": "object"
+        },
+        "preconditions": [
+          "(fears ?a ?b)",
+          "(is_pain ?a)",
+          "(is_pleasure ?b)",
+          "(craves ?b ?c)",
+          "(is_food ?c)",
+          "(in_harmony ?b ?d)",
+          "(orbits ?d ?e)"
+        ],
+        "effects": [
+          "(craves ?a ?c)",
+          "(in_harmony ?b ?e)",
+          "(not (fears ?a ?b))",
+          "(not (in_harmony ?b ?d))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "mystery98",
+    "objects": {
+      "rice": "food",
+      "pear": "food",
+      "flounder": "food",
+      "okra": "food",
+      "pork": "food",
+      "lamb": "food",
+      "rest": "pleasure",
+      "hangover": "pain",
+      "depression": "pain",
+      "abrasion": "pain",
+      "kentucky": "province",
+      "bosnia": "province",
+      "surrey": "province",
+      "pennsylvania": "province",
+      "alsace": "province",
+      "quebec": "province",
+      "guanabara": "province",
+      "mars": "planet",
+      "earth": "planet",
+      "uranus": "planet",
+      "venus": "planet"
+    },
+    "initial_state": [
+      "(is_food rice)",
+      "(is_food pear)",
+      "(is_food flounder)",
+      "(is_food okra)",
+      "(is_food pork)",
+      "(is_food lamb)",
+      "(is_pleasure rest)",
+      "(is_pain hangover)",
+      "(is_pain depression)",
+      "(is_pain abrasion)",
+      "(is_province kentucky)",
+      "(is_province bosnia)",
+      "(is_province surrey)",
+      "(is_province pennsylvania)",
+      "(is_province alsace)",
+      "(is_province quebec)",
+      "(is_province guanabara)",
+      "(is_planet mars)",
+      "(is_planet earth)",
+      "(is_planet uranus)",
+      "(is_planet venus)",
+      "(eats lamb pork)",
+      "(eats pork okra)",
+      "(located_in okra guanabara)",
+      "(located_in pork quebec)",
+      "(eats pork lamb)",
+      "(in_harmony rest venus)",
+      "(eats lamb flounder)",
+      "(craves depression flounder)",
+      "(eats okra pear)",
+      "(eats rice rice)",
+      "(eats rice flounder)",
+      "(attacks kentucky bosnia)",
+      "(attacks pennsylvania alsace)",
+      "(attacks alsace quebec)",
+      "(craves abrasion pork)",
+      "(located_in rice bosnia)",
+      "(orbits mars earth)",
+      "(eats flounder lamb)",
+      "(craves rest pork)",
+      "(orbits earth uranus)",
+      "(located_in pear surrey)",
+      "(craves hangover rice)",
+      "(attacks bosnia surrey)",
+      "(attacks surrey pennsylvania)",
+      "(located_in lamb pennsylvania)",
+      "(eats flounder rice)",
+      "(eats rice pear)",
+      "(attacks quebec guanabara)",
+      "(eats pear okra)",
+      "(eats pear rice)",
+      "(eats okra pork)",
+      "(orbits uranus venus)",
+      "(located_in flounder alsace)"
+    ],
+    "goal_state": [
+      "(craves abrasion rice)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

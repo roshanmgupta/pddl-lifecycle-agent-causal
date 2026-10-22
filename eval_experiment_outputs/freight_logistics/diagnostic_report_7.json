@@ -1,0 +1,258 @@
+{
+  "timestamp": "2026-10-16T20:24:26.700755",
+  "domain_name": "freight_logistics",
+  "run_index": 7,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "[REGRESSION_BREAKAGE]: Historical case 'ipc-2002_depots-strips-automatic_instance-1' failed VAL syntax validation.\nLog: Type-checking express-transit\n...action passes type checking.\nType problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed\nType-checking goal failed\n\nType problem in problem specification!",
+    "[REGRESSION_BREAKAGE]: Historical case 'ipc-2002_depots-strips-automatic_instance-2' failed VAL syntax validation.\nLog: Type-checking express-transit\n...action passes type checking.\nType problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed\nType-checking goal failed\n\nType problem in problem specification!",
+    "[REGRESSION_BREAKAGE]: Historical case 'ipc-2002_depots-strips-automatic_instance-3' failed VAL syntax validation.\nLog: Type-checking express-transit\n...action passes type checking.\nType problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed\nType-checking goal failed\n\nType problem in problem specification!",
+    "[REGRESSION_BREAKAGE]: Historical case 'ipc-2002_depots-strips-automatic_instance-5' failed VAL syntax validation.\nLog: Type-checking express-transit\n...action passes type checking.\nType problem with proposition (on crate0 crate5) - parameter 1 is incorrectly typed\nType-checking goal failed\n\nType problem in problem specification!",
+    "[REGRESSION_BREAKAGE]: Historical case 'ipc-2002_depots-strips-automatic_instance-7' failed VAL syntax validation.\nLog: Type-checking express-transit\n...action passes type checking.\nType problem with proposition (on crate0 pallet3) - parameter 1 is incorrectly typed\nType-checking goal failed\n\nType problem in problem specification!"
+  ],
+  "final_verification_errors": [
+    "[REGRESSION_BREAKAGE]: Historical case 'ipc-2002_depots-strips-automatic_instance-1' failed VAL syntax validation.\nLog: Type-checking express-transit\n...action passes type checking.\nType problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed\nType-checking goal failed\n\nType problem in problem specification!",
+    "[REGRESSION_BREAKAGE]: Historical case 'ipc-2002_depots-strips-automatic_instance-2' failed VAL syntax validation.\nLog: Type-checking express-transit\n...action passes type checking.\nType problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed\nType-checking goal failed\n\nType problem in problem specification!",
+    "[REGRESSION_BREAKAGE]: Historical case 'ipc-2002_depots-strips-automatic_instance-3' failed VAL syntax validation.\nLog: Type-checking express-transit\n...action passes type checking.\nType problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed\nType-checking goal failed\n\nType problem in problem specification!",
+    "[REGRESSION_BREAKAGE]: Historical case 'ipc-2002_depots-strips-automatic_instance-5' failed VAL syntax validation.\nLog: Type-checking express-transit\n...action passes type checking.\nType problem with proposition (on crate0 crate5) - parameter 1 is incorrectly typed\nType-checking goal failed\n\nType problem in problem specification!",
+    "[REGRESSION_BREAKAGE]: Historical case 'ipc-2002_depots-strips-automatic_instance-7' failed VAL syntax validation.\nLog: Type-checking express-transit\n...action passes type checking.\nType problem with proposition (on crate0 pallet3) - parameter 1 is incorrectly typed\nType-checking goal failed\n\nType problem in problem specification!"
+  ],
+  "diagnostic_issues_count": 28,
+  "diagnostic_reports": [
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.9,
+      "raw_log": "Predicate on not found\nType-checking goal failed\nType problem in problem specification!",
+      "suggested_repair_hint": "The historical test cases are failing because they rely on the 'on' predicate which is not declared in the current domain. To maintain backward compatibility, add the 'on' predicate to the domain's predicates list. This predicate was likely used in the original IPC-2002 Depots domain for stacking tasks."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "express-transit",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Type-checking express-transit\n...action passes type checking.",
+      "suggested_repair_hint": "While the express-transit action passes type checking, it's recommended to ensure all parameters are properly typed and that the action doesn't interfere with existing predicates used in historical cases. Verify that the cargo parameter ?c is properly constrained to only urgent cargo."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "Multiple historical cases failing with similar 'Predicate not found' errors",
+      "suggested_repair_hint": "Review the original IPC-2002 Depots domain to identify all predicates and types that were present in the historical version. Ensure all necessary predicates (like 'on', 'in', 'lifting', etc.) are included in the current domain to maintain backward compatibility while adding the new express delivery functionality."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.9,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases are failing because the 'on' predicate is being used with parameters of incorrect types. Ensure that the 'on' predicate is properly declared in the domain with correct parameter types (cargo and pallet) and that all historical problem files use these types correctly."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "on",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'on' predicate is not declared in the current domain blueprint. Add the predicate '(on ?c - cargo ?p - pallet)' to the domain predicates to ensure type correctness and backward compatibility with historical test cases."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "Type problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases include stacking cargo on other cargo, which is not supported by the current domain. Consider adding a predicate like '(stacked ?c1 - cargo ?c2 - cargo)' or ensuring all cargo is placed on pallets in the historical problem files."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.9,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases are failing because the 'on' predicate is not declared in the current domain. To maintain backward compatibility, add the 'on' predicate to the domain's predicates list with the correct type signatures: '(on ?c - cargo ?p - pallet)'."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases also use the 'on' predicate with cargo stacking. To fully restore backward compatibility, extend the 'on' predicate to support stacking cargo on other cargo: '(on ?c1 - cargo ?c2 - cargo)'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "on",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Type problem in problem specification!",
+      "suggested_repair_hint": "Ensure all predicates used in the problem's initial and goal states are properly declared in the domain with matching type signatures. The 'on' predicate is missing and needs to be added to support both pallet and cargo stacking scenarios."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.9,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases expect 'on' predicate to work with 'cargo' and 'pallet' types. Add 'pallet' as a valid type for the second parameter of 'on' predicate to maintain backward compatibility with existing stacking tasks."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "on",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'on' predicate is being used with two 'cargo' types in historical cases. Ensure the predicate declaration supports both '(on ?c - cargo ?p - pallet)' and '(on ?c1 - cargo ?c2 - cargo)' variants by either merging them with proper type hierarchy or creating separate predicates."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "Type problem in problem specification!",
+      "suggested_repair_hint": "Review all historical test cases to identify required predicates and types that are missing in the current domain. Ensure all original domain elements are preserved while adding new express delivery functionality."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.9,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases expect 'on' predicate to work with 'cargo' and 'pallet' types. Ensure the 'on' predicate in the domain is declared to accept these types by adding '(on ?c - cargo ?p - pallet)' to the predicates list."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases also expect 'on' predicate to work between two 'cargo' items. Add '(on ?c1 - cargo ?c2 - cargo)' to the predicates list to maintain backward compatibility with stacking operations."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "on",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Type problem in problem specification!",
+      "suggested_repair_hint": "Ensure all uses of the 'on' predicate in initial and goal states match the declared predicate signatures. The domain should declare both variants: '(on ?c - cargo ?p - pallet)' and '(on ?c1 - cargo ?c2 - cargo)'."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.9,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases expect 'on' predicate to work with 'cargo' and 'pallet' types. Add 'pallet' as a valid type for the second parameter of the 'on' predicate to maintain backward compatibility."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases also expect 'on' predicate to work between two 'cargo' objects. Ensure the 'on' predicate is declared to accept 'cargo' for both parameters to support stacking behavior."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "on",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'on' predicate needs to be updated to explicitly declare its parameter types to match historical usage: '(on ?c1 - cargo ?p - pallet)' and '(on ?c1 - cargo ?c2 - cargo)' should be separate predicates or use a common supertype."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.9,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases expect the 'on' predicate to work with 'cargo' and 'pallet' types. Ensure the 'on' predicate is declared with correct types in the domain predicates to maintain backward compatibility with historical stacking tasks."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "on",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'on' predicate is being used with incorrect types in the historical test cases. Verify and correct the type signatures in the predicate declarations to match the expected usage in historical problems."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "Type problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'on' predicate is also used for stacking cargo on other cargo in historical problems. Ensure the predicate declaration supports both '(on ?c - cargo ?p - pallet)' and '(on ?c1 - cargo ?c2 - cargo)' use cases or split into separate predicates if necessary."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.9,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases expect the 'on' predicate to work with 'cargo' and 'pallet' types. Ensure the 'on' predicate is declared with these types in the domain predicates to maintain backward compatibility."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "on",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'on' predicate is being used with 'cargo' and 'pallet' types in historical test cases, but its declaration in the domain may not match. Ensure the predicate is declared as '(on ?c - cargo ?p - pallet)' to match historical usage."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "on",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Type problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'on' predicate is also used with 'cargo' stacking in historical test cases. Add a separate predicate declaration '(on ?c1 - cargo ?c2 - cargo)' or ensure the existing declaration can handle both cases if the domain allows."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "on",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'on' predicate is being used with 'cargo' and 'pallet' types in historical test cases, but its declaration in the domain might be missing or incorrect. Ensure the predicate is declared as '(on ?c - cargo ?p - pallet)' in the domain predicates."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "Type problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases also use the 'on' predicate with 'cargo' and 'cargo' types. Ensure the 'on' predicate is declared to handle both '(on ?c1 - cargo ?c2 - cargo)' and '(on ?c - cargo ?p - pallet)' cases, or split into separate predicates for clarity."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "on",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'on' predicate is being used with 'cargo' and 'pallet' types in the historical test cases, but these types are not declared in the predicate's signature. Update the predicate declaration to include '(on ?c - cargo ?p - pallet)' and '(on ?c1 - cargo ?c2 - cargo)' to match historical usage."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "Type problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The historical test cases also use the 'on' predicate between two 'cargo' objects. Ensure the domain includes both variants of the 'on' predicate to support stacking cargo on top of each other as well as on pallets."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: HISTORICAL_REGRESSION\n  - [TARGET AST OPERATION]: REGRESSION_BACKWARD_COMPATIBILITY\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed\n  - [SUGGESTION FOR REPAIR]: The historical test cases expect the 'on' predicate to work with 'cargo' and 'pallet' types. Ensure the 'on' predicate is declared with these types in the domain predicates to maintain backward compatibility.\n\nIssue #2:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: on (Fault Suspiciousness Score: 0.80)\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (on crate0 pallet2) - parameter 1 is incorrectly typed\n  - [SUGGESTION FOR REPAIR]: The 'on' predicate is being used with 'cargo' and 'pallet' types in the historical test cases, but these types are not declared in the predicate's signature. Update the predicate declaration to include '(on ?c - cargo ?p - pallet)' and '(on ?c1 - cargo ?c2 - cargo)' to match historical usage.\n\nIssue #3:\n  - [ERROR TYPE]: HISTORICAL_REGRESSION\n  - [TARGET AST OPERATION]: REGRESSION_BACKWARD_COMPATIBILITY\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (on crate0 crate1) - parameter 1 is incorrectly typed\n  - [SUGGESTION FOR REPAIR]: The historical test cases also use the 'on' predicate between two 'cargo' objects. Ensure the domain includes both variants of the 'on' predicate to support stacking cargo on top of each other as well as on pallets.",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 1,
+    "search_time_seconds": 4.6e-05,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(express-transit t1 d1 d2 c1)"
+    ]
+  }
+}

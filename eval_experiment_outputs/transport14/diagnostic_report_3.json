@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-10-16T01:33:15.838769",
+  "domain_name": "transport14",
+  "run_index": 3,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 13,
+    "search_time_seconds": 0.001515,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(pick-up truck-2 loc-1 package-1 capacity-1 capacity-2)",
+      "(pick-up truck-1 loc-2 package-4 capacity-2 capacity-3)",
+      "(drive truck-1 loc-2 loc-5)",
+      "(drop truck-1 loc-5 package-4 capacity-2 capacity-3)",
+      "(pick-up truck-2 loc-1 package-2 capacity-0 capacity-1)",
+      "(drive truck-2 loc-1 loc-3)",
+      "(drive truck-2 loc-3 loc-2)",
+      "(drop truck-2 loc-2 package-1 capacity-0 capacity-1)",
+      "(drop truck-2 loc-2 package-2 capacity-1 capacity-2)",
+      "(drive truck-2 loc-2 loc-3)",
+      "(pick-up truck-2 loc-3 package-3 capacity-1 capacity-2)",
+      "(drive truck-2 loc-3 loc-1)",
+      "(drop truck-2 loc-1 package-3 capacity-1 capacity-2)"
+    ]
+  }
+}

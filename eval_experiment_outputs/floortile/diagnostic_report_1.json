@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-10-14T01:48:43.761871",
+  "domain_name": "floortile",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 8,
+    "search_time_seconds": 0.003294,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(paint_up robot2 tile_2-1 tile_1-1 black)",
+      "(change_color robot2 black white)",
+      "(paint_up robot1 tile_2-2 tile_1-2 white)",
+      "(change_color robot1 white black)",
+      "(move_down robot2 tile_1-1 tile_0-1)",
+      "(paint_up robot2 tile_1-1 tile_0-1 white)",
+      "(move_down robot1 tile_1-2 tile_0-2)",
+      "(paint_up robot1 tile_1-2 tile_0-2 black)"
+    ]
+  }
+}

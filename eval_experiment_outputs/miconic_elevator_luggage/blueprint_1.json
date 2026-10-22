@@ -1,0 +1,145 @@
+{
+  "domain_name": "miconic_elevator_luggage",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "miconic_elevator_luggage",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "floor": "object",
+      "passenger": "object",
+      "luggage": "object"
+    },
+    "predicates": [
+      "(origin ?p - passenger ?f - floor)",
+      "(destin ?p - passenger ?f - floor)",
+      "(above ?f1 - floor ?f2 - floor)",
+      "(boarded ?p - passenger)",
+      "(served ?p - passenger)",
+      "(lift-at ?f - floor)",
+      "(passenger-at ?p - passenger ?f - floor)",
+      "(luggage-at ?lug - luggage ?f - floor)",
+      "(luggage-in ?lug - luggage)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_up",
+        "parameters": {
+          "?from": "floor",
+          "?to": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?from)",
+          "(above ?to ?from)"
+        ],
+        "effects": [
+          "(not (lift-at ?from))",
+          "(lift-at ?to)"
+        ]
+      },
+      {
+        "action_name": "move_down",
+        "parameters": {
+          "?from": "floor",
+          "?to": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?from)",
+          "(above ?from ?to)"
+        ],
+        "effects": [
+          "(not (lift-at ?from))",
+          "(lift-at ?to)"
+        ]
+      },
+      {
+        "action_name": "board_passenger",
+        "parameters": {
+          "?p": "passenger",
+          "?f": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?f)",
+          "(passenger-at ?p ?f)",
+          "(origin ?p ?f)"
+        ],
+        "effects": [
+          "(not (passenger-at ?p ?f))",
+          "(boarded ?p)"
+        ]
+      },
+      {
+        "action_name": "depart_passenger",
+        "parameters": {
+          "?p": "passenger",
+          "?f": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?f)",
+          "(boarded ?p)",
+          "(destin ?p ?f)"
+        ],
+        "effects": [
+          "(not (boarded ?p))",
+          "(served ?p)"
+        ]
+      },
+      {
+        "action_name": "load_luggage",
+        "parameters": {
+          "?lug": "luggage",
+          "?f": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?f)",
+          "(luggage-at ?lug ?f)"
+        ],
+        "effects": [
+          "(not (luggage-at ?lug ?f))",
+          "(luggage-in ?lug)"
+        ]
+      },
+      {
+        "action_name": "unload_luggage",
+        "parameters": {
+          "?lug": "luggage",
+          "?f": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?f)",
+          "(luggage-in ?lug)"
+        ],
+        "effects": [
+          "(not (luggage-in ?lug))",
+          "(luggage-at ?lug ?f)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "miconic_passenger_luggage_problem",
+    "domain_name": "miconic_elevator_luggage",
+    "objects": {
+      "f0": "floor",
+      "f1": "floor",
+      "p1": "passenger",
+      "lug1": "luggage"
+    },
+    "initial_state": [
+      "(above f0 f1)",
+      "(lift-at f0)",
+      "(passenger-at p1 f1)",
+      "(origin p1 f1)",
+      "(destin p1 f0)",
+      "(luggage-at lug1 f0)"
+    ],
+    "goal_state": [
+      "(served p1)",
+      "(luggage-at lug1 f1)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

@@ -32,10 +32,6 @@ class DiagnosticReport(BaseModel):
         default=None,
         description="Name of the specific action, predicate, type, or object implicated in the error (if identifiable)"
     )
-    suspiciousness_score: float = Field(
-        default=1.0,
-        description="Fault localization confidence ranking between 0.0 and 1.0"
-    )
     raw_log: str = Field(
         description="Exact log text snippet captured from the symbolic oracle"
     )

@@ -6,7 +6,8 @@ from benchmark.schema import BenchmarkTask, LifecycleTaskType
 from benchmark.dataset import BENCHMARK_TASKS
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-BENCHMARK_ROOT = PROJECT_ROOT / "PDDLLifeCycleBench"
+from config.paths import get_benchmark_dir
+BENCHMARK_ROOT = get_benchmark_dir()
 
 # ==============================================================================
 # PDDLLifeCycleBench Dynamic Loader Helpers (Flaws & Evolution)
@@ -110,6 +111,89 @@ def load_evolution_task(domain_name: str, evo_name: str) -> Optional[BenchmarkTa
         ground_truth_domain_pddl=gt_dom,
         ground_truth_problem_pddl=target_prob
     )
+
+# ==============================================================================
+# Selected Benchmark Domains Suite (Focused Evaluation Scope)
+# ==============================================================================
+
+SELECTED_BENCHMARK_DOMAINS = [
+    "blocksworld",
+    "gripper",
+    "logistics",
+    "ferry",
+    "satellite",
+    "rovers",
+    "depot",
+    "parking11",
+    "zenotravel02",
+    "floortile"
+]
+
+# Alias for backwards compatibility
+CANONICAL_10_DOMAINS = SELECTED_BENCHMARK_DOMAINS
+
+def load_elicitation_task(domain_name: str) -> Optional[BenchmarkTask]:
+    """Loads a single Category A Elicitation task for a standard benchmark domain."""
+    dom_dir = BENCHMARK_ROOT / domain_name
+    if not dom_dir.exists():
+        return None
+    spec_file = dom_dir / "complete_specification.txt"
+    dom_file = dom_dir / "domain.pddl"
+    prob_files = sorted(list((dom_dir / "orig_problems").glob("instance-*.pddl")))
+    if not spec_file.exists() or not dom_file.exists() or not prob_files:
+        return None
+
+    spec = spec_file.read_text(encoding="utf-8")
+    gt_dom = dom_file.read_text(encoding="utf-8")
+    gt_prob = prob_files[0].read_text(encoding="utf-8")
+
+    return BenchmarkTask(
+        task_id=f"{domain_name}_elicit",
+        domain_family=domain_name,
+        task_type=LifecycleTaskType.ELICITATION,
+        title=f"{domain_name.upper()} Initial Elicitation",
+        natural_language_requirements=spec,
+        initial_domain_pddl=None,
+        initial_problem_pddl=None,
+        ground_truth_domain_pddl=gt_dom,
+        ground_truth_problem_pddl=gt_prob
+    )
+
+def load_selected_evaluation_tasks() -> List[BenchmarkTask]:
+    """
+    Curates the focused evaluation suite for the 10 selected benchmark domains:
+    - 10 Category A Elicitation Tasks (1 per domain)
+    - 20 Category B Synthetic Fault Repair Tasks (2 per domain: arity & precondition flaws)
+    - 2 Category C Continuous Evolution Tasks (Blocksworld & Logistics demonstration)
+    Total: 32 tasks.
+    """
+    suite = []
+    # 1. Category A: 10 Elicitation Tasks
+    for d in SELECTED_BENCHMARK_DOMAINS:
+        t_elicit = load_elicitation_task(d)
+        if t_elicit:
+            suite.append(t_elicit)
+
+    # 2. Category B: 20 Synthetic Fault Repair Tasks (2 per domain)
+    for d in SELECTED_BENCHMARK_DOMAINS:
+        flaws = list_domain_flaws(d)
+        for flaw_name in flaws[:2]:
+            t_flaw = load_flaw_task(d, flaw_name)
+            if t_flaw:
+                suite.append(t_flaw)
+
+    # 3. Category C: 2 Domain Evolution Demonstrations
+    t_evo_bw = load_evolution_task("blocksworld", "evolution_01_feature_addition")
+    if t_evo_bw:
+        suite.append(t_evo_bw)
+    t_evo_log = load_evolution_task("logistics", "evolution_01_feature_addition")
+    if t_evo_log:
+        suite.append(t_evo_log)
+
+    return suite
+
+# Alias for backwards compatibility
+load_canonical_10_evaluation_tasks = load_selected_evaluation_tasks
 
 def load_all_lifecycle_bench_tasks() -> List[BenchmarkTask]:
     """Dynamically compiles all flaws and evolutions from PDDLLifeCycleBench into BenchmarkTasks."""

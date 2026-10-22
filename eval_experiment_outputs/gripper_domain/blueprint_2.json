@@ -1,0 +1,105 @@
+{
+  "domain_name": "gripper_domain",
+  "run_index": 2,
+  "domain_blueprint": {
+    "domain_name": "gripper_domain",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot": "object",
+      "ball": "object",
+      "room": "object"
+    },
+    "predicates": [
+      "(at-robot ?r - robot ?ro - room)",
+      "(at-ball ?b - ball ?ro - room)",
+      "(holding ?r - robot ?b - ball)",
+      "(clean ?ro - room)"
+    ],
+    "actions": [
+      {
+        "action_name": "pick",
+        "parameters": {
+          "?r": "robot",
+          "?b": "ball",
+          "?ro": "room"
+        },
+        "preconditions": [
+          "(at-robot ?r ?ro)",
+          "(at-ball ?b ?ro)",
+          "(not (holding ?r ?b))"
+        ],
+        "effects": [
+          "(holding ?r ?b)",
+          "(not (at-ball ?b ?ro))"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?r": "robot",
+          "?b": "ball",
+          "?ro": "room"
+        },
+        "preconditions": [
+          "(at-robot ?r ?ro)",
+          "(holding ?r ?b)"
+        ],
+        "effects": [
+          "(not (holding ?r ?b))",
+          "(at-ball ?b ?ro)"
+        ]
+      },
+      {
+        "action_name": "move",
+        "parameters": {
+          "?r": "robot",
+          "?from": "room",
+          "?to": "room"
+        },
+        "preconditions": [
+          "(at-robot ?r ?from)"
+        ],
+        "effects": [
+          "(not (at-robot ?r ?from))",
+          "(at-robot ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "clean-room",
+        "parameters": {
+          "?r": "robot",
+          "?ro": "room"
+        },
+        "preconditions": [
+          "(at-robot ?r ?ro)"
+        ],
+        "effects": [
+          "(clean ?ro)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "gripper_problem",
+    "domain_name": "gripper_domain",
+    "objects": {
+      "robby": "robot",
+      "ball1": "ball",
+      "room1": "room",
+      "room2": "room"
+    },
+    "initial_state": [
+      "(at-robot robby room1)",
+      "(at-ball ball1 room1)"
+    ],
+    "goal_state": [
+      "(at-ball ball1 room2)",
+      "(clean room1)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

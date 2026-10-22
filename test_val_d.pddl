@@ -1,0 +1,6 @@
+(define (domain test)
+  (:requirements :strips :typing)
+  (:types container hand - object)
+  (:predicates (on ?c - container ?t - object) (holding ?h - hand ?c - container))
+  (:action grasp :parameters (?c - container ?h - hand) :precondition (on ?c table) :effect (holding ?h ?c))
+)

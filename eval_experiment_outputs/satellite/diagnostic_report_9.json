@@ -1,0 +1,81 @@
+{
+  "timestamp": "2026-10-17T14:09:53.512653",
+  "domain_name": "satellite",
+  "run_index": 9,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 3,
+  "initial_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'Streamlit_output_file\\temp_domain.pddl' 'Streamlit_output_file\\temp_problem.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing: [0.000s CPU, 0.003s wall-clock]\nNormalizing task... [0.000s CPU, 0.000s wall-clock]\nInstantiating...\nGenerating Datalog program... [0.000s CPU, 0.000s wall-clock]\nNormalizing Datalog program...\nNormalizing Datalog program: [0.000s CPU, 0.003s wall-clock]\nPreparing model... [0.000s CPU, 0.000s wall-clock]\nGenerated 18 rules.\nComputing model... [0.000s CPU, 0.000s wall-clock]\n29 relevant atoms\n10 auxiliary atoms\n39 final queue length\n41 total queue pushes\nCompleting instantiation... [0.000s CPU, 0.000s wall-clock]\nInstantiating: [0.000s CPU, 0.004s wall-clock]\nComputing fact groups...\nFinding invariants...\n9 initial candidates\nFinding invariants: [0.000s CPU, 0.001s wall-clock]\nChecking invariant weight... [0.000s CPU, 0.000s wall-clock]\nInstantiating groups... [0.000s CPU, 0.000s wall-clock]\nCollecting mutex groups... [0.000s CPU, 0.000s wall-clock]\nChoosing groups...\n0 uncovered facts\nChoosing groups: [0.000s CPU, 0.000s wall-clock]\nBuilding translation key... [0.000s CPU, 0.000s wall-clock]\nComputing fact groups: [0.000s CPU, 0.001s wall-clock]\nBuilding STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]\nBuilding dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]\nBuilding mutex information...\nBuilding mutex information: [0.000s CPU, 0.000s wall-clock]\nTranslating task...\nProcessing axioms...\nSimplifying axioms... [0.000s CPU, 0.000s wall-clock]\nTranslator axioms removed by simplifying: 0\nProcessing axioms: [0.000s CPU, 0.000s wall-clock]\nGoal violates a mutex! Generating unsolvable task...\nTranslating task: [0.000s CPU, 0.000s wall-clock]\n0 effect conditions simplified\n0 implied preconditions added\nDetecting unreachable propositions...\nSimplified to trivially false goal! Generating unsolvable task...\nDetecting unreachable propositions: [0.000s CPU, 0.000s wall-clock]\nTranslator variables: 1\nTranslator derived variables: 0\nTranslator facts: 2\nTranslator goal facts: 1\nTranslator mutex groups: 0\nTranslator total mutex groups size: 0\nTranslator operators: 0\nTranslator axioms: 0\nTranslator task size: 4\nwarning: could not determine peak memory\nWriting output... [0.000s CPU, 0.001s wall-clock]\nDone! [0.000s CPU, 0.009s wall-clock]\ntranslate exit code: 0\n\nINFO     Running search (release).\nINFO     search stdin: output.sas\nINFO     search time limit: None\nINFO     search memory limit: None\nINFO     search command line string: 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\downward.exe' --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas\n[t=0.000392s, 824 KB] reading input...\n[t=0.000688s, 824 KB] done reading input!\n[t=0.004188s, 1260 KB] Simplifying 0 unary operators... done! [0 unary operators]\n[t=0.004234s, 1260 KB] time to simplify: 0.000054s\n[t=0.004248s, 1260 KB] Initializing additive heuristic...\n[t=0.004254s, 1260 KB] Initializing FF heuristic...\n[t=0.004334s, 1260 KB] Building successor generator...done!\n[t=0.004350s, 1260 KB] peak memory difference for successor generator creation: 0 KB\n[t=0.004358s, 1260 KB] time for successor generation creation: 0.000006s\n[t=0.004369s, 1260 KB] Variables: 1\n[t=0.004376s, 1260 KB] FactPairs: 2\n[t=0.004382s, 1260 KB] Bytes per state: 4\n[t=0.004435s, 1260 KB] Conducting lazy best first search, (real) bound = 2147483647\n[t=0.004456s, 1260 KB] Initial heuristic value for ff: infinity\n[t=0.004464s, 1260 KB] Completely explored state space -- no solution!\n[t=0.004479s, 1260 KB] Actual search time: 0.000038s\n[t=0.004487s, 1260 KB] Expanded 0 state(s).\n[t=0.004487s, 1260 KB] Reopened 0 state(s).\n[t=0.004487s, 1260 KB] Evaluated 1 state(s).\n[t=0.004487s, 1260 KB] Evaluations: 1\n[t=0.004487s, 1260 KB] Generated 0 state(s).\n[t=0.004487s, 1260 KB] Dead ends: 1 state(s).\n[t=0.004487s, 1260 KB] Number of registered states: 1\n[t=0.004487s, 1260 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.004487s, 1260 KB] Int hash set resizes: 0\n[t=0.004487s, 1260 KB] Search time: 0.000052s\n[t=0.004487s, 1260 KB] Total time: 0.004487s\nSearch stopped without finding a solution.\nRemove intermediate file output.sas\nsearch exit code: 12\n\nDriver aborting after search\n\n"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 7,
+  "diagnostic_reports": [
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "switch-on",
+      "suspiciousness_score": 0.85,
+      "raw_log": "Goal violates a mutex! Generating unsolvable task...\nSimplified to trivially false goal! Generating unsolvable task...\nCompletely explored state space -- no solution!",
+      "suggested_repair_hint": "The goal requires both instruments to be powered on, but the 'switch-on' action consumes the satellite's power (removes 'power-avail') without any mechanism to restore it. Add a precondition to ensure only one instrument can be powered on at a time, or modify the effects to allow multiple instruments to share power."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "switch-on",
+      "suspiciousness_score": 0.75,
+      "raw_log": "Detecting unreachable propositions...\nSimplified to trivially false goal! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'switch-on' action deletes '(calibrated ?i)' without any action to restore it, making the 'take-image' action unreachable. Either remove this effect if calibration isn't needed, or add an action to recalibrate instruments."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.65,
+      "raw_log": "Initial heuristic value for ff: infinity\nCompletely explored state space -- no solution!",
+      "suggested_repair_hint": "The initial state may need additional predicates to support the goal. Consider adding initial calibration states for instruments or additional power sources if the domain allows."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "switch-on",
+      "suspiciousness_score": 0.85,
+      "raw_log": "Goal violates a mutex! Generating unsolvable task... Simplified to trivially false goal! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'switch-on' action consumes power availability but does not allow multiple instruments to be powered on. Modify the effect to track power consumption per instrument or introduce a power allocation mechanism to support multiple instruments."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The initial state does not provide enough power resources to achieve the goal of powering on both instruments. Consider adding a power generation or distribution mechanism to support multiple instruments."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "switch-on",
+      "suspiciousness_score": 0.85,
+      "raw_log": "Goal violates a mutex! Generating unsolvable task... Simplified to trivially false goal! Generating unsolvable task...",
+      "suggested_repair_hint": "The goal state requires both instruments to be powered on, but the 'switch-on' action consumes power, making it impossible to power on both instruments simultaneously. Relax the preconditions of 'switch-on' to allow powering on multiple instruments without consuming all available power."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "Goal violates a mutex! Generating unsolvable task... Simplified to trivially false goal! Generating unsolvable task...",
+      "suggested_repair_hint": "The initial state does not provide sufficient power resources to achieve the goal. Augment the initial state to include additional power resources or modify the goal to require only one instrument to be powered on."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 2,
+    "search_time_seconds": 4.3e-05,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(switch-on inst2 sat1)",
+      "(switch-on inst1 sat1)"
+    ]
+  }
+}

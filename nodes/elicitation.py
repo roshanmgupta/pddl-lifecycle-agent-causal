@@ -55,15 +55,17 @@ def run_elicitation_node(state: dict) -> dict:
         "domain_name": "example_domain",
         "requirements": [":strips", ":typing"],
         "types": {{
-          "entity_agent": "object",
-          "target_element": "object"
+          "physical_entity": "object",
+          "location_site": "object",
+          "mobile_unit": "physical_entity",
+          "waypoint_area": "location_site"
         }},
         "constants": {{}},
-        "predicates": ["(relational_state ?x - entity_agent ?y - target_element)"],
+        "predicates": ["(relational_state ?x - mobile_unit ?y - waypoint_area)"],
         "actions": [
           {{
             "action_name": "transition_action",
-            "parameters": {{"?x": "entity_agent", "?src": "target_element", "?dst": "target_element"}},
+            "parameters": {{"?x": "mobile_unit", "?src": "waypoint_area", "?dst": "waypoint_area"}},
             "preconditions": ["(relational_state ?x ?src)"],
             "effects": ["(not (relational_state ?x ?src))", "(relational_state ?x ?dst)"]
           }}
@@ -72,7 +74,7 @@ def run_elicitation_node(state: dict) -> dict:
       "problem": {{
         "problem_name": "example_problem",
         "domain_name":  "example_domain",
-        "objects": {{"e1": "entity_agent", "t1": "target_element", "t2": "target_element"}},
+        "objects": {{"e1": "mobile_unit", "t1": "waypoint_area", "t2": "waypoint_area"}},
         "initial_state": ["(relational_state e1 t1)"],
         "goal_state": ["(relational_state e1 t2)"]
       }}
@@ -82,6 +84,20 @@ def run_elicitation_node(state: dict) -> dict:
     Requirements Text:
     {requirements_text}
     {feedback_context}
+
+    CRITICAL SUBTYPING HIERARCHY EXTRACTION:
+    When requirements state that categories or entities are subtypes or kinds of other categories (e.g. 'Everything that is an A or B is also a C', or 'A is a C'), faithfully model this hierarchy in domain 'types' using the exact category names mentioned in the text (e.g. '{{"A": "C", "B": "C", "C": "object"}}'). Do NOT invent artificial prefixes (like 'supertype_' or 'subtype_') to type names. Do NOT flatten all types to 'object'.
+    In action signatures, when the requirements specify that an action operates on general categories (e.g. 'from a place B to a place C', or 'at a place D'), use the exact declared category name (e.g. '?p - place'), NOT a specific leaf subtype (like 'depot'). Narrowing action parameters to a single leaf subtype breaks planning by preventing other valid subtypes (like 'distributor') from being used!
+
+    CRITICAL PROBLEM OBJECTS & PREFIX NOTATION:
+    - All scenario entities listed under 'Objects:' or 'Problem Instance:' belong strictly in problem 'objects' with their declared types. Keep domain 'constants' empty ('{{}}').
+    - In problem 'initial_state' and 'goal_state', every fact MUST be in prefix notation '(predicate_symbol arg1 arg2 ...)' using an exact declared predicate symbol from domain 'predicates'. Never put an object name in the first (predicate) position.
+    - When an environmental condition or feature at an entity/location has NO separate object in 'objects', model it as a UNARY state predicate over the entity/location (e.g. '(at-feature ?loc - location)'), rather than creating a phantom type or dummy object.
+
+    CRITICAL MULTIPLE RESTRICTIONS & ACTION DISJUNCTION DECOMPOSITION:
+    In Classical STRIPS (:strips :typing), disjunctive preconditions ('or') are strictly forbidden.
+    When the requirements text specifies multiple capabilities or multiple restriction clauses for an action phrase (e.g. forward vs reverse movement, moving under condition C1 versus condition C2), EACH distinct restriction rule MUST be elicited as a SEPARATE, uniquely-named action schema (e.g. appending a descriptive suffix like '_1' and '_2', or '_up' and '_down')!
+    Never collapse, ignore, or drop alternative restriction clauses into a single action.
 
     {STANDARD_CLASSICAL_PDDL_RULES}
 

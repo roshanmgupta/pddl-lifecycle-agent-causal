@@ -1,0 +1,5 @@
+1: (overcome_pain_with_pleasure abrasion rest pork uranus venus)
+2: (feast_with_pleasure rest pork lamb alsace quebec)
+3: (feast_with_pleasure rest lamb flounder surrey pennsylvania)
+4: (feast_with_pleasure rest flounder rice pennsylvania alsace)
+5: (succumb_to_pleasure abrasion rest rice uranus venus)

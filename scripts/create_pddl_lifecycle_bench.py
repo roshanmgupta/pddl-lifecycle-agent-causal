@@ -219,12 +219,12 @@ def generate_task_nl_description(domain_name, domain_encoding_text, prob_path, p
 
 def create_curated_flaws_for_domain(domain_name, clean_domain_text, clean_domain_dir, pred_mappings, encoding_text, prob_path):
     """
-    Creates all 5 Category B curated flaw variants for the domain as defined in Section 2.3:
+    Creates all 4 Category B curated flaw variants for the domain as defined in Section 2.3:
     (1) Type Signature / Arity Inversion
     (2) Precondition Misalignment
     (3) Action Effect Deletion
     (4) Initial / Goal Deadlocks
-    (5) Backward-Compatibility Regressions
+    Note: Backward-Compatibility Regressions are evaluated under Category C (Continuous Domain Evolution).
     """
     flaws_dir = clean_domain_dir / "flaws"
     flaws_dir.mkdir(parents=True, exist_ok=True)
@@ -236,7 +236,6 @@ def create_curated_flaws_for_domain(domain_name, clean_domain_text, clean_domain
         
     act0 = actions[0]
     act_target_deadlock = actions[1] if len(actions) > 1 else actions[0]
-    act_target_regression = actions[2] if len(actions) > 2 else actions[0]
     
     # -------------------------------------------------------------------------
     # 1. Type Signature / Arity Inversion Flaw
@@ -410,46 +409,6 @@ def create_curated_flaws_for_domain(domain_name, clean_domain_text, clean_domain
         pred_mappings
     )
     (flaw4_dir / "complete_specification.txt").write_text(flawed_desc_4, encoding="utf-8")
-
-    # -------------------------------------------------------------------------
-    # 5. Backward-Compatibility Regressions (State Reachability Regressions)
-    # -------------------------------------------------------------------------
-    flaw5_dir = flaws_dir / "flaw_05_state_reachability_regression"
-    flaw5_dir.mkdir(parents=True, exist_ok=True)
-    
-    reg_act_name = act_target_regression['name']
-    reg_orig_prec = act_target_regression['precondition']
-    
-    # Injects an over-constraining precondition satisfied only by specialized extensions but missing in all legacy problem instances
-    if reg_orig_prec.strip().startswith('(and'):
-        mutated_reg_prec = reg_orig_prec.replace('(and', '(and (specialized_mode_enabled)', 1)
-    else:
-        inner = reg_orig_prec[1:-1].strip()
-        mutated_reg_prec = f"(and (specialized_mode_enabled) {inner})"
-        
-    flawed_dom_5 = clean_domain_text.replace(reg_orig_prec, mutated_reg_prec, 1)
-    if "(:predicates" in flawed_dom_5:
-        flawed_dom_5 = flawed_dom_5.replace("(:predicates", "(:predicates\n    (specialized_mode_enabled)", 1)
-        
-    (flaw5_dir / "domain_flawed.pddl").write_text(flawed_dom_5, encoding="utf-8")
-    
-    meta5 = {
-        "flaw_category": "BACKWARD_COMPATIBILITY_REGRESSION",
-        "target_action": reg_act_name,
-        "injected_restriction": "(specialized_mode_enabled)",
-        "description": f"Modified action '{reg_act_name}' to require an over-constrained precondition '(specialized_mode_enabled)' satisfying an ad-hoc feature but breaking all legacy regression instances.",
-        "ground_truth_fix": f"Decouple specialized requirement from core legacy action '{reg_act_name}' to restore backward compatibility across historical problems.",
-        "expected_oracle_signal": "Fast Downward planner fails on historical regression problems (instance-1 to instance-5); Phase 4 Regression Gatekeeper halts deployment."
-    }
-    (flaw5_dir / "flaw_metadata.json").write_text(json.dumps(meta5, indent=2), encoding="utf-8")
-    
-    flawed_desc_5 = generate_task_nl_description(
-        domain_name, 
-        encoding_text + f"\n\n[NOTE: Action '{reg_act_name}' has been modified with an over-constraining restriction that breaks legacy problem compatibility.]",
-        prob_path, 
-        pred_mappings
-    )
-    (flaw5_dir / "complete_specification.txt").write_text(flawed_desc_5, encoding="utf-8")
 
 def create_category_c_evolutions_for_domain(domain_name, clean_domain_dir, encoding_text, dest_prob_dir):
     """

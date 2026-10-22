@@ -1,0 +1,104 @@
+{
+  "timestamp": "2026-10-13T16:15:14.996109",
+  "domain_name": "air_transport",
+  "run_index": 3,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking fly_normal\n...action passes type checking.\nType-checking fly_zoom\n...action passes type checking.\nType-checking board\n...action passes type checking.\nType-checking debark\n...action passes type checking.\nType-checking refuel\n...action passes type checking.\nType-checking service\n...action passes type checking.\nPredicate at_passenger not found\nType-checking initial state failed\n\nType problem in problem specification!"
+  ],
+  "final_verification_errors": [
+    "VAL Error: Type-checking fly_normal\n...action passes type checking.\nType-checking fly_zoom\n...action passes type checking.\nType-checking board\n...action passes type checking.\nType-checking debark\n...action passes type checking.\nType-checking refuel\n...action passes type checking.\nType-checking service\n...action passes type checking.\nPredicate at_passenger not found\nType-checking initial state failed\n\nType problem in problem specification!"
+  ],
+  "diagnostic_issues_count": 9,
+  "diagnostic_reports": [
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 1.0,
+      "raw_log": "Predicate at_passenger not found\nType-checking goal failed\n\nType problem in problem specification!",
+      "suggested_repair_hint": "Ensure the problem specification does not reference undefined predicates like 'at_passenger'. Verify that all predicates used in the goal state are declared in the domain. Maintain backward compatibility by not introducing new predicates in historical problems unless absolutely necessary."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "AST Blueprint",
+      "suspiciousness_score": 0.9,
+      "raw_log": "[REGRESSION_BREAKAGE]: Historical case 'air_transport_problem_1' failed VAL syntax validation.\nLog: Type-checking fly_normal\n...action passes type checking.\nType-checking fly_zoom\n...action passes typ",
+      "suggested_repair_hint": "Resolve oracle failure: [REGRESSION_BREAKAGE]: Historical case 'air_transport_problem_1' failed VAL syntax validation.\nLog: Type-checking fly_normal\n...action passes type checking.\nType-checking fly_zoom\n...action passes typ"
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 1.0,
+      "raw_log": "Predicate at_passenger not found\nType-checking goal failed\n\nType problem in problem specification!",
+      "suggested_repair_hint": "Ensure that the problem definition does not introduce new predicates not declared in the domain. Verify that all predicates used in the goal state are correctly declared in the domain predicates list."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": "goal_state",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Predicate at_passenger not found\nType-checking goal failed\n\nType problem in problem specification!",
+      "suggested_repair_hint": "The historical problem 'air_transport_problem_1' expects a predicate 'at_passenger' which is not defined in the current domain. To maintain backward compatibility, either add this predicate to the domain or modify the historical problem to use the existing 'in_city' predicate for passenger locations."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "goal_state",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Predicate at_passenger not found\nType-checking goal failed\n\nType problem in problem specification!",
+      "suggested_repair_hint": "Ensure all predicates used in the goal state are declared in the domain. The goal state should only use 'in_city' for passenger locations, not 'at_passenger'."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 1.0,
+      "raw_log": "Predicate at_passenger not found\nType-checking goal failed\n\nType problem in problem specification!",
+      "suggested_repair_hint": "The error indicates a missing predicate 'at_passenger' that was expected in the historical problem. To maintain backward compatibility, ensure all predicates used in historical problems are still available in the domain. Either add the missing predicate or update the historical problem to use the current predicate set."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": "at_aircraft",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Predicate at_aircraft not found\nType-checking initial state failed\nType problem in problem specification!",
+      "suggested_repair_hint": "Ensure backward compatibility by verifying that all predicates used in historical problems are correctly declared in the domain. Specifically, check for the predicate 'at_aircraft' and ensure it is either declared or replaced with a compatible predicate."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "AST Blueprint",
+      "suspiciousness_score": 0.9,
+      "raw_log": "VAL Error: Type-checking fly_normal\n...action passes type checking.\nType-checking fly_zoom\n...action passes type checking.\nType-checking board\n...action passes type checking.\nType-checking debark\n...a",
+      "suggested_repair_hint": "Resolve oracle failure: VAL Error: Type-checking fly_normal\n...action passes type checking.\nType-checking fly_zoom\n...action passes type checking.\nType-checking board\n...action passes type checking.\nType-checking debark\n...a"
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "at_passenger",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Predicate at_passenger not found\nType-checking initial state failed",
+      "suggested_repair_hint": "The predicate 'at_passenger' is used in the initial state but not declared in the domain. Remove it from the initial state or add its declaration to the domain predicates."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: GENERAL_AST_REPAIR\n  - [LOCATION / COMPONENT]: AST Blueprint (Suspiciousness: 0.9)\n  - [DESCRIPTION / RAW TRACE]: VAL Error: Type-checking fly_normal\n...action passes type checking.\nType-checking fly_zoom\n...action passes type checking.\nType-checking board\n...action passes type checking.\nType-checking debark\n...a\n  - [SUGGESTION FOR REPAIR]: Resolve oracle failure: VAL Error: Type-checking fly_normal\n...action passes type checking.\nType-checking fly_zoom\n...action passes type checking.\nType-checking board\n...action passes type checking.\nType-checking debark\n...a",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 7,
+    "search_time_seconds": 0.00016,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(board p2 a1 c1)",
+      "(board p1 a1 c1)",
+      "(fly_normal a1 c1 c2 f1)",
+      "(refuel a1 c2 f1)",
+      "(debark p2 a1 c2)",
+      "(fly_normal a1 c2 c3 f1)",
+      "(debark p1 a1 c3)"
+    ]
+  }
+}

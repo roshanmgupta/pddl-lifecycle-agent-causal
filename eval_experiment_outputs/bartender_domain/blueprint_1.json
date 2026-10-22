@@ -1,0 +1,194 @@
+{
+  "domain_name": "bartender_domain",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "bartender_domain",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot_hand": "object",
+      "container": "object",
+      "ingredient": "object",
+      "dispenser": "object",
+      "sink": "object",
+      "cocktail_glass": "container",
+      "shaker": "container"
+    },
+    "predicates": [
+      "(holding ?h - robot_hand ?c - container)",
+      "(clean ?c - container)",
+      "(dirty ?c - container)",
+      "(contains ?c - container ?i - ingredient)",
+      "(empty ?c - container)",
+      "(at_dispenser ?d - dispenser ?i - ingredient)",
+      "(at_sink ?s - sink)",
+      "(mixed ?c - container)",
+      "(empty_hand ?h - robot_hand)"
+    ],
+    "actions": [
+      {
+        "action_name": "grasp",
+        "parameters": {
+          "?h": "robot_hand",
+          "?c": "container"
+        },
+        "preconditions": [
+          "(empty ?c)",
+          "(clean ?c)",
+          "(empty_hand ?h)"
+        ],
+        "effects": [
+          "(holding ?h ?c)",
+          "(not (empty ?c))",
+          "(not (clean ?c))",
+          "(not (empty_hand ?h))"
+        ]
+      },
+      {
+        "action_name": "pour_ingredient",
+        "parameters": {
+          "?h": "robot_hand",
+          "?c": "container",
+          "?d": "dispenser",
+          "?i": "ingredient"
+        },
+        "preconditions": [
+          "(holding ?h ?c)",
+          "(at_dispenser ?d ?i)"
+        ],
+        "effects": [
+          "(contains ?c ?i)",
+          "(not (empty ?c))"
+        ]
+      },
+      {
+        "action_name": "pour_into_shaker",
+        "parameters": {
+          "?h1": "robot_hand",
+          "?h2": "robot_hand",
+          "?sg": "container",
+          "?sh": "shaker",
+          "?i": "ingredient"
+        },
+        "preconditions": [
+          "(holding ?h1 ?sg)",
+          "(contains ?sg ?i)",
+          "(clean ?sh)",
+          "(empty ?sh)",
+          "(holding ?h2 ?sh)",
+          "(empty_hand ?h2)"
+        ],
+        "effects": [
+          "(contains ?sh ?i)",
+          "(empty ?sg)",
+          "(dirty ?sg)",
+          "(not (empty ?sh))"
+        ]
+      },
+      {
+        "action_name": "shake",
+        "parameters": {
+          "?h": "robot_hand",
+          "?sh": "shaker",
+          "?i": "ingredient"
+        },
+        "preconditions": [
+          "(holding ?h ?sh)",
+          "(contains ?sh ?i)"
+        ],
+        "effects": [
+          "(mixed ?sh)"
+        ]
+      },
+      {
+        "action_name": "pour_cocktail",
+        "parameters": {
+          "?h": "robot_hand",
+          "?sh": "shaker",
+          "?cg": "cocktail_glass",
+          "?i": "ingredient"
+        },
+        "preconditions": [
+          "(holding ?h ?sh)",
+          "(mixed ?sh)",
+          "(empty ?cg)"
+        ],
+        "effects": [
+          "(contains ?cg ?i)",
+          "(empty ?sh)",
+          "(dirty ?sh)",
+          "(not (empty ?cg))"
+        ]
+      },
+      {
+        "action_name": "clean_container",
+        "parameters": {
+          "?h": "robot_hand",
+          "?c": "container",
+          "?s": "sink"
+        },
+        "preconditions": [
+          "(holding ?h ?c)",
+          "(dirty ?c)",
+          "(at_sink ?s)"
+        ],
+        "effects": [
+          "(clean ?c)",
+          "(not (dirty ?c))"
+        ]
+      },
+      {
+        "action_name": "release",
+        "parameters": {
+          "?h": "robot_hand",
+          "?c": "container"
+        },
+        "preconditions": [
+          "(holding ?h ?c)"
+        ],
+        "effects": [
+          "(empty_hand ?h)",
+          "(not (holding ?h ?c))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "bartender_problem",
+    "domain_name": "bartender_domain",
+    "objects": {
+      "hand1": "robot_hand",
+      "hand2": "robot_hand",
+      "shaker1": "shaker",
+      "shot1": "container",
+      "shot2": "container",
+      "vodka": "ingredient",
+      "juice": "ingredient",
+      "vodka_dispenser": "dispenser",
+      "juice_dispenser": "dispenser",
+      "sink1": "sink",
+      "glass1": "cocktail_glass"
+    },
+    "initial_state": [
+      "(empty_hand hand1)",
+      "(empty_hand hand2)",
+      "(clean shaker1)",
+      "(clean shot1)",
+      "(clean shot2)",
+      "(empty shaker1)",
+      "(empty shot1)",
+      "(empty shot2)",
+      "(at_dispenser vodka_dispenser vodka)",
+      "(at_dispenser juice_dispenser juice)",
+      "(at_sink sink1)"
+    ],
+    "goal_state": [
+      "(contains glass1 vodka)",
+      "(contains glass1 juice)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

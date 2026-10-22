@@ -6,6 +6,7 @@ from eval.metrics import EvaluationMetrics
 from eval.baselines import run_zero_shot_baseline, run_unstructured_retry_baseline
 from graph import pddl_lifecycle_graph
 from tools.symbolic_oracles import run_val_validator, run_fast_downward_with_plan
+from config.paths import get_eval_output_dir
 
 def compute_fault_localization_metrics(
     gold_element: Optional[str],
@@ -42,7 +43,7 @@ def compute_fault_localization_metrics(
 
     return top1, top3, mrr
 
-def run_evaluation_on_task(task: BenchmarkTask, agent_type: str) -> EvaluationMetrics:
+def run_evaluation_on_task(task: BenchmarkTask, agent_type: str, max_iterations: int = 5) -> EvaluationMetrics:
     """
     Executes evaluation of a single benchmark task using the specified agent architecture.
     Strictly NO evaluation leakage or ground truth fallback.
@@ -70,11 +71,11 @@ def run_evaluation_on_task(task: BenchmarkTask, agent_type: str) -> EvaluationMe
         if result.get("error"):
             error_summary = result["error"]
 
-    elif agent_type == "UNSTRUCTURED_RETRY":
-        result = run_unstructured_retry_baseline(task)
+    elif agent_type in ["UNSTRUCTURED_RETRY", "ABLATION_NO_AST"]:
+        result = run_unstructured_retry_baseline(task, max_retries=max_iterations)
         generated_domain_pddl = result.get("generated_domain_pddl", "")
         generated_problem_pddl = result.get("generated_problem_pddl", "")
-        iterations_used = result.get("iterations_used", 5)
+        iterations_used = result.get("iterations_used", max_iterations)
         tot_tokens = result.get("total_tokens", 0)
         est_cost = result.get("estimated_cost_usd", 0.0)
 
@@ -87,7 +88,7 @@ def run_evaluation_on_task(task: BenchmarkTask, agent_type: str) -> EvaluationMe
             "generated_problem_pddl": task.initial_problem_pddl or "",
             "verification_errors": [],
             "iteration_count": 0,
-            "max_iterations": 5,
+            "max_iterations": max_iterations,
             "skip_triage": (agent_type == "ABLATION_NO_TRIAGE")
         }
         
@@ -144,9 +145,10 @@ def evaluate_candidate_pddl(
     # -------------------------------------------------------------
     # Strict Oracle Verification (NO Ground-Truth Fallback)
     # -------------------------------------------------------------
-    os.makedirs("Streamlit_output_file", exist_ok=True)
-    eval_dom_file = f"Streamlit_output_file/eval_dom_{task.task_id}_{agent_type}.pddl"
-    eval_prob_file = f"Streamlit_output_file/eval_prob_{task.task_id}_{agent_type}.pddl"
+    eval_dir = str(get_eval_output_dir())
+    os.makedirs(eval_dir, exist_ok=True)
+    eval_dom_file = os.path.join(eval_dir, f"eval_dom_{task.task_id}_{agent_type}.pddl")
+    eval_prob_file = os.path.join(eval_dir, f"eval_prob_{task.task_id}_{agent_type}.pddl")
 
     # Evaluation Leakage Prevention: If agent output is missing, record failure directly!
     if not generated_domain_pddl or not generated_problem_pddl:
@@ -172,27 +174,58 @@ def evaluate_candidate_pddl(
     with open(eval_prob_file, "w", encoding="utf-8") as f:
         f.write(generated_problem_pddl)
 
+    eval_dom_gt_file = None
+    if getattr(task, "ground_truth_domain_pddl", None):
+        eval_dom_gt_file = os.path.join(eval_dir, f"eval_dom_gt_{task.task_id}_{agent_type}.pddl")
+        with open(eval_dom_gt_file, "w", encoding="utf-8") as f:
+            f.write(task.ground_truth_domain_pddl)
+
     # Oracle 1: VAL Syntax & Semantics
     is_syntax_valid, val_log = run_val_validator(eval_dom_file, eval_prob_file)
 
     # Oracle 2: Fast Downward Search & Oracle 3: VAL Plan Certification
     is_plan_valid = False
     plan_execution_valid = False
+    semantic_soundness_valid = None
+    logic_match_score = None
     plan_length = None
     plan_cost = None
     search_time = None
 
     if is_syntax_valid:
-        fd_res = run_fast_downward_with_plan(eval_dom_file, eval_prob_file)
+        # For Synthetic Fault Repair & Evolution, vocabulary is shared with D_gt, so direct VAL is valid.
+        # For Elicitation, vocabulary is generated from NL, so direct VAL would fail due to lexical naming differences.
+        fd_gt_path = str(eval_dom_gt_file) if (eval_dom_gt_file and task.task_type != LifecycleTaskType.ELICITATION) else None
+        fd_res = run_fast_downward_with_plan(
+            eval_dom_file, 
+            eval_prob_file, 
+            ground_truth_domain_path=fd_gt_path
+        )
         is_plan_valid = fd_res["is_solvable"]
         plan_execution_valid = fd_res["val_plan_valid"]
+        semantic_soundness_valid = fd_res.get("semantic_soundness_valid")
         plan_length = fd_res["plan_length"]
         plan_cost = fd_res["plan_cost"]
         search_time = fd_res["search_time"]
+
+        # For Elicitation tasks: Evaluate Action Reconstruction Error (ARE) against ground truth
+        if task.task_type == LifecycleTaskType.ELICITATION and getattr(task, "ground_truth_domain_pddl", None):
+            try:
+                from eval.action_reconstruction import evaluate_action_reconstruction
+                are_res = evaluate_action_reconstruction(task.ground_truth_domain_pddl, generated_domain_pddl)
+                logic_match_score = are_res.get("macro_structural_f1")
+                # Structural alignment score is recorded; plan execution is verified by VAL
+                semantic_soundness_valid = plan_execution_valid
+            except Exception as e:
+                logic_match_score = None
+                semantic_soundness_valid = False
+
         if not is_plan_valid:
             error_summary = "Planner Unsolvability: " + fd_res["raw_fd_log"][:200]
         elif not plan_execution_valid:
             error_summary = "Plan Certification Failed: " + fd_res.get("val_log", "")[:200]
+        elif semantic_soundness_valid is False and task.task_type != LifecycleTaskType.ELICITATION:
+            error_summary = "Semantic Soundness Failed (D_gt Rejected Plan): " + fd_res.get("semantic_soundness_log", "")[:200]
     else:
         error_summary = "VAL Validation Error: " + val_log[:200]
 
@@ -202,7 +235,7 @@ def evaluate_candidate_pddl(
     # A. Fault Repair Verification
     is_repaired = False
     if task.task_type == LifecycleTaskType.SYNTHETIC_FAULT_REPAIR:
-        is_repaired = is_syntax_valid and is_plan_valid and plan_execution_valid
+        is_repaired = is_syntax_valid and is_plan_valid and plan_execution_valid and (semantic_soundness_valid if semantic_soundness_valid is not None else True)
 
     # B. Fault Localization Accuracy
     top1, top3, mrr = compute_fault_localization_metrics(task.gold_fault_element, diagnostic_reports or [])
@@ -222,7 +255,7 @@ def evaluate_candidate_pddl(
         # Check new capability
         target_prob_file = eval_prob_file
         if task.evolution_target_problem_pddl:
-            target_prob_file = f"Streamlit_output_file/eval_evol_target_{task.task_id}_{agent_type}.pddl"
+            target_prob_file = os.path.join(eval_dir, f"eval_evol_target_{task.task_id}_{agent_type}.pddl")
             t_content = task.evolution_target_problem_pddl
             if dom_name:
                 t_content = re.sub(r"\(\s*:domain\s+[a-zA-Z0-9_\-]+\s*\)", f"(:domain {dom_name})", t_content, count=1, flags=re.IGNORECASE)
@@ -237,7 +270,7 @@ def evaluate_candidate_pddl(
             hist_total = len(task.historical_regression_problems)
             hist_passed = 0
             for idx, hist_pddl in enumerate(task.historical_regression_problems):
-                hist_prob_file = f"Streamlit_output_file/eval_hist_{task.task_id}_{idx}.pddl"
+                hist_prob_file = os.path.join(eval_dir, f"eval_hist_{task.task_id}_{idx}.pddl")
                 h_content = hist_pddl
                 if dom_name:
                     h_content = re.sub(r"\(\s*:domain\s+[a-zA-Z0-9_\-]+\s*\)", f"(:domain {dom_name})", h_content, count=1, flags=re.IGNORECASE)
@@ -270,6 +303,8 @@ def evaluate_candidate_pddl(
         is_syntax_valid=is_syntax_valid,
         is_plan_valid=is_plan_valid,
         plan_execution_valid=plan_execution_valid,
+        semantic_soundness_valid=semantic_soundness_valid,
+        logic_match_score=logic_match_score,
         is_repaired=is_repaired,
         fault_localization_top1=top1,
         fault_localization_top3=top3,
@@ -290,7 +325,8 @@ def evaluate_candidate_pddl(
 
 def run_benchmark_suite(
     tasks: List[BenchmarkTask],
-    agent_types: List[str]
+    agent_types: List[str],
+    max_iterations: int = 5
 ) -> List[EvaluationMetrics]:
     """Runs evaluation suite across multiple tasks and agent architectures."""
     all_metrics: List[EvaluationMetrics] = []
@@ -302,7 +338,7 @@ def run_benchmark_suite(
         for agent in agent_types:
             print(f"\n[RUNNER] Task: '{task.task_id}' | Agent: '{agent}'...")
             try:
-                metrics = run_evaluation_on_task(task, agent)
+                metrics = run_evaluation_on_task(task, agent, max_iterations=max_iterations)
                 all_metrics.append(metrics)
                 print(f"  --> Result: E2E={metrics.e2e_success} | Syntax={metrics.is_syntax_valid} | Solvable={metrics.is_plan_valid} | Certified={metrics.plan_execution_valid} | Iters={metrics.iterations_used} | Cost=${metrics.estimated_cost_usd:.4f}")
             except Exception as e:

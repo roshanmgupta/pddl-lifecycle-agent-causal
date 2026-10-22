@@ -1,0 +1,75 @@
+{
+  "domain_name": "reachlunch_portfolio",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "reachlunch_portfolio",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "problem": "object",
+      "encoding": "object",
+      "solver": "object"
+    },
+    "predicates": [
+      "(dfs_run ?p - problem)",
+      "(encoded ?p - problem ?e - encoding)",
+      "(solved ?p - problem)"
+    ],
+    "actions": [
+      {
+        "action_name": "run_dfs",
+        "parameters": {
+          "?p": "problem"
+        },
+        "preconditions": [],
+        "effects": [
+          "(dfs_run ?p)"
+        ]
+      },
+      {
+        "action_name": "encode_compact_reinforced",
+        "parameters": {
+          "?p": "problem",
+          "?e": "encoding"
+        },
+        "preconditions": [
+          "(dfs_run ?p)"
+        ],
+        "effects": [
+          "(encoded ?p ?e)"
+        ]
+      },
+      {
+        "action_name": "solve_ic3_pdr",
+        "parameters": {
+          "?p": "problem",
+          "?e": "encoding",
+          "?s": "solver"
+        },
+        "preconditions": [
+          "(encoded ?p ?e)"
+        ],
+        "effects": [
+          "(solved ?p)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "solve_benchmarks",
+    "domain_name": "reachlunch_portfolio",
+    "objects": {
+      "prob": "problem",
+      "cre_enc": "encoding",
+      "minisat_ic3": "solver"
+    },
+    "initial_state": [],
+    "goal_state": [
+      "(solved prob)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

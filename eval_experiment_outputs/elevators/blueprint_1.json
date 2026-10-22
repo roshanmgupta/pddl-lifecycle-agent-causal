@@ -1,0 +1,249 @@
+{
+  "domain_name": "elevators",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "elevators",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null,
+      "elevator": "object",
+      "slow-elevator": "elevator",
+      "fast-elevator": "elevator",
+      "passenger": "object",
+      "count": "object"
+    },
+    "predicates": [
+      "(at ?e - elevator ?c - count)",
+      "(above ?c1 - count ?c2 - count)",
+      "(next-to ?c1 - count ?c2 - count)",
+      "(passengers ?e - elevator ?c - count)",
+      "(can-hold ?e - elevator ?c - count)",
+      "(reachable-by ?e - elevator ?c - count)",
+      "(at-floor ?p - passenger ?c - count)",
+      "(boarded ?p - passenger ?e - elevator)"
+    ],
+    "actions": [
+      {
+        "action_name": "move-slow-elevator-down",
+        "parameters": {
+          "?e": "slow-elevator",
+          "?from": "count",
+          "?to": "count"
+        },
+        "preconditions": [
+          "(at ?e ?from)",
+          "(above ?from ?to)",
+          "(reachable-by ?e ?to)"
+        ],
+        "effects": [
+          "(not (at ?e ?from))",
+          "(at ?e ?to)"
+        ]
+      },
+      {
+        "action_name": "move-slow-elevator-up",
+        "parameters": {
+          "?e": "slow-elevator",
+          "?from": "count",
+          "?to": "count"
+        },
+        "preconditions": [
+          "(at ?e ?from)",
+          "(above ?to ?from)",
+          "(reachable-by ?e ?to)"
+        ],
+        "effects": [
+          "(not (at ?e ?from))",
+          "(at ?e ?to)"
+        ]
+      },
+      {
+        "action_name": "move-fast-elevator-down",
+        "parameters": {
+          "?e": "fast-elevator",
+          "?from": "count",
+          "?to": "count"
+        },
+        "preconditions": [
+          "(at ?e ?from)",
+          "(above ?from ?to)",
+          "(reachable-by ?e ?to)"
+        ],
+        "effects": [
+          "(not (at ?e ?from))",
+          "(at ?e ?to)"
+        ]
+      },
+      {
+        "action_name": "move-fast-elevator-up",
+        "parameters": {
+          "?e": "fast-elevator",
+          "?from": "count",
+          "?to": "count"
+        },
+        "preconditions": [
+          "(at ?e ?from)",
+          "(above ?to ?from)",
+          "(reachable-by ?e ?to)"
+        ],
+        "effects": [
+          "(not (at ?e ?from))",
+          "(at ?e ?to)"
+        ]
+      },
+      {
+        "action_name": "board-passenger",
+        "parameters": {
+          "?p": "passenger",
+          "?e": "elevator",
+          "?c": "count",
+          "?from": "count",
+          "?to": "count"
+        },
+        "preconditions": [
+          "(at ?e ?c)",
+          "(at-floor ?p ?c)",
+          "(passengers ?e ?from)",
+          "(next-to ?from ?to)",
+          "(can-hold ?e ?to)"
+        ],
+        "effects": [
+          "(not (at-floor ?p ?c))",
+          "(not (passengers ?e ?from))",
+          "(boarded ?p ?e)",
+          "(passengers ?e ?to)"
+        ]
+      },
+      {
+        "action_name": "leave-elevator",
+        "parameters": {
+          "?p": "passenger",
+          "?e": "elevator",
+          "?c": "count",
+          "?from": "count",
+          "?to": "count"
+        },
+        "preconditions": [
+          "(at ?e ?c)",
+          "(boarded ?p ?e)",
+          "(passengers ?e ?from)",
+          "(next-to ?to ?from)"
+        ],
+        "effects": [
+          "(not (boarded ?p ?e))",
+          "(not (passengers ?e ?from))",
+          "(at-floor ?p ?c)",
+          "(passengers ?e ?to)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "elevators",
+    "objects": {
+      "n0": "count",
+      "n1": "count",
+      "n2": "count",
+      "n3": "count",
+      "n4": "count",
+      "n5": "count",
+      "n6": "count",
+      "n7": "count",
+      "n8": "count",
+      "p0": "passenger",
+      "p1": "passenger",
+      "p2": "passenger",
+      "fast0": "fast-elevator",
+      "slow0-0": "slow-elevator",
+      "slow1-0": "slow-elevator"
+    },
+    "initial_state": [
+      "(next-to n0 n1)",
+      "(next-to n1 n2)",
+      "(next-to n2 n3)",
+      "(next-to n3 n4)",
+      "(next-to n4 n5)",
+      "(next-to n5 n6)",
+      "(next-to n6 n7)",
+      "(next-to n7 n8)",
+      "(above n0 n1)",
+      "(above n0 n2)",
+      "(above n0 n3)",
+      "(above n0 n4)",
+      "(above n0 n5)",
+      "(above n0 n6)",
+      "(above n0 n7)",
+      "(above n0 n8)",
+      "(above n1 n2)",
+      "(above n1 n3)",
+      "(above n1 n4)",
+      "(above n1 n5)",
+      "(above n1 n6)",
+      "(above n1 n7)",
+      "(above n1 n8)",
+      "(above n2 n3)",
+      "(above n2 n4)",
+      "(above n2 n5)",
+      "(above n2 n6)",
+      "(above n2 n7)",
+      "(above n2 n8)",
+      "(above n3 n4)",
+      "(above n3 n5)",
+      "(above n3 n6)",
+      "(above n3 n7)",
+      "(above n3 n8)",
+      "(above n4 n5)",
+      "(above n4 n6)",
+      "(above n4 n7)",
+      "(above n4 n8)",
+      "(above n5 n6)",
+      "(above n5 n7)",
+      "(above n5 n8)",
+      "(above n6 n7)",
+      "(above n6 n8)",
+      "(above n7 n8)",
+      "(at fast0 n0)",
+      "(passengers fast0 n0)",
+      "(can-hold fast0 n1)",
+      "(can-hold fast0 n2)",
+      "(can-hold fast0 n3)",
+      "(reachable-by fast0 n0)",
+      "(reachable-by fast0 n2)",
+      "(reachable-by fast0 n4)",
+      "(reachable-by fast0 n6)",
+      "(reachable-by fast0 n8)",
+      "(at slow0-0 n2)",
+      "(passengers slow0-0 n0)",
+      "(can-hold slow0-0 n1)",
+      "(can-hold slow0-0 n2)",
+      "(reachable-by slow0-0 n0)",
+      "(reachable-by slow0-0 n1)",
+      "(reachable-by slow0-0 n2)",
+      "(reachable-by slow0-0 n3)",
+      "(reachable-by slow0-0 n4)",
+      "(at slow1-0 n4)",
+      "(passengers slow1-0 n0)",
+      "(can-hold slow1-0 n1)",
+      "(can-hold slow1-0 n2)",
+      "(reachable-by slow1-0 n4)",
+      "(reachable-by slow1-0 n5)",
+      "(reachable-by slow1-0 n6)",
+      "(reachable-by slow1-0 n7)",
+      "(reachable-by slow1-0 n8)",
+      "(at-floor p0 n8)",
+      "(at-floor p1 n3)",
+      "(at-floor p2 n2)"
+    ],
+    "goal_state": [
+      "(at-floor p0 n4)",
+      "(at-floor p1 n6)",
+      "(at-floor p2 n1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

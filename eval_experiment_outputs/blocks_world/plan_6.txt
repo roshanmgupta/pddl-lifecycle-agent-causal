@@ -1,0 +1,6 @@
+1: (unstack arm b1 b3)
+2: (putdown arm b1)
+3: (unstack arm b3 b2)
+4: (stack arm b3 b4)
+5: (pickup arm b2)
+6: (stack arm b2 b1)

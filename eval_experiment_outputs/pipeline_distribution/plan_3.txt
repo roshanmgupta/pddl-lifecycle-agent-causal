@@ -1,0 +1,3 @@
+(initialize_pipe pipe1 batch1 area1 area2 batch2 product1 product2)
+(push_start pipe1 batch1 area1 area2 batch2 product1 product2)
+(push_end pipe1 area1 area2 batch2 batch1)

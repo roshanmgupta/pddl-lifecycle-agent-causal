@@ -1,0 +1,132 @@
+{
+  "domain_name": "earth_observation",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "earth_observation",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "satellite": "object",
+      "instrument": "object",
+      "mode": "object",
+      "target": "object",
+      "power_level": "object"
+    },
+    "predicates": [
+      "(onboard ?i - instrument ?s - satellite)",
+      "(supports ?i - instrument ?m - mode)",
+      "(powered_on ?i - instrument)",
+      "(calibrated ?i - instrument ?t - target)",
+      "(pointing ?s - satellite ?t - target)",
+      "(has_image ?t - target ?m - mode)",
+      "(power_available ?s - satellite ?p - power_level)"
+    ],
+    "actions": [
+      {
+        "action_name": "turn_satellite",
+        "parameters": {
+          "?s": "satellite",
+          "?from": "target",
+          "?to": "target"
+        },
+        "preconditions": [
+          "(pointing ?s ?from)"
+        ],
+        "effects": [
+          "(not (pointing ?s ?from))",
+          "(pointing ?s ?to)"
+        ]
+      },
+      {
+        "action_name": "calibrate_instrument",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite",
+          "?t": "target",
+          "?m": "mode"
+        },
+        "preconditions": [
+          "(onboard ?i ?s)",
+          "(supports ?i ?m)",
+          "(powered_on ?i)",
+          "(pointing ?s ?t)"
+        ],
+        "effects": [
+          "(calibrated ?i ?t)"
+        ]
+      },
+      {
+        "action_name": "capture_image",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite",
+          "?t": "target",
+          "?m": "mode",
+          "?p": "power_level"
+        },
+        "preconditions": [
+          "(onboard ?i ?s)",
+          "(supports ?i ?m)",
+          "(powered_on ?i)",
+          "(calibrated ?i ?t)",
+          "(pointing ?s ?t)",
+          "(power_available ?s ?p)"
+        ],
+        "effects": [
+          "(has_image ?t ?m)",
+          "(not (power_available ?s ?p))",
+          "(power_available ?s medium)"
+        ]
+      },
+      {
+        "action_name": "power_on_instrument",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite",
+          "?p": "power_level"
+        },
+        "preconditions": [
+          "(onboard ?i ?s)",
+          "(power_available ?s ?p)"
+        ],
+        "effects": [
+          "(powered_on ?i)",
+          "(not (power_available ?s ?p))",
+          "(power_available ?s medium)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "earth_observation_problem",
+    "domain_name": "earth_observation",
+    "objects": {
+      "sat1": "satellite",
+      "cam1": "instrument",
+      "sens1": "instrument",
+      "ir": "mode",
+      "spec": "mode",
+      "targ1": "target",
+      "targ2": "target",
+      "high": "power_level",
+      "medium": "power_level"
+    },
+    "initial_state": [
+      "(onboard cam1 sat1)",
+      "(onboard sens1 sat1)",
+      "(supports cam1 ir)",
+      "(supports sens1 spec)",
+      "(pointing sat1 targ1)",
+      "(power_available sat1 high)",
+      "(power_available sat1 medium)"
+    ],
+    "goal_state": [
+      "(has_image targ1 ir)",
+      "(has_image targ2 spec)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

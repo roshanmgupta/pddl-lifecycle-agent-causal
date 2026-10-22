@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-10-15T01:18:30.319745",
+  "domain_name": "hiking14",
+  "run_index": 2,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 11,
+    "search_time_seconds": 0.000515,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(put_down_tent girl0 place0 tent0)",
+      "(drive_person_with_tent girl0 place0 place1 car0 tent0)",
+      "(put_up_tent girl0 place1 tent0)",
+      "(drive_person guy0 place0 place1 car1)",
+      "(drive_person_person girl0 guy0 place1 place0 car0)",
+      "(walk_together place0 place1 tent0 guy0 girl0 couple0)",
+      "(put_down_tent girl0 place1 tent0)",
+      "(drive_person_with_tent girl0 place1 place2 car1 tent0)",
+      "(put_up_tent girl0 place2 tent0)",
+      "(drive_person girl0 place2 place1 car1)",
+      "(walk_together place1 place2 tent0 guy0 girl0 couple0)"
+    ]
+  }
+}

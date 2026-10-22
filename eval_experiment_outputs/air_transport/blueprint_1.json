@@ -1,0 +1,162 @@
+{
+  "domain_name": "air_transport",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "air_transport",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "aircraft": "object",
+      "city": "object",
+      "passenger": "object",
+      "fuel_level": "object",
+      "speed_mode": "object"
+    },
+    "predicates": [
+      "(at_aircraft ?a - aircraft ?c - city)",
+      "(at_passenger ?p - passenger ?c - city)",
+      "(in_aircraft ?p - passenger ?a - aircraft)",
+      "(current_fuel ?a - aircraft ?f - fuel_level)",
+      "(current_speed ?a - aircraft ?s - speed_mode)",
+      "(can_refuel ?a - aircraft ?c - city)"
+    ],
+    "actions": [
+      {
+        "action_name": "fly_normal",
+        "parameters": {
+          "?a": "aircraft",
+          "?from": "city",
+          "?to": "city",
+          "?f": "fuel_level",
+          "?s": "speed_mode"
+        },
+        "preconditions": [
+          "(at_aircraft ?a ?from)",
+          "(current_fuel ?a ?f)",
+          "(current_speed ?a ?s)",
+          "(= ?s normal)"
+        ],
+        "effects": [
+          "(not (at_aircraft ?a ?from))",
+          "(at_aircraft ?a ?to)"
+        ]
+      },
+      {
+        "action_name": "fly_zoom",
+        "parameters": {
+          "?a": "aircraft",
+          "?from": "city",
+          "?to": "city",
+          "?f": "fuel_level",
+          "?s": "speed_mode"
+        },
+        "preconditions": [
+          "(at_aircraft ?a ?from)",
+          "(current_fuel ?a ?f)",
+          "(current_speed ?a ?s)",
+          "(= ?s zoom)"
+        ],
+        "effects": [
+          "(not (at_aircraft ?a ?from))",
+          "(at_aircraft ?a ?to)"
+        ]
+      },
+      {
+        "action_name": "board",
+        "parameters": {
+          "?p": "passenger",
+          "?a": "aircraft",
+          "?c": "city"
+        },
+        "preconditions": [
+          "(at_passenger ?p ?c)",
+          "(at_aircraft ?a ?c)"
+        ],
+        "effects": [
+          "(not (at_passenger ?p ?c))",
+          "(in_aircraft ?p ?a)"
+        ]
+      },
+      {
+        "action_name": "debark",
+        "parameters": {
+          "?p": "passenger",
+          "?a": "aircraft",
+          "?c": "city"
+        },
+        "preconditions": [
+          "(in_aircraft ?p ?a)",
+          "(at_aircraft ?a ?c)"
+        ],
+        "effects": [
+          "(not (in_aircraft ?p ?a))",
+          "(at_passenger ?p ?c)"
+        ]
+      },
+      {
+        "action_name": "refuel",
+        "parameters": {
+          "?a": "aircraft",
+          "?c": "city",
+          "?f": "fuel_level"
+        },
+        "preconditions": [
+          "(at_aircraft ?a ?c)",
+          "(can_refuel ?a ?c)"
+        ],
+        "effects": [
+          "(current_fuel ?a ?f)"
+        ]
+      },
+      {
+        "action_name": "change_speed",
+        "parameters": {
+          "?a": "aircraft",
+          "?old_s": "speed_mode",
+          "?new_s": "speed_mode"
+        },
+        "preconditions": [
+          "(current_speed ?a ?old_s)"
+        ],
+        "effects": [
+          "(not (current_speed ?a ?old_s))",
+          "(current_speed ?a ?new_s)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "transport_passengers",
+    "domain_name": "air_transport",
+    "objects": {
+      "a1": "aircraft",
+      "c1": "city",
+      "c2": "city",
+      "c3": "city",
+      "p1": "passenger",
+      "p2": "passenger",
+      "f1": "fuel_level",
+      "f2": "fuel_level",
+      "normal": "speed_mode",
+      "zoom": "speed_mode"
+    },
+    "initial_state": [
+      "(at_aircraft a1 c1)",
+      "(at_passenger p1 c1)",
+      "(at_passenger p2 c1)",
+      "(current_fuel a1 f1)",
+      "(current_speed a1 normal)",
+      "(can_refuel a1 c1)",
+      "(can_refuel a1 c2)",
+      "(can_refuel a1 c3)"
+    ],
+    "goal_state": [
+      "(at_passenger p1 c3)",
+      "(at_passenger p2 c2)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

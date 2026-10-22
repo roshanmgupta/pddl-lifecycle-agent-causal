@@ -1,0 +1,167 @@
+{
+  "domain_name": "robot_exploration",
+  "run_index": 6,
+  "domain_blueprint": {
+    "domain_name": "robot_exploration",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot": "object",
+      "room": "object",
+      "key": "object",
+      "door": "object",
+      "payload": "object"
+    },
+    "predicates": [
+      "(at ?r - robot ?rm - room)",
+      "(connected ?rm1 - room ?rm2 - room)",
+      "(locked ?d - door)",
+      "(unlocked ?d - door)",
+      "(has_key ?r - robot ?k - key)",
+      "(key_shape ?k - key ?shape - string)",
+      "(key_in_room ?k - key ?rm - room)",
+      "(arm_free ?r - robot)",
+      "(carrying ?r - robot ?p - payload)",
+      "(payload_in_room ?p - payload ?rm - room)",
+      "(door_between ?d - door ?rm1 - room ?rm2 - room)"
+    ],
+    "actions": [
+      {
+        "action_name": "move",
+        "parameters": {
+          "?r": "robot",
+          "?from": "room",
+          "?to": "room",
+          "?d": "door"
+        },
+        "preconditions": [
+          "(at ?r ?from)",
+          "(connected ?from ?to)",
+          "(door_between ?d ?from ?to)",
+          "(not (locked ?d))"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "pickup_key",
+        "parameters": {
+          "?r": "robot",
+          "?k": "key",
+          "?rm": "room"
+        },
+        "preconditions": [
+          "(at ?r ?rm)",
+          "(key_in_room ?k ?rm)",
+          "(arm_free ?r)"
+        ],
+        "effects": [
+          "(has_key ?r ?k)",
+          "(not (key_in_room ?k ?rm))",
+          "(not (arm_free ?r))"
+        ]
+      },
+      {
+        "action_name": "unlock_door",
+        "parameters": {
+          "?r": "robot",
+          "?d": "door",
+          "?k": "key"
+        },
+        "preconditions": [
+          "(has_key ?r ?k)",
+          "(locked ?d)"
+        ],
+        "effects": [
+          "(unlocked ?d)",
+          "(not (locked ?d))"
+        ]
+      },
+      {
+        "action_name": "deposit_key",
+        "parameters": {
+          "?r": "robot",
+          "?k": "key",
+          "?rm": "room"
+        },
+        "preconditions": [
+          "(at ?r ?rm)",
+          "(has_key ?r ?k)"
+        ],
+        "effects": [
+          "(key_in_room ?k ?rm)",
+          "(not (has_key ?r ?k))",
+          "(arm_free ?r)"
+        ]
+      },
+      {
+        "action_name": "deposit_payload",
+        "parameters": {
+          "?r": "robot",
+          "?p": "payload",
+          "?rm": "room"
+        },
+        "preconditions": [
+          "(at ?r ?rm)",
+          "(carrying ?r ?p)"
+        ],
+        "effects": [
+          "(payload_in_room ?p ?rm)",
+          "(not (carrying ?r ?p))",
+          "(arm_free ?r)"
+        ]
+      },
+      {
+        "action_name": "pickup_payload",
+        "parameters": {
+          "?r": "robot",
+          "?p": "payload",
+          "?rm": "room"
+        },
+        "preconditions": [
+          "(at ?r ?rm)",
+          "(payload_in_room ?p ?rm)",
+          "(arm_free ?r)"
+        ],
+        "effects": [
+          "(carrying ?r ?p)",
+          "(not (payload_in_room ?p ?rm))",
+          "(not (arm_free ?r))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "robot_exploration_problem",
+    "domain_name": "robot_exploration",
+    "objects": {
+      "r1": "robot",
+      "rm1": "room",
+      "rm2": "room",
+      "rm3": "room",
+      "k1": "key",
+      "d1": "door",
+      "p1": "payload"
+    },
+    "initial_state": [
+      "(at r1 rm1)",
+      "(connected rm1 rm2)",
+      "(connected rm2 rm3)",
+      "(door_between d1 rm1 rm2)",
+      "(locked d1)",
+      "(key_in_room k1 rm1)",
+      "(arm_free r1)",
+      "(payload_in_room p1 rm1)"
+    ],
+    "goal_state": [
+      "(payload_in_room p1 rm3)",
+      "(at r1 rm3)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

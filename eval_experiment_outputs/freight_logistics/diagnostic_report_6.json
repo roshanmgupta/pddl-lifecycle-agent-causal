@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-10-16T20:03:28.973693",
+  "domain_name": "freight_logistics",
+  "run_index": 6,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 3,
+  "initial_verification_errors": [
+    "VAL Error: Problem in domain definition!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 3,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "express-transit",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Problem in domain definition!",
+      "suggested_repair_hint": "The 'express-transit' action parameter '?c' is declared as type 'urgent_cargo' but the predicate '(urgent ?c - urgent_cargo)' is not used in the initial state. Either add '(urgent ?c)' to the initial state for urgent cargo or relax the type constraint in the action parameters."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "Problem in domain definition!",
+      "suggested_repair_hint": "The problem instance does not include any objects of type 'urgent_cargo' or the predicate '(urgent ?c)' in the initial state, which is required for the 'express-transit' action to be applicable. Add an urgent cargo object and its urgency predicate to the initial state or remove the dependency on urgent cargo from the action."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "stack-crate",
+      "suspiciousness_score": 0.9,
+      "raw_log": "VAL Error: Problem in domain definition!",
+      "suggested_repair_hint": "The 'stack-crate' action has an undeclared variable '?c3' in its preconditions. Ensure all variables used in preconditions and effects are declared in the action's parameters. Remove the undeclared variable '?c3' and adjust the preconditions accordingly."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 8,
+    "search_time_seconds": 0.000271,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(stack-crate c1 c1 h1 l1)",
+      "(move-hoist h1 l1 l2)",
+      "(unstack-crate c1 c1 h1 l2)",
+      "(move-hoist h1 l2 l1)",
+      "(stack-crate c2 c2 h1 l1)",
+      "(move-hoist h1 l1 l2)",
+      "(unstack-crate c2 c2 h1 l2)",
+      "(stack-crate c2 c1 h1 l2)"
+    ]
+  }
+}

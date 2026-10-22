@@ -1,0 +1,106 @@
+{
+  "domain_name": "spanner",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "spanner",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "locatable": "object",
+      "location": "locatable",
+      "man": "locatable",
+      "nut": "locatable",
+      "spanner": "locatable"
+    },
+    "predicates": [
+      "(link ?from - location ?to - location)",
+      "(at ?x - locatable ?l - location)",
+      "(loose ?n - nut)",
+      "(useable ?s - spanner)",
+      "(tightened ?n - nut)"
+    ],
+    "actions": [
+      {
+        "action_name": "walk",
+        "parameters": {
+          "?start": "location",
+          "?end": "location",
+          "?m": "man"
+        },
+        "preconditions": [
+          "(link ?start ?end)",
+          "(at ?m ?start)"
+        ],
+        "effects": [
+          "(not (at ?m ?start))",
+          "(at ?m ?end)"
+        ]
+      },
+      {
+        "action_name": "pickup_spanner",
+        "parameters": {
+          "?l": "location",
+          "?s": "spanner",
+          "?m": "man"
+        },
+        "preconditions": [
+          "(at ?s ?l)",
+          "(at ?m ?l)",
+          "(useable ?s)"
+        ],
+        "effects": [
+          "(not (at ?s ?l))",
+          "(not (useable ?s))"
+        ]
+      },
+      {
+        "action_name": "tighten_nut",
+        "parameters": {
+          "?l": "location",
+          "?s": "spanner",
+          "?m": "man",
+          "?n": "nut"
+        },
+        "preconditions": [
+          "(at ?m ?l)",
+          "(at ?n ?l)",
+          "(loose ?n)"
+        ],
+        "effects": [
+          "(not (loose ?n))",
+          "(tightened ?n)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "problem_gold",
+    "domain_name": "spanner",
+    "objects": {
+      "shed": "location",
+      "garden": "location",
+      "gate": "location",
+      "bob": "man",
+      "spanner1": "spanner",
+      "nut1": "nut"
+    },
+    "initial_state": [
+      "(link shed garden)",
+      "(link garden shed)",
+      "(link garden gate)",
+      "(link gate garden)",
+      "(at bob garden)",
+      "(at spanner1 shed)",
+      "(at nut1 gate)",
+      "(loose nut1)",
+      "(useable spanner1)"
+    ],
+    "goal_state": [
+      "(tightened nut1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

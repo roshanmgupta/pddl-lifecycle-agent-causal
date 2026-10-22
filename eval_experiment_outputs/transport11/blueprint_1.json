@@ -1,0 +1,157 @@
+{
+  "domain_name": "transport11",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "transport11",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null,
+      "location": "object",
+      "locatable": "object",
+      "vehicle": "locatable",
+      "package": "locatable",
+      "capacity-number": "object"
+    },
+    "constants": {},
+    "predicates": [
+      "(road ?from - location ?to - location)",
+      "(at ?x - locatable ?l - location)",
+      "(in ?p - package ?v - vehicle)",
+      "(capacity-predecessor ?d - capacity-number ?e - capacity-number)",
+      "(capacity ?v - vehicle ?c - capacity-number)"
+    ],
+    "actions": [
+      {
+        "action_name": "drive",
+        "parameters": {
+          "?a": "vehicle",
+          "?b": "location",
+          "?c": "location"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(road ?b ?c)"
+        ],
+        "effects": [
+          "(not (at ?a ?b))",
+          "(at ?a ?c)"
+        ]
+      },
+      {
+        "action_name": "pick-up",
+        "parameters": {
+          "?a": "vehicle",
+          "?b": "location",
+          "?c": "package",
+          "?d": "capacity-number",
+          "?e": "capacity-number"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(at ?c ?b)",
+          "(capacity-predecessor ?d ?e)",
+          "(capacity ?a ?e)"
+        ],
+        "effects": [
+          "(not (at ?c ?b))",
+          "(not (capacity ?a ?e))",
+          "(in ?c ?a)",
+          "(capacity ?a ?d)"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?a": "vehicle",
+          "?b": "location",
+          "?c": "package",
+          "?d": "capacity-number",
+          "?e": "capacity-number"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(in ?c ?a)",
+          "(capacity-predecessor ?d ?e)",
+          "(capacity ?a ?d)"
+        ],
+        "effects": [
+          "(not (in ?c ?a))",
+          "(not (capacity ?a ?d))",
+          "(at ?c ?b)",
+          "(capacity ?a ?e)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "transport11",
+    "objects": {
+      "city-1-loc-1": "location",
+      "city-1-loc-2": "location",
+      "city-1-loc-3": "location",
+      "city-2-loc-1": "location",
+      "city-2-loc-2": "location",
+      "city-2-loc-3": "location",
+      "city-3-loc-1": "location",
+      "city-3-loc-2": "location",
+      "city-3-loc-3": "location",
+      "truck-1": "vehicle",
+      "truck-2": "vehicle",
+      "package-1": "package",
+      "package-2": "package",
+      "package-3": "package",
+      "package-4": "package",
+      "capacity-0": "capacity-number",
+      "capacity-1": "capacity-number",
+      "capacity-2": "capacity-number",
+      "capacity-3": "capacity-number",
+      "capacity-4": "capacity-number"
+    },
+    "initial_state": [
+      "(capacity-predecessor capacity-0 capacity-1)",
+      "(capacity-predecessor capacity-1 capacity-2)",
+      "(capacity-predecessor capacity-2 capacity-3)",
+      "(capacity-predecessor capacity-3 capacity-4)",
+      "(road city-1-loc-3 city-1-loc-1)",
+      "(road city-1-loc-1 city-1-loc-3)",
+      "(road city-1-loc-3 city-1-loc-2)",
+      "(road city-1-loc-2 city-1-loc-3)",
+      "(road city-2-loc-2 city-2-loc-1)",
+      "(road city-2-loc-1 city-2-loc-2)",
+      "(road city-2-loc-3 city-2-loc-1)",
+      "(road city-2-loc-1 city-2-loc-3)",
+      "(road city-2-loc-3 city-2-loc-2)",
+      "(road city-2-loc-2 city-2-loc-3)",
+      "(road city-3-loc-2 city-3-loc-1)",
+      "(road city-3-loc-1 city-3-loc-2)",
+      "(road city-3-loc-3 city-3-loc-1)",
+      "(road city-3-loc-1 city-3-loc-3)",
+      "(road city-1-loc-1 city-2-loc-3)",
+      "(road city-2-loc-3 city-1-loc-1)",
+      "(road city-1-loc-1 city-3-loc-1)",
+      "(road city-3-loc-1 city-1-loc-1)",
+      "(road city-2-loc-3 city-3-loc-2)",
+      "(road city-3-loc-2 city-2-loc-3)",
+      "(at package-1 city-3-loc-1)",
+      "(at package-2 city-1-loc-2)",
+      "(at package-3 city-3-loc-3)",
+      "(at package-4 city-1-loc-2)",
+      "(at truck-1 city-1-loc-3)",
+      "(capacity truck-1 capacity-3)",
+      "(at truck-2 city-3-loc-1)",
+      "(capacity truck-2 capacity-3)"
+    ],
+    "goal_state": [
+      "(at package-1 city-1-loc-1)",
+      "(at package-2 city-2-loc-2)",
+      "(at package-3 city-1-loc-3)",
+      "(at package-4 city-1-loc-3)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

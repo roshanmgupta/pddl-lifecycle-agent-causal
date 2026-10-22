@@ -1,0 +1,165 @@
+{
+  "domain_name": "earth_observation_satellite",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "earth_observation_satellite",
+    "requirements": [
+      ":strips",
+      ":typing",
+      ":negative-preconditions"
+    ],
+    "types": {
+      "satellite": "object",
+      "instrument": "object",
+      "imaging_mode": "object",
+      "direction": "object",
+      "observation_target": "direction",
+      "sky_phenomenon": "observation_target",
+      "terrestrial_target": "observation_target",
+      "calibration_target": "direction"
+    },
+    "predicates": [
+      "(on_satellite ?i - instrument ?s - satellite)",
+      "(instrument_mode ?i - instrument ?m - imaging_mode)",
+      "(powered ?i - instrument)",
+      "(bus_free ?s - satellite)",
+      "(pointing ?s - satellite ?d - direction)",
+      "(exposing ?s - satellite)",
+      "(calibrated ?i - instrument)",
+      "(captured ?i - instrument ?d - observation_target)"
+    ],
+    "actions": [
+      {
+        "action_name": "slew_satellite",
+        "parameters": {
+          "?s": "satellite",
+          "?from": "direction",
+          "?to": "direction"
+        },
+        "preconditions": [
+          "(pointing ?s ?from)",
+          "(not (exposing ?s))"
+        ],
+        "effects": [
+          "(not (pointing ?s ?from))",
+          "(pointing ?s ?to)"
+        ]
+      },
+      {
+        "action_name": "power_on_instrument",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite"
+        },
+        "preconditions": [
+          "(on_satellite ?i ?s)",
+          "(bus_free ?s)",
+          "(not (powered ?i))"
+        ],
+        "effects": [
+          "(powered ?i)",
+          "(not (bus_free ?s))"
+        ]
+      },
+      {
+        "action_name": "power_off_instrument",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite"
+        },
+        "preconditions": [
+          "(on_satellite ?i ?s)",
+          "(powered ?i)",
+          "(not (exposing ?s))"
+        ],
+        "effects": [
+          "(not (powered ?i))",
+          "(bus_free ?s)",
+          "(not (calibrated ?i))"
+        ]
+      },
+      {
+        "action_name": "calibrate_instrument",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite",
+          "?ct": "calibration_target"
+        },
+        "preconditions": [
+          "(on_satellite ?i ?s)",
+          "(powered ?i)",
+          "(pointing ?s ?ct)",
+          "(not (exposing ?s))"
+        ],
+        "effects": [
+          "(calibrated ?i)"
+        ]
+      },
+      {
+        "action_name": "start_exposure",
+        "parameters": {
+          "?s": "satellite",
+          "?i": "instrument",
+          "?d": "observation_target"
+        },
+        "preconditions": [
+          "(on_satellite ?i ?s)",
+          "(powered ?i)",
+          "(calibrated ?i)",
+          "(pointing ?s ?d)",
+          "(not (exposing ?s))"
+        ],
+        "effects": [
+          "(exposing ?s)"
+        ]
+      },
+      {
+        "action_name": "end_exposure",
+        "parameters": {
+          "?s": "satellite",
+          "?i": "instrument",
+          "?d": "observation_target"
+        },
+        "preconditions": [
+          "(on_satellite ?i ?s)",
+          "(powered ?i)",
+          "(calibrated ?i)",
+          "(pointing ?s ?d)",
+          "(exposing ?s)"
+        ],
+        "effects": [
+          "(not (exposing ?s))",
+          "(captured ?i ?d)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "satellite_observation_problem",
+    "domain_name": "earth_observation_satellite",
+    "objects": {
+      "sat1": "satellite",
+      "ir1": "instrument",
+      "spec1": "instrument",
+      "ir_mode": "imaging_mode",
+      "spec_mode": "imaging_mode",
+      "cal_target": "calibration_target",
+      "sky1": "sky_phenomenon",
+      "land1": "terrestrial_target"
+    },
+    "initial_state": [
+      "(on_satellite ir1 sat1)",
+      "(on_satellite spec1 sat1)",
+      "(instrument_mode ir1 ir_mode)",
+      "(instrument_mode spec1 spec_mode)",
+      "(bus_free sat1)",
+      "(pointing sat1 cal_target)"
+    ],
+    "goal_state": [
+      "(captured ir1 sky1)",
+      "(captured spec1 land1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

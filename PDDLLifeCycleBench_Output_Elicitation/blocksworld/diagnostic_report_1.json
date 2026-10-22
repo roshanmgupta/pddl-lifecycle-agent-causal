@@ -1,0 +1,41 @@
+{
+  "timestamp": "2026-10-23T01:04:46.212402",
+  "domain_name": "blocksworld",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 1,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking pick-up\nObject with unknown type: table\n\nErrors: 0, warnings: 1\n\nError: Error in type-checking!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 2,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pick-up",
+      "raw_log": "VAL Error: Type-checking pick-up Object with unknown type: table",
+      "suggested_repair_hint": "Symbol 'table' referenced in domain action 'pick-up' is treated as a constant/object but is not declared in domain 'constants'. In Classical PDDL 2.1, domain action schemas cannot access problem ':objects'. To resolve this, either: 1) Declare 'table - <type>' in domain 'constants' (and remove 'table' from problem ':objects' to prevent duplicate object errors), 2) Declare it as an action parameter in 'pick-up', or 3) Model the condition as a state predicate (e.g. unary predicate) without referencing an undeclared constant."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": null,
+      "raw_log": "Overly narrow action typing or missing supertype hierarchy: Object 'table' has type 'table', but ZERO actions in the domain accept type 'table' or any of its ancestors!",
+      "suggested_repair_hint": "Generalize action parameters to accept a common supertype that includes 'table', or declare 'table' as a parameter in relevant actions."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 4,
+    "search_time_seconds": 0.000127,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(unstack b c)",
+      "(put-down b)",
+      "(pick-up c)",
+      "(stack c b)"
+    ]
+  }
+}

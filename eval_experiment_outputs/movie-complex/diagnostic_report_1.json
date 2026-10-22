@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-10-14T14:36:56.352863",
+  "domain_name": "movie-complex",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 3,
+    "search_time_seconds": 0.000157,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(get_dip d1)",
+      "(start_movie )",
+      "(rewind_movie )"
+    ]
+  }
+}

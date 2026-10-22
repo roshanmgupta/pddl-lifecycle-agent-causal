@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-10-13T04:32:42.937312",
+  "domain_name": "depot",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 3,
+  "initial_verification_errors": [
+    "VAL Error: Problem in domain definition!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 3,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "crate",
+      "suspiciousness_score": 1.0,
+      "raw_log": "VAL Error: Problem in domain definition!",
+      "suggested_repair_hint": "The type 'crate' is incorrectly defined as a subtype of 'surface'. It should be a subtype of 'locatable' to align with the predicate '(at ?x - locatable ?p - place)' where 'crate' is used as a locatable object."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drop",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear y) - parameter 1 is incorrectly typed\nEffects fail type-checking.",
+      "suggested_repair_hint": "In the 'drop' action, the effect '(clear ?y)' is incorrectly typed because ?y is a crate, not a surface. Change the effect to '(clear ?z)' where ?z is the surface (pallet) that the crate is being placed on."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear y) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The predicate (clear ?s - surface) is declared to take a 'surface' type, but in the 'lift' action, it's being used with a 'crate' type (clear ?y). Update the 'clear' predicate to accept 'locatable' instead of 'surface' to match its usage in the action, or ensure the action only passes 'surface' types to 'clear'."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 1,
+    "search_time_seconds": 5.5e-05,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(lift h1 c1 p1 d1)"
+    ]
+  }
+}

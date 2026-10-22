@@ -1,0 +1,98 @@
+{
+  "domain_name": "gripper",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "gripper",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "room": "object",
+      "ball": "object",
+      "gripper": "object"
+    },
+    "predicates": [
+      "(at-robby ?r - room)",
+      "(at ?b - ball ?r - room)",
+      "(free ?g - gripper)",
+      "(carry ?b - ball ?g - gripper)"
+    ],
+    "actions": [
+      {
+        "action_name": "move",
+        "parameters": {
+          "?from": "room",
+          "?to": "room"
+        },
+        "preconditions": [
+          "(at-robby ?from)"
+        ],
+        "effects": [
+          "(at-robby ?to)",
+          "(not (at-robby ?from))"
+        ]
+      },
+      {
+        "action_name": "pick",
+        "parameters": {
+          "?obj": "ball",
+          "?room": "room",
+          "?gripper": "gripper"
+        },
+        "preconditions": [
+          "(at ?obj ?room)",
+          "(at-robby ?room)",
+          "(free ?gripper)"
+        ],
+        "effects": [
+          "(carry ?obj ?gripper)",
+          "(not (at ?obj ?room))",
+          "(not (free ?gripper))"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?obj": "ball",
+          "?room": "room",
+          "?gripper": "gripper"
+        },
+        "preconditions": [
+          "(carry ?obj ?gripper)",
+          "(at-robby ?room)"
+        ],
+        "effects": [
+          "(at ?obj ?room)",
+          "(free ?gripper)",
+          "(not (carry ?obj ?gripper))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "gripper_prob_01",
+    "domain_name": "gripper",
+    "objects": {
+      "rooma": "room",
+      "roomb": "room",
+      "ball1": "ball",
+      "ball2": "ball",
+      "left": "gripper",
+      "right": "gripper"
+    },
+    "initial_state": [
+      "(at-robby rooma)",
+      "(free left)",
+      "(free right)",
+      "(at ball1 rooma)",
+      "(at ball2 rooma)"
+    ],
+    "goal_state": [
+      "(carry ball1 left)",
+      "(carry ball2 right)"
+    ]
+  },
+  "iteration_count": 2,
+  "is_valid": true
+}

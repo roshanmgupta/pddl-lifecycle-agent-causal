@@ -1,0 +1,152 @@
+{
+  "timestamp": "2026-10-13T03:46:42.376840",
+  "domain_name": "depots_domain",
+  "run_index": 3,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking load\nType problem with proposition (at h d) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [
+    "VAL Error: Type-checking load\nType problem with proposition (clear s) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "diagnostic_issues_count": 16,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "at",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at h d) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The predicate 'at' is incorrectly typed. Ensure that the first parameter of 'at' matches the declared type in the domain. Either disambiguate the predicate by introducing a distinct predicate for hoists or generalize the type hierarchy to include a common supertype for hoists and depots."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "clear",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The predicate 'clear' is incorrectly typed. Ensure that the parameter type for 'clear' matches the expected type. Modify the predicate declaration to accept 'crate' as a valid type or introduce a new predicate specifically for clearing crates."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "clear",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'clear' predicate is being used with a crate parameter (c1) but is only defined for surfaces. Either modify the 'clear' predicate to accept crates as well (by creating a common supertype for surfaces and crates), or ensure 'clear' is only used with surface objects like pallets."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "load",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Conditions fail type-checking",
+      "suggested_repair_hint": "The 'load' action requires '(clear ?c)' but crates cannot satisfy this precondition as currently defined. Add '(on ?c ?s)' to the preconditions to verify the crate is on a surface before loading, and modify the 'clear' predicate usage to properly handle crate stacking."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined variable\nGot: ?s",
+      "suggested_repair_hint": "The variable '?s' in the 'load' action is undefined. Ensure all variables used in preconditions and effects are declared in the action's parameters. Add '?s' as a parameter of type 'surface' to the 'load' action."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "clear",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The predicate 'clear' is incorrectly typed. Ensure that the parameter type for 'clear' matches the expected type 'surface' instead of 'crate'. Modify the predicate declaration to '(clear ?s - surface)' and update any actions or propositions referencing 'clear' to align with this type."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "unload",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear c) - parameter 1 is incorrectly typed\nEffects fail type-checking.",
+      "suggested_repair_hint": "The 'unload' action's effect '(clear c)' is incorrectly typed since 'c' is a crate, not a surface. Either: (a) Introduce a new predicate for crate clearance, or (b) Define a common supertype for surfaces and crates and declare 'clear' over that supertype."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 0.8,
+      "raw_log": "",
+      "suggested_repair_hint": "The 'load' action lacks the effect '(clear ?c)' which is needed to maintain state consistency when a crate is loaded onto a truck. Add '(clear ?c)' to the effects to properly clear the crate's previous surface."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "clear",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear c) - parameter 1 is incorrectly typed\nEffects fail type-checking.",
+      "suggested_repair_hint": "The 'clear' predicate is being applied to a crate (c1) in the load action's effects, but crates are not defined as surfaces in the type hierarchy. Either: (1) Add 'crate' as a subtype of 'surface' in the type hierarchy, or (2) Create a separate predicate like 'clear_crate' for crate-specific clearance."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem in domain description!",
+      "suggested_repair_hint": "The load action's effect '(clear ?c)' assumes crates can be cleared, but this violates the type constraints since 'clear' is only defined for surfaces. Either modify the type hierarchy or adjust the effects to only clear surfaces."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 0.6,
+      "raw_log": "",
+      "suggested_repair_hint": "The load action clears the surface ?s but doesn't specify what happens to the crate's previous location. Consider adding '(not (clear ?s))' to the effects to maintain state consistency when the crate is removed from the surface."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear c) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The predicate 'clear' is incorrectly typed in the 'lift' action. Ensure that the parameter '?c' in '(clear ?c)' is of type 'surface' instead of 'crate'. Modify the preconditions of the 'lift' action to correctly type-check the 'clear' predicate."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear c) - parameter 1 is incorrectly typed\nEffects fail type-checking.",
+      "suggested_repair_hint": "The 'clear' predicate in the 'lift' action's effects is being applied to a crate (?c), but 'clear' is only defined for surfaces. Either modify the 'clear' predicate to accept crates as well (by generalizing the type hierarchy to have a common supertype for surfaces and crates), or adjust the 'lift' action to only apply 'clear' to surfaces."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "load",
+      "suspiciousness_score": 0.8,
+      "raw_log": "",
+      "suggested_repair_hint": "The 'load' action requires the crate to be on a surface (?s) that is clear, but doesn't ensure the hoist is clear to lift the crate. Add a precondition '(clear ?h)' to ensure the hoist can perform the lift operation."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "clear",
+      "suspiciousness_score": 0.9,
+      "raw_log": "",
+      "suggested_repair_hint": "The 'clear' predicate is inconsistently used - it's defined for surfaces but attempted to be used with crates in the 'lift' action. Consider either: (a) defining a separate 'clear_crate' predicate for crates, or (b) creating a supertype 'clearable' that both surfaces and crates inherit from and redefine 'clear' to work on 'clearable' objects."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "clear",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear s) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The predicate 'clear' is being used with parameter 's' of type 'surface' in the 'load' action, but 'surface' is not listed as a subtype of 'clearable'. Either add 'surface' as a subtype of 'clearable' in the type hierarchy, or create a separate predicate for clearing surfaces."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: clear (Suspiciousness: 1.0)\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (clear s) - parameter 1 is incorrectly typed\n  - [SUGGESTION FOR REPAIR]: The predicate 'clear' is being used with parameter 's' of type 'surface' in the 'load' action, but 'surface' is not listed as a subtype of 'clearable'. Either add 'surface' as a subtype of 'clearable' in the type hierarchy, or create a separate predicate for clearing surfaces.",
+  "plan_summary": {
+    "is_solvable": false,
+    "plan_length": 0,
+    "search_time_seconds": 0.0,
+    "val_plan_valid": false,
+    "plan_steps": []
+  }
+}

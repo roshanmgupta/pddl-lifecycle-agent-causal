@@ -1,0 +1,121 @@
+{
+  "domain_name": "blocksworld",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "blocksworld",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null,
+      "block": "object",
+      "table": "object"
+    },
+    "constants": {
+      "table": "table"
+    },
+    "predicates": [
+      "(on ?x - block ?y - block)",
+      "(clear ?x - block)",
+      "(holding ?x - block)",
+      "(hand-empty)"
+    ],
+    "actions": [
+      {
+        "action_name": "pick-up",
+        "parameters": {
+          "?a": "block"
+        },
+        "preconditions": [
+          "(clear ?a)",
+          "(on ?a table)",
+          "(hand-empty)"
+        ],
+        "effects": [
+          "(holding ?a)",
+          "(not (clear ?a))",
+          "(not (on ?a table))",
+          "(not (hand-empty))"
+        ]
+      },
+      {
+        "action_name": "put-down",
+        "parameters": {
+          "?a": "block"
+        },
+        "preconditions": [
+          "(holding ?a)"
+        ],
+        "effects": [
+          "(clear ?a)",
+          "(on ?a table)",
+          "(hand-empty)",
+          "(not (holding ?a))"
+        ]
+      },
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?a": "block",
+          "?b": "block"
+        },
+        "preconditions": [
+          "(clear ?b)",
+          "(holding ?a)"
+        ],
+        "effects": [
+          "(clear ?a)",
+          "(on ?a ?b)",
+          "(not (clear ?b))",
+          "(not (holding ?a))"
+        ]
+      },
+      {
+        "action_name": "unstack",
+        "parameters": {
+          "?a": "block",
+          "?b": "block"
+        },
+        "preconditions": [
+          "(on ?a ?b)",
+          "(clear ?a)",
+          "(hand-empty)"
+        ],
+        "effects": [
+          "(holding ?a)",
+          "(clear ?b)",
+          "(not (on ?a ?b))",
+          "(not (clear ?a))",
+          "(not (hand-empty))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1.pddl",
+    "domain_name": "blocksworld",
+    "objects": {
+      "a": "block",
+      "b": "block",
+      "c": "block",
+      "d": "block",
+      "table": "table"
+    },
+    "initial_state": [
+      "(hand-empty)",
+      "(on a table)",
+      "(on b c)",
+      "(on c table)",
+      "(on d table)",
+      "(clear a)",
+      "(clear b)",
+      "(clear d)"
+    ],
+    "goal_state": [
+      "(on c b)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

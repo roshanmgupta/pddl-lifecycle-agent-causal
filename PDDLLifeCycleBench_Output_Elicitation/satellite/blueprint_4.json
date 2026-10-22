@@ -1,0 +1,140 @@
+{
+  "domain_name": "satellite",
+  "run_index": 4,
+  "domain_blueprint": {
+    "domain_name": "satellite",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "satellite": "object",
+      "instrument": "object",
+      "direction": "object",
+      "mode": "object"
+    },
+    "constants": {},
+    "predicates": [
+      "(supports ?i - instrument ?m - mode)",
+      "(is-calibration-target ?i - instrument ?d - direction)",
+      "(on-board ?i - instrument ?s - satellite)",
+      "(power-available ?s - satellite)",
+      "(pointing-at ?s - satellite ?d - direction)",
+      "(calibrated ?i - instrument)",
+      "(has-image ?d - direction ?m - mode)",
+      "(power-on ?i - instrument)"
+    ],
+    "actions": [
+      {
+        "action_name": "turn-satellite",
+        "parameters": {
+          "?s": "satellite",
+          "?from": "direction",
+          "?to": "direction"
+        },
+        "preconditions": [
+          "(pointing-at ?s ?from)"
+        ],
+        "effects": [
+          "(pointing-at ?s ?to)",
+          "(not (pointing-at ?s ?from))"
+        ]
+      },
+      {
+        "action_name": "switch-on-instrument",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite"
+        },
+        "preconditions": [
+          "(on-board ?i ?s)",
+          "(power-available ?s)"
+        ],
+        "effects": [
+          "(power-on ?i)",
+          "(not (power-available ?s))",
+          "(not (calibrated ?i))"
+        ]
+      },
+      {
+        "action_name": "switch-off-instrument",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite"
+        },
+        "preconditions": [
+          "(on-board ?i ?s)",
+          "(power-on ?i)"
+        ],
+        "effects": [
+          "(power-available ?s)",
+          "(not (power-on ?i))"
+        ]
+      },
+      {
+        "action_name": "calibrate-instrument",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite",
+          "?d": "direction"
+        },
+        "preconditions": [
+          "(on-board ?i ?s)",
+          "(is-calibration-target ?i ?d)",
+          "(pointing-at ?s ?d)",
+          "(power-on ?i)"
+        ],
+        "effects": [
+          "(calibrated ?i)"
+        ]
+      },
+      {
+        "action_name": "take-image",
+        "parameters": {
+          "?s": "satellite",
+          "?d": "direction",
+          "?i": "instrument",
+          "?m": "mode"
+        },
+        "preconditions": [
+          "(calibrated ?i)",
+          "(on-board ?i ?s)",
+          "(supports ?i ?m)",
+          "(power-on ?i)",
+          "(pointing-at ?s ?d)"
+        ],
+        "effects": [
+          "(has-image ?d ?m)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "satellite",
+    "objects": {
+      "satellite0": "satellite",
+      "instrument0": "instrument",
+      "instrument1": "instrument",
+      "image0": "mode",
+      "GroundStation0": "direction",
+      "GroundStation1": "direction",
+      "Star2": "direction"
+    },
+    "initial_state": [
+      "(supports instrument0 image0)",
+      "(is-calibration-target instrument0 GroundStation1)",
+      "(supports instrument1 image0)",
+      "(is-calibration-target instrument1 GroundStation1)",
+      "(on-board instrument0 satellite0)",
+      "(on-board instrument1 satellite0)",
+      "(power-available satellite0)",
+      "(pointing-at satellite0 Star2)"
+    ],
+    "goal_state": [
+      "(has-image Star2 image0)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

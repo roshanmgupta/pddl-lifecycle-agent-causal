@@ -1,0 +1,160 @@
+{
+  "timestamp": "2026-10-14T03:21:52.640257",
+  "domain_name": "logistics_domain",
+  "run_index": 2,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking load_truck\nType problem with proposition (at b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [
+    "VAL Error: Type-checking load_truck\nType problem with proposition (at b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "diagnostic_issues_count": 17,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load_truck",
+      "suspiciousness_score": 1.0,
+      "raw_log": "VAL Error: Type-checking load_truck\nType problem with proposition (at b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!",
+      "suggested_repair_hint": "The predicate '(at ?o - obj ?l - location)' in the 'load_truck' action has a type mismatch. Ensure that the first parameter of the 'at' predicate matches the type 'obj' and the second parameter matches the type 'location'. Verify that the types declared in the predicate match the types used in the action's preconditions."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The planner could not find a solution, indicating a potential issue with the preconditions of the 'fly_airplane' action. Ensure that the preconditions for flying an airplane are correctly specified, including the requirement that the airplane must be at the departure airport and that both departure and destination airports are correctly defined."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "drive_truck",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The planner could not find a solution, indicating a potential issue with the preconditions of the 'drive_truck' action. Ensure that the preconditions for driving a truck are correctly specified, including the requirement that the truck must be at the starting location and that both starting and destination locations are within the same city."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "load_truck",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The planner could not find a solution, indicating a potential issue with the preconditions of the 'load_truck' action. Ensure that the preconditions for loading a truck are correctly specified, including the requirement that both the object and the truck must be at the same location."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "unload_truck",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The planner could not find a solution, indicating a potential issue with the preconditions of the 'unload_truck' action. Ensure that the preconditions for unloading a truck are correctly specified, including the requirement that the object must be in the truck and the truck must be at the unloading location."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'fly_airplane' action requires that the airplane is at the departure airport, but the planner cannot find a valid sequence of actions to achieve the goal. Consider adding preconditions to ensure that the airplane is available at the required location before attempting to fly it."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The initial state may be missing critical facts that are necessary to achieve the goal. Verify that all required objects and their locations are correctly specified in the initial state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "unload_airplane",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Search stopped without finding a solution.",
+      "suggested_repair_hint": "The 'unload_airplane' action's effects may not be correctly aligned with the goal state. Ensure that unloading an airplane correctly updates the package's location to match the goal state requirements."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "fly_airplane",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "Ensure that the 'fly_airplane' action's preconditions are correctly defined and that the airplane's initial location is correctly specified in the initial state. Verify that the goal state is achievable given the current state and action definitions."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.9,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "Review the initial state to ensure all necessary facts are present, particularly the locations of all objects and vehicles. Ensure that the goal state is reachable from the initial state by verifying the connectivity of locations and the availability of vehicles."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load_truck",
+      "suspiciousness_score": 1.0,
+      "raw_log": "VAL Error: Type-checking load_truck\nType problem with proposition (at b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!",
+      "suggested_repair_hint": "The predicate '(at ?b ?c)' in the load_truck action has a type mismatch. The first parameter '?b' is declared as a 'truck' type, but the 'at' predicate expects its first argument to be of type 'obj'. Either modify the 'at' predicate to accept 'truck' as the first argument type, or create a separate predicate for trucks like '(at_truck ?t - truck ?l - location)' and use it in the load_truck action."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "at",
+      "suspiciousness_score": 0.9,
+      "raw_log": "VAL Error: Type-checking load_truck\nType problem with proposition (at b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!",
+      "suggested_repair_hint": "The 'at' predicate is overloaded for different types (obj, truck, airplane) which is not allowed in PDDL. You must either: 1) Create a common supertype for all movable objects and use that in a single 'at' predicate, or 2) Create separate predicates for each type (e.g., 'at_obj', 'at_truck', 'at_airplane')."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load_truck",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at b c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the predicate '(at ?m - movable ?l - location)' is correctly used in the preconditions of the 'load_truck' action. The first argument should be of type 'movable' and the second of type 'location'. Verify that the types of the parameters in the action match the predicate declaration."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load_truck",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at b c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the predicate '(at ?b ?c)' in the 'load_truck' action's preconditions aligns with the declared types in the domain. Specifically, verify that '?b' is of type 'truck' and '?c' is of type 'location'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load_truck",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The predicate (at ?m - movable ?l - location) in the domain has a type mismatch with how it's being used in the load_truck action. The first parameter of 'at' is declared as type 'movable', but in the load_truck action, it's being used with types 'truck' and 'obj'. Either change the predicate declaration to accept 'obj' and 'truck' separately, or create a common supertype for movable objects that includes both 'obj' and 'truck'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load_truck",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\nType problem in domain description!",
+      "suggested_repair_hint": "Ensure that the predicate '(at ?m - movable ?l - location)' in the 'load_truck' action's preconditions aligns with the declared parameter types. Specifically, verify that the first argument of '(at ?b ?c)' matches the type 'movable' as declared in the predicate."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load_truck",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The predicate (at ?m - movable ?l - location) in the domain has a type mismatch with the usage in the load_truck action. The action uses (at ?b ?c) where ?b is a truck, but the predicate expects ?m to be of type movable. Ensure all action parameters match the predicate's type signatures. Either update the predicate to accept truck directly or ensure the action's parameter types align with the predicate's expected types."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: load_truck (Suspiciousness: 1.0)\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (at b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n  - [SUGGESTION FOR REPAIR]: The predicate (at ?m - movable ?l - location) in the domain has a type mismatch with the usage in the load_truck action. The action uses (at ?b ?c) where ?b is a truck, but the predicate expects ?m to be of type movable. Ensure all action parameters match the predicate's type signatures. Either update the predicate to accept truck directly or ensure the action's parameter types align with the predicate's expected types.",
+  "plan_summary": {
+    "is_solvable": false,
+    "plan_length": 0,
+    "search_time_seconds": 5.3e-05,
+    "val_plan_valid": false,
+    "plan_steps": []
+  }
+}

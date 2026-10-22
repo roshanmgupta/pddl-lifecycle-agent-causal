@@ -1,0 +1,41 @@
+{
+  "timestamp": "2026-10-23T01:21:48.743481",
+  "domain_name": "logistics",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 1,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking load_truck\n...action passes type checking.\nType-checking load_airplane\n...action passes type checking.\nType-checking unload_truck\n...action passes type checking.\nType-checking unload_airplane\n...action passes type checking.\nType-checking drive_truck\n...action passes type checking.\nType-checking fly_airplane\n...action passes type checking.\nType problem with proposition (at-airport l0-0) - parameter 1 is incorrectly typed\nType-checking initial state failed\n\nType problem in problem specification!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 2,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "at-airport",
+      "raw_log": "Type problem with proposition (at-airport l0-0) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Type mismatch on proposition '(at-airport l0-0 ...)': Object/parameter 'l0-0' has declared type 'location', but predicate 'at-airport' was declared too narrowly expecting subtype 'airport' (which already inherits from 'location'). In domain 'predicates', generalize parameter 1 of predicate 'at-airport' to supertype 'location' (e.g. '(at-airport ... ?x - location ...)'). Alternatively, if problem requirements designate that 'l0-0' is a specialized 'airport', declare 'l0-0 - airport' in problem ':objects'. Do NOT invert domain 'types' by declaring 'location' as a subtype of 'airport'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "fly_airplane",
+      "raw_log": "Action 'fly_airplane' parameter '?b' requires type 'airport', but problem :objects and domain :constants contain ZERO objects of type 'airport' (or its subtypes)!",
+      "suggested_repair_hint": "Action 'fly_airplane' parameter '?c' requires type 'airport', but problem :objects and domain :constants contain ZERO objects of type 'airport' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'airport' according to the requirements (e.g. declare them as 'airport' instead of a broad supertype), or if 'fly_airplane' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 4,
+    "search_time_seconds": 0.000135,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(fly_airplane a0 l0-0 l1-0)",
+      "(load_airplane p0 a0 l1-0)",
+      "(fly_airplane a0 l1-0 l0-0)",
+      "(unload_airplane p0 a0 l0-0)"
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+1: (unstack b c)
+2: (stack b a)
+3: (pick-up c)
+4: (stack c b)

@@ -1,0 +1,8 @@
+1: (stack-crate c1 c1 h1 l1)
+2: (move-hoist h1 l1 l2)
+3: (unstack-crate c1 c1 h1 l2)
+4: (move-hoist h1 l2 l1)
+5: (stack-crate c2 c2 h1 l1)
+6: (move-hoist h1 l1 l2)
+7: (unstack-crate c2 c2 h1 l2)
+8: (stack-crate c2 c1 h1 l2)

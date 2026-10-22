@@ -1,0 +1,90 @@
+{
+  "timestamp": "2026-10-16T01:28:39.068305",
+  "domain_name": "transport14",
+  "run_index": 2,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking drive\n...action passes type checking.\nType-checking pick-up\n...action passes type checking.\nType-checking drop\n...action passes type checking.\n\nErrors: 1, warnings: 0\n\nError: Parser failed to read file!"
+  ],
+  "final_verification_errors": [
+    "VAL Error: Type-checking drive\n...action passes type checking.\nType-checking pick-up\n...action passes type checking.\nType-checking drop\n...action passes type checking.\n\nErrors: 1, warnings: 0\n\nError: Parser failed to read file!"
+  ],
+  "diagnostic_issues_count": 9,
+  "diagnostic_reports": [
+    {
+      "error_category": "SYSTEM_ORACLE_ERROR",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Parser failed to read file!",
+      "suggested_repair_hint": "Check the file format and encoding of the PDDL files to ensure they are correctly formatted and readable by the parser. Verify that there are no hidden characters or syntax errors in the files."
+    },
+    {
+      "error_category": "SYNTAX_PARSE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Parser failed to read file!",
+      "suggested_repair_hint": "Check the PDDL file for syntax errors such as unclosed parentheses, malformed expressions, or incorrect file formatting. Ensure all predicates, actions, and objects are correctly defined and follow the PDDL syntax rules."
+    },
+    {
+      "error_category": "SYNTAX_PARSE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Error: Parser failed to read file!",
+      "suggested_repair_hint": "Check the PDDL file for syntax errors such as unclosed parentheses, malformed expressions, or incorrect file formatting. Ensure all expressions are well-formed and balanced."
+    },
+    {
+      "error_category": "SYNTAX_PARSE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Error: Parser failed to read file!",
+      "suggested_repair_hint": "The parser failed to read the file, indicating a potential syntax error or malformed expression in the PDDL file. Check for unclosed parentheses, incorrect predicate usage, or other syntax violations in the domain or problem file."
+    },
+    {
+      "error_category": "SYNTAX_PARSE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Parser failed to read file!",
+      "suggested_repair_hint": "The error indicates a syntax parsing failure. Check for malformed expressions, unclosed parentheses, or syntax errors in the PDDL files. Ensure all expressions are well-formed with balanced parentheses and follow PDDL syntax rules strictly."
+    },
+    {
+      "error_category": "SYNTAX_PARSE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Parser failed to read file!",
+      "suggested_repair_hint": "Check the PDDL file for syntax errors such as unclosed parentheses, malformed expressions, or incorrect file formatting. Ensure all predicates, actions, and objects are correctly defined and follow PDDL syntax rules."
+    },
+    {
+      "error_category": "SYNTAX_PARSE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Parser failed to read file!",
+      "suggested_repair_hint": "Check the PDDL file for syntax errors such as unclosed parentheses, malformed expressions, or incorrect file formatting. Ensure all parentheses are balanced and all expressions are well-formed according to PDDL syntax rules."
+    },
+    {
+      "error_category": "SYNTAX_PARSE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Parser failed to read file!",
+      "suggested_repair_hint": "Check the PDDL file for syntax errors such as unclosed parentheses, malformed expressions, or incorrect use of PDDL keywords. Ensure all expressions are well-formed and balanced."
+    },
+    {
+      "error_category": "SYNTAX_PARSE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Parser failed to read file!",
+      "suggested_repair_hint": "Check the PDDL file for syntax errors such as unclosed parentheses, malformed expressions, or incorrect use of symbols. Ensure all expressions are well-formed and balanced."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: SYNTAX_PARSE\n  - [TARGET AST OPERATION]: GENERAL_AST_REPAIR\n  - [LOCATION / COMPONENT]: drive (Calculated Suspiciousness: 1.000)\n  - [DESCRIPTION / RAW TRACE]: Parser failed to read file!\n  - [SUGGESTION FOR REPAIR]: Check the PDDL file for syntax errors such as unclosed parentheses, malformed expressions, or incorrect use of symbols. Ensure all expressions are well-formed and balanced.",
+  "plan_summary": null
+}

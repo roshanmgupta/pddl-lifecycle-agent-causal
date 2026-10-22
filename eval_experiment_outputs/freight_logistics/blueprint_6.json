@@ -1,0 +1,194 @@
+{
+  "domain_name": "freight_logistics",
+  "run_index": 6,
+  "domain_blueprint": {
+    "domain_name": "freight_logistics",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "crate": "object",
+      "hoist": "object",
+      "location": "object",
+      "pallet": "object",
+      "truck": "object",
+      "depot": "location",
+      "urgent_cargo": "crate"
+    },
+    "constants": {},
+    "predicates": [
+      "(at-truck ?t - truck ?l - location)",
+      "(at-crate ?c - crate ?l - location)",
+      "(on ?c1 - crate ?c2 - crate)",
+      "(on-pallet ?c - crate ?p - pallet)",
+      "(loaded ?c - crate ?t - truck)",
+      "(hoist-at ?h - hoist ?l - location)",
+      "(empty-hoist ?h - hoist)",
+      "(at-pallet ?p - pallet ?l - location)",
+      "(urgent ?c - urgent_cargo)"
+    ],
+    "actions": [
+      {
+        "action_name": "move-truck",
+        "parameters": {
+          "?t": "truck",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(at-truck ?t ?from)",
+          "(not (at-truck ?t ?to))"
+        ],
+        "effects": [
+          "(not (at-truck ?t ?from))",
+          "(at-truck ?t ?to)"
+        ]
+      },
+      {
+        "action_name": "express-transit",
+        "parameters": {
+          "?t": "truck",
+          "?from": "depot",
+          "?to": "depot",
+          "?c": "urgent_cargo"
+        },
+        "preconditions": [
+          "(at-truck ?t ?from)",
+          "(not (at-truck ?t ?to))",
+          "(loaded ?c ?t)",
+          "(urgent ?c)"
+        ],
+        "effects": [
+          "(not (at-truck ?t ?from))",
+          "(at-truck ?t ?to)"
+        ]
+      },
+      {
+        "action_name": "load-crate",
+        "parameters": {
+          "?c": "crate",
+          "?t": "truck",
+          "?h": "hoist",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at-truck ?t ?l)",
+          "(at-crate ?c ?l)",
+          "(hoist-at ?h ?l)",
+          "(empty-hoist ?h)"
+        ],
+        "effects": [
+          "(loaded ?c ?t)",
+          "(not (at-crate ?c ?l))",
+          "(not (empty-hoist ?h))"
+        ]
+      },
+      {
+        "action_name": "unload-crate",
+        "parameters": {
+          "?c": "crate",
+          "?t": "truck",
+          "?h": "hoist",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at-truck ?t ?l)",
+          "(loaded ?c ?t)",
+          "(hoist-at ?h ?l)",
+          "(not (empty-hoist ?h))"
+        ],
+        "effects": [
+          "(at-crate ?c ?l)",
+          "(not (loaded ?c ?t))",
+          "(empty-hoist ?h)"
+        ]
+      },
+      {
+        "action_name": "stack-crate",
+        "parameters": {
+          "?c1": "crate",
+          "?c2": "crate",
+          "?h": "hoist",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at-crate ?c1 ?l)",
+          "(at-crate ?c2 ?l)",
+          "(hoist-at ?h ?l)",
+          "(empty-hoist ?h)",
+          "(not (on ?c1 ?c2))"
+        ],
+        "effects": [
+          "(on ?c1 ?c2)",
+          "(not (at-crate ?c1 ?l))",
+          "(not (empty-hoist ?h))"
+        ]
+      },
+      {
+        "action_name": "unstack-crate",
+        "parameters": {
+          "?c1": "crate",
+          "?c2": "crate",
+          "?h": "hoist",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(on ?c1 ?c2)",
+          "(hoist-at ?h ?l)",
+          "(not (empty-hoist ?h))"
+        ],
+        "effects": [
+          "(at-crate ?c1 ?l)",
+          "(not (on ?c1 ?c2))",
+          "(empty-hoist ?h)"
+        ]
+      },
+      {
+        "action_name": "move-hoist",
+        "parameters": {
+          "?h": "hoist",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(hoist-at ?h ?from)",
+          "(not (hoist-at ?h ?to))"
+        ],
+        "effects": [
+          "(not (hoist-at ?h ?from))",
+          "(hoist-at ?h ?to)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "deliver_and_stack_crates",
+    "domain_name": "freight_logistics",
+    "objects": {
+      "t1": "truck",
+      "c1": "crate",
+      "c2": "urgent_cargo",
+      "l1": "location",
+      "l2": "location",
+      "h1": "hoist",
+      "p1": "pallet"
+    },
+    "initial_state": [
+      "(at-truck t1 l1)",
+      "(at-crate c1 l1)",
+      "(at-crate c2 l1)",
+      "(hoist-at h1 l1)",
+      "(empty-hoist h1)",
+      "(on-pallet c1 p1)",
+      "(at-pallet p1 l1)",
+      "(urgent c2)"
+    ],
+    "goal_state": [
+      "(at-crate c1 l2)",
+      "(on c2 c1)"
+    ]
+  },
+  "iteration_count": 3,
+  "is_valid": true
+}

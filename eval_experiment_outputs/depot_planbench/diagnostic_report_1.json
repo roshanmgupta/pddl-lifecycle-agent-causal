@@ -1,0 +1,98 @@
+{
+  "timestamp": "2026-10-14T01:41:46.241208",
+  "domain_name": "depot_planbench",
+  "run_index": 1,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking drive\nType problem with proposition (at t from) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [
+    "VAL Error: Type-checking drive\n...action passes type checking.\nType-checking lift\nType problem with proposition (at h p) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "diagnostic_issues_count": 10,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t from) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'drive' action's preconditions contain a type mismatch. Ensure that the 'at' predicate used in the preconditions matches the correct types. Specifically, the 'at' predicate should be declared with the correct types for 'truck' and 'place'. Modify the predicate declaration to '(at ?t - truck ?p - place)' and update the preconditions accordingly."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at h p) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the 'lift' action's preconditions correctly align with the predicate signatures. Specifically, verify that the types of parameters in '(at ?h ?p)' match the declared types in the 'predicates' section."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at h p) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "Ensure that the parameters in the 'lift' action's preconditions match the declared types in the predicates. Specifically, verify that the types of '?h' and '?p' in '(at ?h ?p)' are correctly aligned with the predicate declarations."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at h p) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "Ensure that the parameters in the 'lift' action's preconditions match the declared types in the predicate '(at ?h ?p)'. Specifically, verify that the first parameter of '(at ?h ?p)' is correctly typed as 'hoist'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at h p) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the parameters in the 'lift' action's preconditions match the declared types in the predicates. Specifically, verify that the types for '?h' and '?p' in '(at ?h ?p)' are correctly aligned with the predicate declarations."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at h p) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the 'lift' action's parameters match the predicate signatures. Specifically, verify that the 'at' predicate used in the preconditions correctly aligns with the types declared in the domain. The parameter '?h' should be of type 'hoist' and '?p' should be of type 'place'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at h p) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the parameters in the 'lift' action's preconditions match the declared predicate signatures. Specifically, verify that the types of '?h' and '?p' in '(at ?h ?p)' align with the predicate declaration '(at ?x - hoist ?y - place)'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at h p) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the parameters in the 'lift' action's preconditions match the declared types in the predicate signatures. Specifically, verify that the types of '?h' and '?p' align with the '(at ?h ?p)' predicate."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at h p) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'lift' action's preconditions contain a type mismatch. Ensure that the parameters in the '(at ?h ?p)' predicate match the declared types in the 'parameters' section. Specifically, verify that '?h' is correctly typed as 'hoist' and '?p' as 'place'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at h p) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "Ensure that the parameters in the 'lift' action's preconditions match the declared types in the predicate signatures. Specifically, verify that the types for '?h' and '?p' in '(at ?h ?p)' align with the predicate declaration."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: lift (Suspiciousness: 1.0)\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (at h p) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n  - [SUGGESTION FOR REPAIR]: Ensure that the parameters in the 'lift' action's preconditions match the declared types in the predicate signatures. Specifically, verify that the types for '?h' and '?p' in '(at ?h ?p)' align with the predicate declaration.",
+  "plan_summary": null
+}

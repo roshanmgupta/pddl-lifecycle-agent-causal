@@ -1,0 +1,113 @@
+{
+  "timestamp": "2026-10-14T01:27:49.623225",
+  "domain_name": "depot_domain",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 8,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking drive\n...action passes type checking.\nType-checking lift\nType problem with proposition (clear c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 10,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear c) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The 'clear' predicate in the 'lift' action's preconditions is incorrectly typed. The 'clear' predicate is declared to take a 'surface' type parameter, but in the 'lift' action, it's being used with a 'crate' type. Update the 'clear' predicate declaration or adjust the types in the 'lift' action to ensure type consistency."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "clear",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear c) - parameter 1 is incorrectly typed\nEffects fail type-checking.",
+      "suggested_repair_hint": "The predicate 'clear' is incorrectly typed in the 'lift' action's effects. Ensure that the argument for 'clear' matches the declared type 'surface'. Modify the effect '(clear ?c)' to '(clear ?s)' to align with the predicate's type signature."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "lift",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear c) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The 'clear' predicate in the 'lift' action's preconditions is incorrectly typed. The 'clear' predicate is declared to take a 'surface' type, but in the 'lift' action, it's being applied to a 'crate' (parameter '?c'). Either modify the 'clear' predicate to accept 'crate' type or ensure the 'lift' action only checks 'clear' on surfaces. Recommended fix: Update the 'clear' predicate declaration to include 'crate' type or adjust the 'lift' action's preconditions to only check 'clear' on surfaces."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pallet0",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Predicate pallet0 not found\nType-checking initial state failed",
+      "suggested_repair_hint": "Ensure that all objects referenced in the initial state are correctly declared in the 'objects' section with their appropriate types. Specifically, verify that 'pallet0' is correctly defined as a 'pallet' and 'surface' in the 'objects' section."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "truck",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Predicate truck not found\nType-checking initial state failed",
+      "suggested_repair_hint": "The predicate 'truck' is used in the initial state but not declared in the domain's predicates. Add '(truck ?t - truck)' to the domain's predicates to resolve this type signature error."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pallet",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type-checking initial state failed",
+      "suggested_repair_hint": "The predicate 'pallet' is used in the initial state but not declared in the domain's predicates. Add '(pallet ?p - pallet)' to the domain's predicates to ensure all types are properly declared."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "place",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type-checking initial state failed",
+      "suggested_repair_hint": "The predicate 'place' is used in the initial state but not declared in the domain's predicates. Add '(place ?p - place)' to the domain's predicates to ensure all types are properly declared."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "hoist",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Predicate hoist not found\nType-checking initial state failed",
+      "suggested_repair_hint": "The predicate 'hoist' is used in the initial state but not declared in the domain's predicates. Add '(hoist ?h - hoist)' to the domain's predicates to resolve the type-checking error."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "crate",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Predicate crate not found\nType-checking initial state failed",
+      "suggested_repair_hint": "The predicate 'crate' is used in the initial state but not declared in the domain's predicates. Add '(crate ?c - crate)' to the domain's predicates to resolve this type-checking error."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "surface",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (surface crate0) - parameter 1 is incorrectly typed\nType-checking initial state failed",
+      "suggested_repair_hint": "The predicate 'surface' is incorrectly applied to 'crate0' in the initial state. Crates should not be declared as surfaces. Remove '(surface crate0)' and '(surface crate1)' from the initial state as they violate type constraints."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 10,
+    "search_time_seconds": 0.000819,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(lift hoist0 crate1 pallet0 depot0)",
+      "(load hoist0 crate1 truck1 depot0)",
+      "(drive truck1 depot0 distributor0)",
+      "(lift hoist1 crate0 pallet1 distributor0)",
+      "(load hoist1 crate0 truck1 distributor0)",
+      "(unload hoist1 crate1 truck1 distributor0)",
+      "(drive truck1 distributor0 distributor1)",
+      "(unload hoist2 crate0 truck1 distributor1)",
+      "(drop hoist1 crate1 pallet1 distributor0)",
+      "(drop hoist2 crate0 pallet2 distributor1)"
+    ]
+  }
+}

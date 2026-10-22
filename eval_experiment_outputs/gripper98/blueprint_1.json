@@ -1,0 +1,131 @@
+{
+  "domain_name": "gripper98",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "gripper98",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "room": "object",
+      "ball": "object",
+      "gripper": "object"
+    },
+    "predicates": [
+      "(is-room ?r - room)",
+      "(is-ball ?b - ball)",
+      "(is-gripper ?g - gripper)",
+      "(robot-at ?r - room)",
+      "(ball-at ?b - ball ?r - room)",
+      "(gripper-free ?g - gripper)",
+      "(carrying ?g - gripper ?b - ball)"
+    ],
+    "actions": [
+      {
+        "action_name": "move",
+        "parameters": {
+          "?from": "room",
+          "?to": "room"
+        },
+        "preconditions": [
+          "(is-room ?from)",
+          "(is-room ?to)",
+          "(robot-at ?from)"
+        ],
+        "effects": [
+          "(robot-at ?to)",
+          "(not (robot-at ?from))"
+        ]
+      },
+      {
+        "action_name": "pick",
+        "parameters": {
+          "?b": "ball",
+          "?r": "room",
+          "?g": "gripper"
+        },
+        "preconditions": [
+          "(is-ball ?b)",
+          "(is-room ?r)",
+          "(is-gripper ?g)",
+          "(ball-at ?b ?r)",
+          "(robot-at ?r)",
+          "(gripper-free ?g)"
+        ],
+        "effects": [
+          "(carrying ?g ?b)",
+          "(not (ball-at ?b ?r))",
+          "(not (gripper-free ?g))"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?b": "ball",
+          "?r": "room",
+          "?g": "gripper"
+        },
+        "preconditions": [
+          "(is-ball ?b)",
+          "(is-room ?r)",
+          "(is-gripper ?g)",
+          "(carrying ?g ?b)",
+          "(robot-at ?r)"
+        ],
+        "effects": [
+          "(ball-at ?b ?r)",
+          "(gripper-free ?g)",
+          "(not (carrying ?g ?b))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-2",
+    "domain_name": "gripper98",
+    "objects": {
+      "rooma": "room",
+      "roomb": "room",
+      "ball6": "ball",
+      "ball5": "ball",
+      "ball4": "ball",
+      "ball3": "ball",
+      "ball2": "ball",
+      "ball1": "ball",
+      "left": "gripper",
+      "right": "gripper"
+    },
+    "initial_state": [
+      "(is-room rooma)",
+      "(is-room roomb)",
+      "(is-ball ball6)",
+      "(is-ball ball5)",
+      "(is-ball ball4)",
+      "(is-ball ball3)",
+      "(is-ball ball2)",
+      "(is-ball ball1)",
+      "(is-gripper left)",
+      "(is-gripper right)",
+      "(robot-at rooma)",
+      "(gripper-free left)",
+      "(gripper-free right)",
+      "(ball-at ball6 rooma)",
+      "(ball-at ball5 rooma)",
+      "(ball-at ball4 rooma)",
+      "(ball-at ball3 rooma)",
+      "(ball-at ball2 rooma)",
+      "(ball-at ball1 rooma)"
+    ],
+    "goal_state": [
+      "(ball-at ball6 roomb)",
+      "(ball-at ball5 roomb)",
+      "(ball-at ball4 roomb)",
+      "(ball-at ball3 roomb)",
+      "(ball-at ball2 roomb)",
+      "(ball-at ball1 roomb)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

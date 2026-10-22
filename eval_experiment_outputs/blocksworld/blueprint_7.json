@@ -1,0 +1,113 @@
+{
+  "domain_name": "blocksworld",
+  "run_index": 7,
+  "domain_blueprint": {
+    "domain_name": "blocksworld",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "block": "object"
+    },
+    "predicates": [
+      "(on ?x - block ?y - block)",
+      "(clear ?x - block)",
+      "(holding ?x - block)",
+      "(ontable ?x - block)",
+      "(arm-empty)"
+    ],
+    "actions": [
+      {
+        "action_name": "pick-up",
+        "parameters": {
+          "?b": "block"
+        },
+        "preconditions": [
+          "(ontable ?b)",
+          "(clear ?b)",
+          "(arm-empty)"
+        ],
+        "effects": [
+          "(not (ontable ?b))",
+          "(not (clear ?b))",
+          "(holding ?b)",
+          "(not (arm-empty))"
+        ]
+      },
+      {
+        "action_name": "put-down",
+        "parameters": {
+          "?b": "block"
+        },
+        "preconditions": [
+          "(holding ?b)"
+        ],
+        "effects": [
+          "(not (holding ?b))",
+          "(ontable ?b)",
+          "(clear ?b)",
+          "(arm-empty)"
+        ]
+      },
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?b": "block",
+          "?target": "block"
+        },
+        "preconditions": [
+          "(holding ?b)",
+          "(clear ?target)"
+        ],
+        "effects": [
+          "(not (holding ?b))",
+          "(on ?b ?target)",
+          "(not (clear ?target))"
+        ]
+      },
+      {
+        "action_name": "unstack",
+        "parameters": {
+          "?b": "block",
+          "?source": "block"
+        },
+        "preconditions": [
+          "(on ?b ?source)",
+          "(clear ?b)",
+          "(arm-empty)"
+        ],
+        "effects": [
+          "(not (on ?b ?source))",
+          "(holding ?b)",
+          "(not (clear ?b))",
+          "(arm-empty)",
+          "(clear ?source)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "blocksworld_problem",
+    "domain_name": "blocksworld",
+    "objects": {
+      "a": "block",
+      "b": "block",
+      "c": "block"
+    },
+    "initial_state": [
+      "(on a b)",
+      "(ontable b)",
+      "(ontable c)",
+      "(clear a)",
+      "(clear c)",
+      "(arm-empty)"
+    ],
+    "goal_state": [
+      "(on c b)",
+      "(on b a)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

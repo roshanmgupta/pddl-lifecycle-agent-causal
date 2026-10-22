@@ -1,0 +1,240 @@
+{
+  "timestamp": "2026-10-13T01:54:48.922519",
+  "domain_name": "bartender_domain",
+  "run_index": 1,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking grasp\nType problem with proposition (empty h) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'PDDL_file\\temp_domain_2.pddl' 'PDDL_file\\temp_problem_2.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing: [0.000s CPU, 0.002s wall-clock]\nNormalizing task... [0.000s CPU, 0.000s wall-clock]\nInstantiating...\nGenerating Datalog program... [0.000s CPU, 0.000s wall-clock]\nNormalizing Datalog program...\nNormalizing Datalog program: [0.000s CPU, 0.002s wall-clock]\nPreparing model... [0.016s CPU, 0.004s wall-clock]\nGenerated 48 rules.\nComputing model... [0.000s CPU, 0.001s wall-clock]\n120 relevant atoms\n111 auxiliary atoms\n231 final queue length\n321 total queue pushes\nCompleting instantiation... [0.000s CPU, 0.002s wall-clock]\nInstantiating: [0.016s CPU, 0.009s wall-clock]\nNo relaxed solution! Generating unsolvable task...\nTranslator variables: 1\nTranslator derived variables: 0\nTranslator facts: 2\nTranslator goal facts: 1\nTranslator mutex groups: 0\nTranslator total mutex groups size: 0\nTranslator operators: 0\nTranslator axioms: 0\nTranslator task size: 4\nwarning: could not determine peak memory\nWriting output... [0.000s CPU, 0.001s wall-clock]\nDone! [0.016s CPU, 0.013s wall-clock]\ntranslate exit code: 0\n\nINFO     Running search (release).\nINFO     search stdin: output.sas\nINFO     search time limit: None\nINFO     search memory limit: None\nINFO     search command line string: 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\downward.exe' --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas\n[t=0.000194s, 788 KB] reading input...\n[t=0.000790s, 792 KB] done reading input!\n[t=0.003511s, 1212 KB] Simplifying 0 unary operators... done! [0 unary operators]\n[t=0.003540s, 1212 KB] time to simplify: 0.000033s\n[t=0.003548s, 1212 KB] Initializing additive heuristic...\n[t=0.003552s, 1212 KB] Initializing FF heuristic...\n[t=0.003598s, 1212 KB] Building successor generator...done!\n[t=0.003614s, 1212 KB] peak memory difference for successor generator creation: 0 KB\n[t=0.003619s, 1212 KB] time for successor generation creation: 0.000004s\n[t=0.003627s, 1212 KB] Variables: 1\n[t=0.003634s, 1212 KB] FactPairs: 2\n[t=0.003639s, 1212 KB] Bytes per state: 4\n[t=0.003668s, 1212 KB] Conducting lazy best first search, (real) bound = 2147483647\n[t=0.003686s, 1212 KB] Initial heuristic value for ff: infinity\n[t=0.003693s, 1212 KB] Completely explored state space -- no solution!\n[t=0.003698s, 1212 KB] Actual search time: 0.000024s\n[t=0.003705s, 1212 KB] Expanded 0 state(s).\n[t=0.003705s, 1212 KB] Reopened 0 state(s).\n[t=0.003705s, 1212 KB] Evaluated 1 state(s).\n[t=0.003705s, 1212 KB] Evaluations: 1\n[t=0.003705s, 1212 KB] Generated 0 state(s).\n[t=0.003705s, 1212 KB] Dead ends: 1 state(s).\n[t=0.003705s, 1212 KB] Number of registered states: 1\n[t=0.003705s, 1212 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.003705s, 1212 KB] Int hash set resizes: 0\n[t=0.003705s, 1212 KB] Search time: 0.000037s\n[t=0.003705s, 1212 KB] Total time: 0.003705s\nSearch stopped without finding a solution.\nRemove intermediate file output.sas\nsearch exit code: 12\n\nDriver aborting after search\n\n"
+  ],
+  "diagnostic_issues_count": 27,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "grasp",
+      "suspiciousness_score": 1.0,
+      "raw_log": "VAL Error: Type-checking grasp\nType problem with proposition (empty h) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The predicate 'empty' is incorrectly typed in the 'grasp' action. Ensure that the parameter '?h' in the precondition '(empty ?h)' is correctly typed as 'robot_hand'. Modify the predicate declaration or the action's parameter type to align with the domain's type hierarchy."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "contains",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (contains glass1 vodka) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The predicate 'contains' is incorrectly typed. Ensure that the first parameter of 'contains' is of type 'container' and the second parameter is of type 'ingredient'. Modify the goal state to correctly reflect these types."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "(empty hand1)",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (empty hand1) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The predicate 'empty' is incorrectly applied to 'hand1', which is of type 'robot_hand'. Ensure that 'empty' is only applied to objects of type 'container' by either introducing a new predicate for robot hands or adjusting the type hierarchy to include a common supertype."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pour_into_shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined variable\nGot: ?i",
+      "suggested_repair_hint": "The variable '?i' is used in the precondition of the 'pour_into_shaker' action but is not declared in its parameters. Add '?i' as a parameter of type 'ingredient' to the 'pour_into_shaker' action to resolve this issue."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "shake",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined variable\nGot: ?i",
+      "suggested_repair_hint": "The 'shake' action uses an undefined variable '?i' in its precondition. Add '?i - ingredient' to the action's parameters to properly scope the variable."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour_cocktail",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "The 'pour_cocktail' action lacks a precondition to ensure the cocktail glass is empty before pouring. Add '(empty ?cg)' to the preconditions to prevent invalid state transitions."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "pour_cocktail",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "The 'pour_cocktail' action's effect '(contains ?cg ?i - ingredient)' uses an unbound variable '?i'. Either bind '?i' in the parameters or specify the exact ingredient being poured."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour_into_shaker",
+      "suspiciousness_score": 0.9,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The action 'pour_into_shaker' requires both hands to be holding containers, which may be overly restrictive. Consider relaxing the preconditions to allow for more flexible hand usage or adding intermediate steps to manage hand transitions."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "Ensure that all necessary infrastructure entities (e.g., additional shakers or shot glasses) are included in the problem 'objects' and 'initial_state' to support the required actions for achieving the goal."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "shake",
+      "suspiciousness_score": 0.7,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The action 'shake' should ensure that the shaker is marked as mixed after shaking. Verify that the effect '(mixed ?sh)' is correctly applied and that no conflicting states are introduced."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour_into_shaker",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "Add a precondition to 'pour_into_shaker' action to ensure the shaker is clean and empty before pouring ingredients into it. This will prevent invalid state transitions and ensure proper grounding."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "pour_cocktail",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "Modify the 'pour_cocktail' action to include an effect that marks the cocktail glass as not empty after pouring the cocktail. This ensures state conservation and proper grounding."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": "initial_state",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "Ensure that all necessary containers (shaker, shot glasses) are declared as clean and empty in the initial state. This will provide a valid starting point for the planner."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour_into_shaker",
+      "suspiciousness_score": 0.9,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'pour_into_shaker' action requires the shaker to be clean and empty, but doesn't check if the robot is holding the shaker. Add '(holding ?h2 ?sh)' to the preconditions to ensure the robot has control of the shaker before pouring."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "pour_into_shaker",
+      "suspiciousness_score": 0.8,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'pour_into_shaker' action should have an effect to make the shaker not empty after pouring, similar to how 'pour_ingredient' makes the container not empty. Add '(not (empty ?sh))' to the effects."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "shake",
+      "suspiciousness_score": 0.7,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'shake' action should require that the container being shaken is a shaker (not just any container). Add a type constraint or predicate to ensure only shakers can be shaken."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.6,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "Ensure all required containers are initially clean and empty in the problem's initial state. Currently, this appears correct but should be verified if other fixes don't resolve the issue."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "ACTION_ADDITION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.5,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "Consider adding an action to transfer ingredients between containers when both are held by the robot's hands, as the current actions may be too restrictive for the required operations."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour_into_shaker",
+      "suspiciousness_score": 0.9,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'pour_into_shaker' action requires both hands to be holding containers, but there's no precondition ensuring the second hand is empty before grasping the shaker. Add '(empty_hand ?h2)' to the preconditions of 'pour_into_shaker' to ensure proper hand coordination."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "grasp",
+      "suspiciousness_score": 0.8,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'grasp' action marks containers as dirty immediately upon grasping, which prevents pouring into them. Move the '(dirty ?c)' effect to after the container has been used (e.g., in 'pour_into_shaker' and 'pour_cocktail')."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "ACTION_ADDITION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "Add a 'release' action to allow the robot to put down containers when switching between tasks. This action should have effects to make the hand empty and the container available again."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour_ingredient",
+      "suspiciousness_score": 0.6,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'pour_ingredient' action requires the container to be empty, but in the workflow, ingredients are poured sequentially. Relax this precondition to allow adding ingredients to non-empty containers when making cocktails."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour_into_shaker",
+      "suspiciousness_score": 0.9,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'pour_into_shaker' action requires both hands to be holding containers, but doesn't check if the second hand is empty before pouring. Add '(empty_hand ?h2)' to preconditions to ensure proper hand coordination."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "pour_ingredient",
+      "suspiciousness_score": 0.8,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'pour_ingredient' action doesn't mark the container as dirty after pouring. Add '(dirty ?c)' to effects to properly track container state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "shake",
+      "suspiciousness_score": 0.7,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "The 'shake' action should require the shaker to contain at least two ingredients to make a valid cocktail. Add a precondition checking multiple ingredients in the shaker."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "ACTION_ADDITION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.6,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "Add a 'transfer_ingredient' action to move ingredients between containers when needed, with proper preconditions for container states and hand coordination."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.5,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "Ensure initial state includes all necessary static relations, such as container capacities and ingredient compatibility rules, to support the planning process."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: PRECONDITION_INSERTION\n  - [LOCATION / COMPONENT]: pour_into_shaker (Suspiciousness: 0.9)\n  - [DESCRIPTION / RAW TRACE]: No relaxed solution! Generating unsolvable task...\n  - [SUGGESTION FOR REPAIR]: The 'pour_into_shaker' action requires both hands to be holding containers, but doesn't check if the second hand is empty before pouring. Add '(empty_hand ?h2)' to preconditions to ensure proper hand coordination.\n\nIssue #2:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: EFFECT_ALIGNMENT\n  - [LOCATION / COMPONENT]: pour_ingredient (Suspiciousness: 0.8)\n  - [DESCRIPTION / RAW TRACE]: No relaxed solution! Generating unsolvable task...\n  - [SUGGESTION FOR REPAIR]: The 'pour_ingredient' action doesn't mark the container as dirty after pouring. Add '(dirty ?c)' to effects to properly track container state.\n\nIssue #3:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: PRECONDITION_INSERTION\n  - [LOCATION / COMPONENT]: shake (Suspiciousness: 0.7)\n  - [DESCRIPTION / RAW TRACE]: No relaxed solution! Generating unsolvable task...\n  - [SUGGESTION FOR REPAIR]: The 'shake' action should require the shaker to contain at least two ingredients to make a valid cocktail. Add a precondition checking multiple ingredients in the shaker.\n\nIssue #4:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: ACTION_ADDITION\n  - [DESCRIPTION / RAW TRACE]: No relaxed solution! Generating unsolvable task...\n  - [SUGGESTION FOR REPAIR]: Add a 'transfer_ingredient' action to move ingredients between containers when needed, with proper preconditions for container states and hand coordination.\n\nIssue #5:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: INITIAL_STATE_AUGMENTATION\n  - [DESCRIPTION / RAW TRACE]: No relaxed solution! Generating unsolvable task...\n  - [SUGGESTION FOR REPAIR]: Ensure initial state includes all necessary static relations, such as container capacities and ingredient compatibility rules, to support the planning process.",
+  "plan_summary": {
+    "is_solvable": false,
+    "plan_length": 0,
+    "search_time_seconds": 3.7e-05,
+    "val_plan_valid": false,
+    "plan_steps": []
+  }
+}

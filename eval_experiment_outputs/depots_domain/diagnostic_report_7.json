@@ -1,0 +1,176 @@
+{
+  "timestamp": "2026-10-13T21:27:32.395468",
+  "domain_name": "depots_domain",
+  "run_index": 7,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'PDDL_file\\temp_domain_2.pddl' 'PDDL_file\\temp_problem_2.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #5\n\t->Parsing action #5\n\t->Parsing action 'drive'\n\t->Parsing precondition\n\t->Parsing condition\n\t->Parsing literal\nUndefined variable\nGot: ?level\ntranslate exit code: 31\n\nDriver aborting after translate\n\n"
+  ],
+  "final_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'PDDL_file\\temp_domain_2.pddl' 'PDDL_file\\temp_problem_2.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #5\n\t->Parsing action #5\n\t->Parsing action 'drive'\n\t->Parsing precondition\n\t->Parsing condition\n\t->Parsing literal\nUndefined object\nGot: low\ntranslate exit code: 31\n\nDriver aborting after translate\n\n"
+  ],
+  "diagnostic_issues_count": 19,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined variable\nGot: ?level\ntranslate exit code: 31",
+      "suggested_repair_hint": "The variable '?level' in the 'drive' action's preconditions is not declared in the action's parameters. Add '?level' as a parameter with the appropriate type '(either low medium high)' to align with the predicate 'has-fuel'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "has-fuel",
+      "suspiciousness_score": 1.0,
+      "raw_log": "VAL Error: Problem in domain definition!",
+      "suggested_repair_hint": "The predicate 'has-fuel' is declared with a type '(either low medium high)' which is not a valid type in PDDL. Replace '(either low medium high)' with a valid type or define a new type for fuel levels."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined object\nGot: low\ntranslate exit code: 31",
+      "suggested_repair_hint": "The 'drive' action references 'low' as a fuel level, but the fuel levels (low, medium, high) must be declared as objects in the problem's 'objects' section. Ensure all fuel levels used in the domain are properly declared in the problem file."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "drive",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "The planner cannot find a plan because the 'drive' action's fuel level constraints may be too restrictive. Ensure the initial state includes proper fuel levels for trucks and that the 'refuel' action can be executed when needed. Verify that the goal state is achievable given the fuel constraints."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined object\nGot: low\ntranslate exit code: 31",
+      "suggested_repair_hint": "The 'low' fuel level object is used in the 'drive' action but not properly declared in the problem's objects section. Ensure all fuel levels (low, medium, high) are declared in the problem's objects with type 'fuel_level'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "drive",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "The 'drive' action's fuel consumption logic may prevent the truck from reaching its destination. Consider adding a precondition to ensure the truck has sufficient fuel for the trip or adjust the fuel consumption effects to be more lenient."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.6,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "Ensure the fuel constraints do not break backward compatibility with historical routing problems. Consider making fuel constraints optional or providing a way to disable them for legacy problems."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined object\nGot: low\ntranslate exit code: 31",
+      "suggested_repair_hint": "The 'drive' action references 'low' as a fuel_level object, but it's not properly defined in the domain's types or objects. Ensure all fuel_level objects (low, medium, high) are properly declared in the domain's types and problem's objects."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "drive",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "The 'drive' action's fuel consumption logic may be too restrictive. Consider adding a precondition to ensure the truck has sufficient fuel to reach the destination, or adjust the fuel level transitions to allow more flexibility in routing."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Warning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #5\n\t->Parsing action #5\n\t->Parsing action 'drive'\n\t->Parsing precondition\n\t->Parsing condition\n\t->Parsing literal\nUndefined object\nGot: low\ntranslate exit code: 31",
+      "suggested_repair_hint": "The 'drive' action references 'low' as a fuel level in its preconditions, but 'low' is not properly defined as a constant in the domain. Ensure all fuel levels ('low', 'medium', 'high') are properly declared as constants in the domain or as objects in the problem file with their correct types."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "refuel",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None",
+      "suggested_repair_hint": "The 'refuel' action requires that a depot has a fuel pump, but the initial state may not include all necessary '(has-pump ?d)' predicates for depots where refueling is intended. Ensure all depots where refueling should occur are marked with '(has-pump ?d)' in the initial state."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined object\nGot: low\ntranslate exit code: 31",
+      "suggested_repair_hint": "The 'drive' action references 'low' as a fuel level, but 'low' is not properly defined as a constant in the domain. Ensure all fuel levels (low, medium, high) are properly declared as objects of type 'fuel_level' in the problem's 'objects' section and that the 'has-fuel' predicate correctly uses these levels."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "refuel",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "The 'refuel' action requires a truck to be at a depot with a fuel pump, but the planner may not find a valid sequence to refuel when needed. Consider adding a precondition to the 'drive' action that checks if the truck has sufficient fuel to reach its destination or needs to refuel first."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined object\nGot: low\ntranslate exit code: 31",
+      "suggested_repair_hint": "The 'low' fuel level object is not properly declared in the problem's objects section. Ensure all fuel levels (low, medium, high) are declared as objects of type 'fuel_level' in the problem definition."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.8,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "Ensure the initial state includes all necessary fuel level predicates for trucks. For example, add '(has-fuel t1 high)' to the initial state if not already present."
+    },
+    {
+      "error_category": "HISTORICAL_REGRESSION",
+      "repair_operation_type": "REGRESSION_BACKWARD_COMPATIBILITY",
+      "faulty_element": null,
+      "suspiciousness_score": 0.7,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "Verify that the fuel constraints do not interfere with existing routing problems. Ensure that trucks start with sufficient fuel to reach their destinations or include refuel actions in the plan where necessary."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined object\nGot: low\ntranslate exit code: 31",
+      "suggested_repair_hint": "The 'low' fuel level object is used in the 'drive' action's preconditions but is not properly declared in the problem's objects section. Ensure all fuel level objects (low, medium, high) are declared in the problem's objects with type 'fuel_level'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "refuel",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "The 'refuel' action requires the truck to be at a depot with a fuel pump, but the initial state may not satisfy this for all scenarios. Ensure the initial state includes '(has-pump ?d)' for depots where refueling is allowed and that trucks start with appropriate fuel levels."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined object\nGot: low\ntranslate exit code: 31",
+      "suggested_repair_hint": "Ensure that the 'low' fuel level object is correctly declared in the problem's 'objects' section and matches the type 'fuel_level' used in the 'drive' action's preconditions."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: drive (Suspiciousness: 1.0)\n  - [DESCRIPTION / RAW TRACE]: Undefined object\nGot: low\ntranslate exit code: 31\n  - [SUGGESTION FOR REPAIR]: Ensure that the 'low' fuel level object is correctly declared in the problem's 'objects' section and matches the type 'fuel_level' used in the 'drive' action's preconditions.",
+  "plan_summary": {
+    "is_solvable": false,
+    "plan_length": 0,
+    "search_time_seconds": 0.0,
+    "val_plan_valid": false,
+    "plan_steps": []
+  }
+}

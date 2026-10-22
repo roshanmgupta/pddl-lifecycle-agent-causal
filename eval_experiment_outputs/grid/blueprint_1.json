@@ -1,0 +1,161 @@
+{
+  "domain_name": "grid",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "grid",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "place": "object",
+      "key": "object",
+      "shape": "object",
+      "robot": "object"
+    },
+    "predicates": [
+      "(connected ?a - place ?b - place)",
+      "(has-shape ?k - key ?s - shape)",
+      "(has-lock-shape ?p - place ?s - shape)",
+      "(locked ?p - place)",
+      "(open ?p - place)",
+      "(at-robot ?r - robot ?p - place)",
+      "(holding ?r - robot ?k - key)",
+      "(arm-empty ?r - robot)",
+      "(at-key ?k - key ?p - place)"
+    ],
+    "actions": [
+      {
+        "action_name": "unlock",
+        "parameters": {
+          "?r": "robot",
+          "?a": "place",
+          "?b": "place",
+          "?k": "key",
+          "?s": "shape"
+        },
+        "preconditions": [
+          "(connected ?a ?b)",
+          "(has-shape ?k ?s)",
+          "(has-lock-shape ?b ?s)",
+          "(at-robot ?r ?a)",
+          "(locked ?b)",
+          "(holding ?r ?k)"
+        ],
+        "effects": [
+          "(open ?b)",
+          "(not (locked ?b))"
+        ]
+      },
+      {
+        "action_name": "move",
+        "parameters": {
+          "?r": "robot",
+          "?a": "place",
+          "?b": "place"
+        },
+        "preconditions": [
+          "(connected ?a ?b)",
+          "(at-robot ?r ?a)",
+          "(open ?b)"
+        ],
+        "effects": [
+          "(at-robot ?r ?b)",
+          "(not (at-robot ?r ?a))"
+        ]
+      },
+      {
+        "action_name": "pick-up",
+        "parameters": {
+          "?r": "robot",
+          "?k": "key",
+          "?p": "place"
+        },
+        "preconditions": [
+          "(at-robot ?r ?p)",
+          "(at-key ?k ?p)",
+          "(arm-empty ?r)"
+        ],
+        "effects": [
+          "(holding ?r ?k)",
+          "(not (at-key ?k ?p))",
+          "(not (arm-empty ?r))"
+        ]
+      },
+      {
+        "action_name": "pick-up-drop",
+        "parameters": {
+          "?r": "robot",
+          "?k1": "key",
+          "?k2": "key",
+          "?p": "place"
+        },
+        "preconditions": [
+          "(at-robot ?r ?p)",
+          "(holding ?r ?k2)",
+          "(at-key ?k1 ?p)"
+        ],
+        "effects": [
+          "(holding ?r ?k1)",
+          "(at-key ?k2 ?p)",
+          "(not (holding ?r ?k2))",
+          "(not (at-key ?k1 ?p))"
+        ]
+      },
+      {
+        "action_name": "put-down",
+        "parameters": {
+          "?r": "robot",
+          "?k": "key",
+          "?p": "place"
+        },
+        "preconditions": [
+          "(at-robot ?r ?p)",
+          "(holding ?r ?k)"
+        ],
+        "effects": [
+          "(arm-empty ?r)",
+          "(at-key ?k ?p)",
+          "(not (holding ?r ?k))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "grid",
+    "objects": {
+      "pos0-0": "place",
+      "pos0-1": "place",
+      "pos1-0": "place",
+      "pos1-1": "place",
+      "shape0": "shape",
+      "key0": "key",
+      "robot0": "robot"
+    },
+    "initial_state": [
+      "(arm-empty robot0)",
+      "(connected pos0-0 pos1-0)",
+      "(connected pos0-0 pos0-1)",
+      "(connected pos0-1 pos1-1)",
+      "(connected pos0-1 pos0-0)",
+      "(connected pos1-0 pos1-1)",
+      "(connected pos1-0 pos0-0)",
+      "(connected pos1-1 pos0-1)",
+      "(connected pos1-1 pos1-0)",
+      "(locked pos1-1)",
+      "(has-lock-shape pos1-1 shape0)",
+      "(open pos0-0)",
+      "(open pos0-1)",
+      "(open pos1-0)",
+      "(has-shape key0 shape0)",
+      "(at-key key0 pos1-0)",
+      "(at-robot robot0 pos1-0)"
+    ],
+    "goal_state": [
+      "(at-key key0 pos1-1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-10-14T01:19:43.607297",
+  "domain_name": "data-network18",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 7,
+    "search_time_seconds": 0.000817,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(load data-0-3 server3 number4 number0 number4 number8)",
+      "(send data-0-3 server3 server1 number4 number0 number4 number16)",
+      "(load data-0-5 server1 number5 number4 number9 number16)",
+      "(process data-0-3 data-0-5 script1 server1 data-1-4 number1 number9 number10 number16)",
+      "(process data-1-4 data-0-5 script3 server1 data-2-1 number4 number10 number14 number16)",
+      "(send data-2-1 server1 server2 number4 number0 number4 number8)",
+      "(save data-2-1 number4 server2)"
+    ]
+  }
+}

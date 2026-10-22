@@ -1,0 +1,147 @@
+{
+  "domain_name": "logistics_domain",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "logistics_domain",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "location": "object",
+      "airport": "location",
+      "truck": "object",
+      "airplane": "object",
+      "package": "object"
+    },
+    "predicates": [
+      "(at_truck ?t - truck ?l - location)",
+      "(at_airplane ?p - airplane ?a - airport)",
+      "(at_pkg ?pkg - package ?l - location)",
+      "(in_truck ?pkg - package ?t - truck)",
+      "(in_airplane ?pkg - package ?p - airplane)",
+      "(same_city ?l1 - location ?l2 - location)"
+    ],
+    "actions": [
+      {
+        "action_name": "truck_move",
+        "parameters": {
+          "?t": "truck",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(at_truck ?t ?from)",
+          "(same_city ?from ?to)"
+        ],
+        "effects": [
+          "(not (at_truck ?t ?from))",
+          "(at_truck ?t ?to)"
+        ]
+      },
+      {
+        "action_name": "airplane_fly",
+        "parameters": {
+          "?p": "airplane",
+          "?from": "airport",
+          "?to": "airport"
+        },
+        "preconditions": [
+          "(at_airplane ?p ?from)"
+        ],
+        "effects": [
+          "(not (at_airplane ?p ?from))",
+          "(at_airplane ?p ?to)"
+        ]
+      },
+      {
+        "action_name": "load_truck",
+        "parameters": {
+          "?pkg": "package",
+          "?t": "truck",
+          "?loc": "location"
+        },
+        "preconditions": [
+          "(at_pkg ?pkg ?loc)",
+          "(at_truck ?t ?loc)"
+        ],
+        "effects": [
+          "(not (at_pkg ?pkg ?loc))",
+          "(in_truck ?pkg ?t)"
+        ]
+      },
+      {
+        "action_name": "unload_truck",
+        "parameters": {
+          "?pkg": "package",
+          "?t": "truck",
+          "?loc": "location"
+        },
+        "preconditions": [
+          "(in_truck ?pkg ?t)",
+          "(at_truck ?t ?loc)"
+        ],
+        "effects": [
+          "(not (in_truck ?pkg ?t))",
+          "(at_pkg ?pkg ?loc)"
+        ]
+      },
+      {
+        "action_name": "load_airplane",
+        "parameters": {
+          "?pkg": "package",
+          "?p": "airplane",
+          "?apt": "airport"
+        },
+        "preconditions": [
+          "(at_pkg ?pkg ?apt)",
+          "(at_airplane ?p ?apt)"
+        ],
+        "effects": [
+          "(not (at_pkg ?pkg ?apt))",
+          "(in_airplane ?pkg ?p)"
+        ]
+      },
+      {
+        "action_name": "unload_airplane",
+        "parameters": {
+          "?pkg": "package",
+          "?p": "airplane",
+          "?apt": "airport"
+        },
+        "preconditions": [
+          "(in_airplane ?pkg ?p)",
+          "(at_airplane ?p ?apt)"
+        ],
+        "effects": [
+          "(not (in_airplane ?pkg ?p))",
+          "(at_pkg ?pkg ?apt)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "logistics_scenario_1",
+    "domain_name": "logistics_domain",
+    "objects": {
+      "t1": "truck",
+      "p1": "airplane",
+      "pkg1": "package",
+      "loc1": "location",
+      "apt1": "airport",
+      "apt2": "airport"
+    },
+    "initial_state": [
+      "(at_pkg pkg1 loc1)",
+      "(at_truck t1 loc1)",
+      "(at_airplane p1 apt1)",
+      "(same_city loc1 apt1)",
+      "(same_city apt1 loc1)"
+    ],
+    "goal_state": [
+      "(at_pkg pkg1 apt2)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

@@ -1,0 +1,42 @@
+{
+  "timestamp": "2026-10-14T02:21:47.618220",
+  "domain_name": "hiking14",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 1,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking put-down-tent\n...action passes type checking.\nType-checking put-up-tent\n...action passes type checking.\nType-checking drive-person\n...action passes type checking.\nType-checking drive-person-with-tent\n...action passes type checking.\nType-checking drive-two-persons\n...action passes type checking.\nType-checking drive-two-persons-with-tent\n...action passes type checking.\nType-checking walk-together\nType problem with proposition (partners c e f) - parameter 3 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 1,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "walk-together",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (partners c e f) - parameter 3 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!",
+      "suggested_repair_hint": "The 'partners' predicate in the 'walk-together' action has a type mismatch. The third parameter should be of type 'couple' to match the predicate declaration. Update the action's preconditions to ensure type consistency, specifically changing the third parameter of 'partners' to be of type 'couple'."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 11,
+    "search_time_seconds": 0.000679,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(put-down-tent girl0 place0 tent0)",
+      "(drive-person-with-tent girl0 place0 place1 car0 tent0)",
+      "(put-up-tent girl0 place1 tent0)",
+      "(drive-person guy0 place0 place1 car1)",
+      "(drive-two-persons girl0 guy0 place1 place0 car0)",
+      "(walk-together place0 place1 tent0 guy0 girl0 couple0)",
+      "(put-down-tent girl0 place1 tent0)",
+      "(drive-person-with-tent girl0 place1 place2 car1 tent0)",
+      "(put-up-tent girl0 place2 tent0)",
+      "(drive-person girl0 place2 place1 car1)",
+      "(walk-together place1 place2 tent0 guy0 girl0 couple0)"
+    ]
+  }
+}

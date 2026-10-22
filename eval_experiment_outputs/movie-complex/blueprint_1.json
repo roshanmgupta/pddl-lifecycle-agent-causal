@@ -1,0 +1,172 @@
+{
+  "domain_name": "movie-complex",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "movie-complex",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "snack": "object",
+      "object": null
+    },
+    "predicates": [
+      "(is_chips ?s - snack)",
+      "(is_dip ?s - snack)",
+      "(is_popped ?s - snack)",
+      "(is_cheese ?s - snack)",
+      "(is_crackers ?s - snack)",
+      "(counter_at_zero)",
+      "(counter_at_other_than_zero)",
+      "(movie_rewound)",
+      "(have_chips)",
+      "(have_dip)",
+      "(have_pop)",
+      "(have_cheese)",
+      "(have_crackers)"
+    ],
+    "actions": [
+      {
+        "action_name": "rewind_movie",
+        "parameters": {},
+        "preconditions": [
+          "(counter_at_other_than_zero)"
+        ],
+        "effects": [
+          "(movie_rewound)",
+          "(not (counter_at_other_than_zero))",
+          "(counter_at_zero)"
+        ]
+      },
+      {
+        "action_name": "reset_counter",
+        "parameters": {},
+        "preconditions": [
+          "(counter_at_other_than_zero)"
+        ],
+        "effects": [
+          "(counter_at_zero)",
+          "(not (counter_at_other_than_zero))"
+        ]
+      },
+      {
+        "action_name": "start_movie",
+        "parameters": {},
+        "preconditions": [
+          "(counter_at_zero)"
+        ],
+        "effects": [
+          "(counter_at_other_than_zero)",
+          "(not (counter_at_zero))"
+        ]
+      },
+      {
+        "action_name": "undo_rewind",
+        "parameters": {},
+        "preconditions": [
+          "(movie_rewound)"
+        ],
+        "effects": [
+          "(not (movie_rewound))"
+        ]
+      },
+      {
+        "action_name": "get_chips",
+        "parameters": {
+          "?a": "snack"
+        },
+        "preconditions": [
+          "(is_chips ?a)",
+          "(counter_at_zero)",
+          "(not (movie_rewound))"
+        ],
+        "effects": [
+          "(have_chips)"
+        ]
+      },
+      {
+        "action_name": "get_dip",
+        "parameters": {
+          "?a": "snack"
+        },
+        "preconditions": [
+          "(is_dip ?a)",
+          "(counter_at_zero)",
+          "(not (movie_rewound))"
+        ],
+        "effects": [
+          "(have_dip)"
+        ]
+      },
+      {
+        "action_name": "get_popped",
+        "parameters": {
+          "?a": "snack"
+        },
+        "preconditions": [
+          "(is_popped ?a)",
+          "(counter_at_zero)",
+          "(not (movie_rewound))"
+        ],
+        "effects": [
+          "(have_pop)"
+        ]
+      },
+      {
+        "action_name": "get_cheese",
+        "parameters": {
+          "?a": "snack"
+        },
+        "preconditions": [
+          "(is_cheese ?a)",
+          "(counter_at_zero)",
+          "(not (movie_rewound))"
+        ],
+        "effects": [
+          "(have_cheese)"
+        ]
+      },
+      {
+        "action_name": "get_crackers",
+        "parameters": {
+          "?a": "snack"
+        },
+        "preconditions": [
+          "(is_crackers ?a)",
+          "(counter_at_zero)",
+          "(not (movie_rewound))"
+        ],
+        "effects": [
+          "(have_crackers)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "movie-complex",
+    "objects": {
+      "c1": "snack",
+      "d1": "snack",
+      "p1": "snack",
+      "z1": "snack",
+      "k1": "snack"
+    },
+    "initial_state": [
+      "(is_chips c1)",
+      "(is_dip d1)",
+      "(is_popped p1)",
+      "(is_cheese z1)",
+      "(is_crackers k1)",
+      "(counter_at_zero)"
+    ],
+    "goal_state": [
+      "(movie_rewound)",
+      "(counter_at_zero)",
+      "(have_dip)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

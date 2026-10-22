@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-10-11T23:44:58.622280",
+  "domain_name": "two_gripper_robot",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 3,
+    "search_time_seconds": 6.5e-05,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(pick r1 obj1 g1 room1)",
+      "(move r1 room1 room2)",
+      "(drop r1 obj1 g1 room2)"
+    ]
+  }
+}

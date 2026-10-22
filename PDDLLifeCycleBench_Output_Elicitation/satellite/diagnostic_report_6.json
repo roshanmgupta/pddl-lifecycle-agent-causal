@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-10-20T13:41:29.835795",
+  "domain_name": "satellite",
+  "run_index": 6,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 2,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking turn-satellite\n...action passes type checking.\nType-checking switch-on-instrument\nType problem with proposition (power-available i) - parameter 1 is incorrectly typed\nEffects fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' temp_domain.pddl temp_problem.pddl --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing: [0.000s CPU, 0.003s wall-clock]\nNormalizing task... [0.000s CPU, 0.000s wall-clock]\nInstantiating...\nGenerating Datalog program... [0.000s CPU, 0.000s wall-clock]\nNormalizing Datalog program...\nNormalizing Datalog program: [0.000s CPU, 0.004s wall-clock]\nPreparing model... [0.000s CPU, 0.000s wall-clock]\nGenerated 30 rules.\nComputing model... [0.000s CPU, 0.000s wall-clock]\n42 relevant atoms\n27 auxiliary atoms\n69 final queue length\n78 total queue pushes\nCompleting instantiation... [0.000s CPU, 0.000s wall-clock]\nInstantiating: [0.000s CPU, 0.004s wall-clock]\nNo relaxed solution! Generating unsolvable task...\nTranslator variables: 1\nTranslator derived variables: 0\nTranslator facts: 2\nTranslator goal facts: 1\nTranslator mutex groups: 0\nTranslator total mutex groups size: 0\nTranslator operators: 0\nTranslator axioms: 0\nTranslator task size: 4\nwarning: could not determine peak memory\nWriting output... [0.000s CPU, 0.001s wall-clock]\nDone! [0.000s CPU, 0.008s wall-clock]\ntranslate exit code: 0\n\nINFO     Running search (release).\nINFO     search stdin: output.sas\nINFO     search time limit: None\nINFO     search memory limit: None\nINFO     search command line string: 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\downward.exe' --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas\n[t=0.000142s, 836 KB] reading input...\n[t=0.000249s, 836 KB] done reading input!\n[t=0.001616s, 1220 KB] Simplifying 0 unary operators... done! [0 unary operators]\n[t=0.001633s, 1220 KB] time to simplify: 0.000020s\n[t=0.001638s, 1220 KB] Initializing additive heuristic...\n[t=0.001642s, 1220 KB] Initializing FF heuristic...\n[t=0.001669s, 1220 KB] Building successor generator...done!\n[t=0.001677s, 1220 KB] peak memory difference for successor generator creation: 0 KB\n[t=0.001682s, 1220 KB] time for successor generation creation: 0.000002s\n[t=0.001687s, 1220 KB] Variables: 1\n[t=0.001689s, 1220 KB] FactPairs: 2\n[t=0.001691s, 1220 KB] Bytes per state: 4\n[t=0.001718s, 1220 KB] Conducting lazy best first search, (real) bound = 2147483647\n[t=0.001728s, 1220 KB] Initial heuristic value for ff: infinity\n[t=0.001733s, 1220 KB] Completely explored state space -- no solution!\n[t=0.001736s, 1220 KB] Actual search time: 0.000014s\n[t=0.001738s, 1220 KB] Expanded 0 state(s).\n[t=0.001738s, 1220 KB] Reopened 0 state(s).\n[t=0.001738s, 1220 KB] Evaluated 1 state(s).\n[t=0.001738s, 1220 KB] Evaluations: 1\n[t=0.001738s, 1220 KB] Generated 0 state(s).\n[t=0.001738s, 1220 KB] Dead ends: 1 state(s).\n[t=0.001738s, 1220 KB] Number of registered states: 1\n[t=0.001738s, 1220 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.001738s, 1220 KB] Int hash set resizes: 0\n[t=0.001738s, 1220 KB] Search time: 0.000021s\n[t=0.001738s, 1220 KB] Total time: 0.001738s\nSearch stopped without finding a solution.\nRemove intermediate file output.sas\nsearch exit code: 12\n\nDriver aborting after search\n\n"
+  ],
+  "diagnostic_issues_count": 5,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "switch-on-instrument",
+      "raw_log": "Type problem with proposition (power-available i) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Change the effect '(power-available ?i)' to '(power-available ?s)' in the 'switch-on-instrument' action to ensure the correct type is used for the satellite."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "switch-off-instrument",
+      "raw_log": "Type problem with proposition (power-available i) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The predicate 'power-available' is incorrectly used with an instrument type. It should only be used with satellites. Please declare a new predicate for instrument power status, such as 'power-available-instrument', and update the action 'switch-off-instrument' to use this new predicate."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "switch-on-instrument",
+      "raw_log": "Planner Error: Could not find a plan. INFO     planner time limit: None",
+      "suggested_repair_hint": "Review the preconditions for the 'switch-on-instrument' action. Ensure that the conditions for power availability and instrument calibration are correctly defined and achievable in the current state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": null,
+      "raw_log": "No relaxed solution! Generating unsolvable task...",
+      "suggested_repair_hint": "Investigate the overall reachability of the goal state. Ensure that all necessary actions can be executed given the initial state and that there are no dead-end states preventing progress towards the goal."
+    },
+    {
+      "error_category": "SYSTEM_ORACLE_ERROR",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "power-available-instrument",
+      "raw_log": "Predicate 'power-available-instrument' is deleted by ['switch-off-instrument'] but has NO producer action in domain!",
+      "suggested_repair_hint": "Add a producer action for the 'power-available-instrument' predicate to ensure it can be restored after being deleted. This may involve adjusting the effects of the 'switch-off-instrument' action."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: GENERAL_AST_REPAIR\n  - [LOCATION / COMPONENT]: switch-on-instrument\n  - [DESCRIPTION / RAW TRACE]: Planner Error: Could not find a plan. INFO     planner time limit: None\n  - [SUGGESTION FOR REPAIR]: Review the preconditions for the 'switch-on-instrument' action. Ensure that the conditions for power availability and instrument calibration are correctly defined and achievable in the current state.\n\nIssue #2:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: GENERAL_AST_REPAIR\n  - [DESCRIPTION / RAW TRACE]: No relaxed solution! Generating unsolvable task...\n  - [SUGGESTION FOR REPAIR]: Investigate the overall reachability of the goal state. Ensure that all necessary actions can be executed given the initial state and that there are no dead-end states preventing progress towards the goal.\n\nIssue #3:\n  - [ERROR TYPE]: SYSTEM_ORACLE_ERROR\n  - [TARGET AST OPERATION]: PRECONDITION_RELAXATION\n  - [LOCATION / COMPONENT]: power-available-instrument\n  - [DESCRIPTION / RAW TRACE]: Predicate 'power-available-instrument' is deleted by ['switch-off-instrument'] but has NO producer action in domain!\n  - [SUGGESTION FOR REPAIR]: Add a producer action for the 'power-available-instrument' predicate to ensure it can be restored after being deleted. This may involve adjusting the effects of the 'switch-off-instrument' action.",
+  "plan_summary": {
+    "is_solvable": false,
+    "plan_length": 0,
+    "search_time_seconds": 2.1e-05,
+    "val_plan_valid": false,
+    "plan_steps": []
+  }
+}

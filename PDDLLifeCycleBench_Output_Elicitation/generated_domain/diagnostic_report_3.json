@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-10-20T15:23:28.757049",
+  "domain_name": "generated_domain",
+  "run_index": 3,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 5,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": null
+}

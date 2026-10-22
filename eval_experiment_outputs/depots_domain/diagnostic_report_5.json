@@ -1,0 +1,88 @@
+{
+  "timestamp": "2026-10-13T04:24:44.642015",
+  "domain_name": "depots_domain",
+  "run_index": 5,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 7,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking lift\nType problem with proposition (clear c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 8,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "clear",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (clear c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!",
+      "suggested_repair_hint": "The predicate 'clear' is being used with a crate object 'c1' in the initial state, but its parameter type is not explicitly declared in the domain. Modify the 'clear' predicate declaration to explicitly specify that it can accept either a pallet or a crate as its parameter, e.g., '(clear ?x - (either pallet crate))' or declare separate predicates for each type."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The 'load' action's preconditions incorrectly type-check the 'at' predicate for trucks. The predicate declaration should be updated to handle both depot and distributor locations for trucks, or a separate predicate should be defined for truck locations."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The 'load' action has a type mismatch in its preconditions. The predicate '(at ?t ?d)' expects '?t' to be of type 'truck' and '?d' to be of type 'place'. Ensure that the types in the action's parameters match the predicate's type requirements. Specifically, verify that '?t' is declared as a 'truck' and '?d' as a 'place' in the action's parameters."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The 'load' action has a type mismatch in its preconditions. The predicate '(at ?t ?d)' expects '?t' to be of type 'truck' and '?d' to be of type 'place'. Ensure that all parameters in the action's preconditions match the declared types in the predicate definitions."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The 'load' action has a type mismatch in its preconditions. The predicate '(at ?t ?d)' expects '?t' to be of type 'truck' and '?d' to be of type 'place', but the types in the domain's predicate declarations need to be checked for consistency. Ensure that all predicates used in actions have their parameter types correctly declared and match the types of the variables used in the action parameters."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The 'load' action has a type mismatch in its preconditions. The predicate '(at ?t ?d)' expects '?t' to be of type 'truck' and '?d' to be of type 'place', but the types in the domain's predicate declarations need to be checked for consistency. Ensure that all predicates used in actions have their parameter types correctly declared and match the types of the variables used in the actions."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The 'load' action's preconditions contain a type mismatch. The predicate '(at ?t ?d)' expects '?t' to be of type 'truck' and '?d' of type 'place', but there might be an issue with how these types are being checked. Ensure the type hierarchy is correctly defined and that all predicate usages match their declared signatures."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "at",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The predicate 'at' is used in multiple contexts (for hoists and trucks). Consider defining separate predicates for each type (e.g., 'at-hoist' and 'at-truck') or ensure the type hierarchy properly supports the current usage with a common supertype for hoists and trucks if they share location semantics."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 1,
+    "search_time_seconds": 4e-05,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(load h1 c1 t1 d1)"
+    ]
+  }
+}

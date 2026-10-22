@@ -1,0 +1,103 @@
+{
+  "domain_name": "home_robot",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "home_robot",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot": "object",
+      "location": "object",
+      "object": "object",
+      "gripper": "object"
+    },
+    "predicates": [
+      "(at ?r - robot ?l - location)",
+      "(at ?o - object ?l - location)",
+      "(holding ?r - robot ?o - object)",
+      "(gripper-empty ?r - robot)",
+      "(connected ?l1 - location ?l2 - location)"
+    ],
+    "actions": [
+      {
+        "action_name": "move",
+        "parameters": {
+          "?r": "robot",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(at ?r ?from)",
+          "(connected ?from ?to)"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "pick-up",
+        "parameters": {
+          "?r": "robot",
+          "?o": "object",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at ?r ?l)",
+          "(at ?o ?l)",
+          "(gripper-empty ?r)"
+        ],
+        "effects": [
+          "(not (at ?o ?l))",
+          "(not (gripper-empty ?r))",
+          "(holding ?r ?o)"
+        ]
+      },
+      {
+        "action_name": "put-down",
+        "parameters": {
+          "?r": "robot",
+          "?o": "object",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at ?r ?l)",
+          "(holding ?r ?o)"
+        ],
+        "effects": [
+          "(not (holding ?r ?o))",
+          "(gripper-empty ?r)",
+          "(at ?o ?l)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "move_mustard",
+    "domain_name": "home_robot",
+    "objects": {
+      "robot1": "robot",
+      "coffee-table": "location",
+      "side-table": "location",
+      "pantry": "location",
+      "mustard-bottle": "object",
+      "gripper1": "gripper"
+    },
+    "initial_state": [
+      "(at robot1 coffee-table)",
+      "(at mustard-bottle coffee-table)",
+      "(gripper-empty robot1)",
+      "(connected coffee-table side-table)",
+      "(connected side-table coffee-table)",
+      "(connected coffee-table pantry)",
+      "(connected pantry coffee-table)"
+    ],
+    "goal_state": [
+      "(at mustard-bottle pantry)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

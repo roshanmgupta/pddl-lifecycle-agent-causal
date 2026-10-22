@@ -1,0 +1,111 @@
+{
+  "domain_name": "blocksworld",
+  "run_index": 6,
+  "domain_blueprint": {
+    "domain_name": "blocksworld",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "block": "object",
+      "table": "object"
+    },
+    "predicates": [
+      "(on ?x - block ?y - block)",
+      "(clear ?x - block)",
+      "(ontable ?x - block)",
+      "(holding ?x - block)",
+      "(arm-empty)"
+    ],
+    "actions": [
+      {
+        "action_name": "pickup",
+        "parameters": {
+          "?b": "block"
+        },
+        "preconditions": [
+          "(ontable ?b)",
+          "(clear ?b)",
+          "(arm-empty)"
+        ],
+        "effects": [
+          "(not (ontable ?b))",
+          "(not (arm-empty))",
+          "(holding ?b)"
+        ]
+      },
+      {
+        "action_name": "putdown",
+        "parameters": {
+          "?b": "block"
+        },
+        "preconditions": [
+          "(holding ?b)"
+        ],
+        "effects": [
+          "(not (holding ?b))",
+          "(ontable ?b)",
+          "(arm-empty)"
+        ]
+      },
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?b": "block",
+          "?target": "block"
+        },
+        "preconditions": [
+          "(holding ?b)",
+          "(clear ?target)"
+        ],
+        "effects": [
+          "(not (holding ?b))",
+          "(not (clear ?target))",
+          "(on ?b ?target)"
+        ]
+      },
+      {
+        "action_name": "unstack",
+        "parameters": {
+          "?b": "block",
+          "?from": "block"
+        },
+        "preconditions": [
+          "(on ?b ?from)",
+          "(clear ?b)",
+          "(arm-empty)"
+        ],
+        "effects": [
+          "(not (on ?b ?from))",
+          "(not (arm-empty))",
+          "(holding ?b)",
+          "(clear ?from)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "blocksworld_problem",
+    "domain_name": "blocksworld",
+    "objects": {
+      "a": "block",
+      "b": "block",
+      "c": "block",
+      "table": "object"
+    },
+    "initial_state": [
+      "(on a b)",
+      "(ontable b)",
+      "(ontable c)",
+      "(arm-empty)",
+      "(clear a)"
+    ],
+    "goal_state": [
+      "(on c b)",
+      "(on b a)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

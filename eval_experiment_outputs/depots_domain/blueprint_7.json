@@ -1,0 +1,190 @@
+{
+  "domain_name": "depots_domain",
+  "run_index": 7,
+  "domain_blueprint": {
+    "domain_name": "depots_domain",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "crate": "object",
+      "hoist": "object",
+      "locatable": "object",
+      "pallet": "object",
+      "place": "object",
+      "truck": "object",
+      "depot": "place",
+      "distributor": "place",
+      "fuel_pump": "object",
+      "fuel_level": "object"
+    },
+    "predicates": [
+      "(at-hoist ?h - hoist ?d - place)",
+      "(at-truck ?t - truck ?d - place)",
+      "(on ?c - crate ?p - pallet)",
+      "(on ?c - crate ?o - crate)",
+      "(in ?c - crate ?t - truck)",
+      "(clear ?x - (either pallet crate))",
+      "(needs-maintenance ?h - hoist)",
+      "(has-fuel ?t - truck ?level - fuel_level)",
+      "(has-pump ?d - depot)"
+    ],
+    "actions": [
+      {
+        "action_name": "lift",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?p": "pallet",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(at-hoist ?h ?d)",
+          "(on ?c ?p)",
+          "(clear ?c)"
+        ],
+        "effects": [
+          "(not (on ?c ?p))",
+          "(not (clear ?c))",
+          "(clear ?p)",
+          "(needs-maintenance ?h)"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?p": "pallet",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(at-hoist ?h ?d)",
+          "(clear ?p)"
+        ],
+        "effects": [
+          "(on ?c ?p)",
+          "(clear ?c)",
+          "(not (clear ?p))",
+          "(needs-maintenance ?h)"
+        ]
+      },
+      {
+        "action_name": "load",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(at-hoist ?h ?d)",
+          "(at-truck ?t ?d)",
+          "(clear ?c)"
+        ],
+        "effects": [
+          "(in ?c ?t)",
+          "(not (clear ?c))",
+          "(needs-maintenance ?h)"
+        ]
+      },
+      {
+        "action_name": "unload",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(at-hoist ?h ?d)",
+          "(at-truck ?t ?d)",
+          "(in ?c ?t)"
+        ],
+        "effects": [
+          "(not (in ?c ?t))",
+          "(clear ?c)",
+          "(needs-maintenance ?h)"
+        ]
+      },
+      {
+        "action_name": "drive",
+        "parameters": {
+          "?t": "truck",
+          "?from": "place",
+          "?to": "place",
+          "?level": "fuel_level"
+        },
+        "preconditions": [
+          "(at-truck ?t ?from)",
+          "(has-fuel ?t ?level)",
+          "(not (= ?level low))"
+        ],
+        "effects": [
+          "(not (at-truck ?t ?from))",
+          "(at-truck ?t ?to)",
+          "(not (has-fuel ?t ?level))",
+          "(has-fuel ?t (if (= ?level high) medium low))"
+        ]
+      },
+      {
+        "action_name": "service-hoist",
+        "parameters": {
+          "?h": "hoist",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(at-hoist ?h ?d)",
+          "(needs-maintenance ?h)"
+        ],
+        "effects": [
+          "(not (needs-maintenance ?h))"
+        ]
+      },
+      {
+        "action_name": "refuel",
+        "parameters": {
+          "?t": "truck",
+          "?d": "depot"
+        },
+        "preconditions": [
+          "(at-truck ?t ?d)",
+          "(has-pump ?d)"
+        ],
+        "effects": [
+          "(not (has-fuel ?t low))",
+          "(not (has-fuel ?t medium))",
+          "(has-fuel ?t high)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "depots_problem",
+    "domain_name": "depots_domain",
+    "objects": {
+      "t1": "truck",
+      "h1": "hoist",
+      "d1": "depot",
+      "c1": "crate",
+      "p1": "pallet",
+      "low": "fuel_level",
+      "medium": "fuel_level",
+      "high": "fuel_level"
+    },
+    "initial_state": [
+      "(at-hoist h1 d1)",
+      "(at-truck t1 d1)",
+      "(on c1 p1)",
+      "(clear c1)",
+      "(has-fuel t1 high)",
+      "(has-pump d1)"
+    ],
+    "goal_state": [
+      "(in c1 t1)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

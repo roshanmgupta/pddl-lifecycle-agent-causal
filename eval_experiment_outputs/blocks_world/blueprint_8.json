@@ -1,0 +1,120 @@
+{
+  "domain_name": "blocks_world",
+  "run_index": 8,
+  "domain_blueprint": {
+    "domain_name": "blocks_world",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "block": "object",
+      "arm": "object"
+    },
+    "predicates": [
+      "(on ?x - block ?y - block)",
+      "(on-table ?x - block)",
+      "(clear ?x - block)",
+      "(holding ?a - arm ?x - block)",
+      "(empty ?a - arm)"
+    ],
+    "actions": [
+      {
+        "action_name": "pickup",
+        "parameters": {
+          "?a": "arm",
+          "?x": "block"
+        },
+        "preconditions": [
+          "(empty ?a)",
+          "(on-table ?x)",
+          "(clear ?x)"
+        ],
+        "effects": [
+          "(not (empty ?a))",
+          "(not (on-table ?x))",
+          "(not (clear ?x))",
+          "(holding ?a ?x)"
+        ]
+      },
+      {
+        "action_name": "putdown",
+        "parameters": {
+          "?a": "arm",
+          "?x": "block"
+        },
+        "preconditions": [
+          "(holding ?a ?x)"
+        ],
+        "effects": [
+          "(empty ?a)",
+          "(on-table ?x)",
+          "(clear ?x)",
+          "(not (holding ?a ?x))"
+        ]
+      },
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?a": "arm",
+          "?x": "block",
+          "?y": "block"
+        },
+        "preconditions": [
+          "(holding ?a ?x)",
+          "(clear ?y)"
+        ],
+        "effects": [
+          "(empty ?a)",
+          "(on ?x ?y)",
+          "(clear ?x)",
+          "(not (holding ?a ?x))",
+          "(not (clear ?y))"
+        ]
+      },
+      {
+        "action_name": "unstack",
+        "parameters": {
+          "?a": "arm",
+          "?x": "block",
+          "?y": "block"
+        },
+        "preconditions": [
+          "(empty ?a)",
+          "(on ?x ?y)",
+          "(clear ?x)"
+        ],
+        "effects": [
+          "(holding ?a ?x)",
+          "(clear ?y)",
+          "(not (empty ?a))",
+          "(not (on ?x ?y))",
+          "(not (clear ?x))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "blocks_problem",
+    "domain_name": "blocks_world",
+    "objects": {
+      "b1": "block",
+      "b2": "block",
+      "b3": "block",
+      "arm1": "arm"
+    },
+    "initial_state": [
+      "(empty arm1)",
+      "(on-table b1)",
+      "(on b2 b3)",
+      "(clear b2)",
+      "(on b3 b1)"
+    ],
+    "goal_state": [
+      "(on b2 b3)",
+      "(on b3 b1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

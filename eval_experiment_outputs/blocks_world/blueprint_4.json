@@ -1,0 +1,115 @@
+{
+  "domain_name": "blocks_world",
+  "run_index": 4,
+  "domain_blueprint": {
+    "domain_name": "blocks_world",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "block": "object"
+    },
+    "predicates": [
+      "(on ?x - block ?y - block)",
+      "(ontable ?x - block)",
+      "(clear ?x - block)",
+      "(holding ?x - block)",
+      "(handempty)"
+    ],
+    "actions": [
+      {
+        "action_name": "pick_up",
+        "parameters": {
+          "?x": "block"
+        },
+        "preconditions": [
+          "(ontable ?x)",
+          "(clear ?x)",
+          "(handempty)"
+        ],
+        "effects": [
+          "(not (ontable ?x))",
+          "(not (clear ?x))",
+          "(not (handempty))",
+          "(holding ?x)"
+        ]
+      },
+      {
+        "action_name": "put_down",
+        "parameters": {
+          "?x": "block"
+        },
+        "preconditions": [
+          "(holding ?x)"
+        ],
+        "effects": [
+          "(ontable ?x)",
+          "(clear ?x)",
+          "(handempty)",
+          "(not (holding ?x))"
+        ]
+      },
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?x": "block",
+          "?y": "block"
+        },
+        "preconditions": [
+          "(holding ?x)",
+          "(clear ?y)"
+        ],
+        "effects": [
+          "(on ?x ?y)",
+          "(clear ?x)",
+          "(handempty)",
+          "(not (holding ?x))",
+          "(not (clear ?y))"
+        ]
+      },
+      {
+        "action_name": "unstack",
+        "parameters": {
+          "?x": "block",
+          "?y": "block"
+        },
+        "preconditions": [
+          "(on ?x ?y)",
+          "(clear ?x)",
+          "(handempty)"
+        ],
+        "effects": [
+          "(holding ?x)",
+          "(clear ?y)",
+          "(not (on ?x ?y))",
+          "(not (clear ?x))",
+          "(not (handempty))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "blocks_world_problem",
+    "domain_name": "blocks_world",
+    "objects": {
+      "a": "block",
+      "b": "block",
+      "c": "block"
+    },
+    "initial_state": [
+      "(ontable a)",
+      "(ontable b)",
+      "(on c a)",
+      "(clear b)",
+      "(clear c)",
+      "(handempty)"
+    ],
+    "goal_state": [
+      "(on a b)",
+      "(on b c)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

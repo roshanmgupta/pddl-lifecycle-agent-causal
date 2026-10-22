@@ -1,0 +1,360 @@
+{
+  "timestamp": "2026-10-16T02:09:21.548944",
+  "domain_name": "barman11-bfs",
+  "run_index": 3,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'Streamlit_output_file\\temp_domain.pddl' 'Streamlit_output_file\\temp_problem.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing: [0.016s CPU, 0.006s wall-clock]\nNormalizing task... [0.000s CPU, 0.000s wall-clock]\nInstantiating...\nGenerating Datalog program... [0.000s CPU, 0.001s wall-clock]\nNormalizing Datalog program...\nNormalizing Datalog program: [0.000s CPU, 0.010s wall-clock]\nPreparing model... [0.000s CPU, 0.002s wall-clock]\nGenerated 115 rules.\nComputing model... [0.016s CPU, 0.006s wall-clock]\n593 relevant atoms\n702 auxiliary atoms\n1295 final queue length\n2101 total queue pushes\nCompleting instantiation... [0.000s CPU, 0.007s wall-clock]\nInstantiating: [0.016s CPU, 0.026s wall-clock]\nComputing fact groups...\nFinding invariants...\n24 initial candidates\nFinding invariants: [0.016s CPU, 0.004s wall-clock]\nChecking invariant weight... [0.000s CPU, 0.000s wall-clock]\nInstantiating groups... [0.000s CPU, 0.000s wall-clock]\nCollecting mutex groups... [0.000s CPU, 0.000s wall-clock]\nChoosing groups...\n59 uncovered facts\nChoosing groups: [0.000s CPU, 0.000s wall-clock]\nBuilding translation key... [0.000s CPU, 0.000s wall-clock]\nComputing fact groups: [0.016s CPU, 0.005s wall-clock]\nBuilding STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]\nBuilding dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]\nBuilding mutex information...\nBuilding mutex information: [0.000s CPU, 0.000s wall-clock]\nTranslating task...\nProcessing axioms...\nSimplifying axioms... [0.000s CPU, 0.000s wall-clock]\nTranslator axioms removed by simplifying: 0\nProcessing axioms: [0.000s CPU, 0.001s wall-clock]\nTranslating task: [0.000s CPU, 0.009s wall-clock]\n592 effect conditions simplified\n0 implied preconditions added\nDetecting unreachable propositions...\n0 operators removed\n0 axioms removed\n3 propositions removed\nDetecting unreachable propositions: [0.016s CPU, 0.005s wall-clock]\nReordering and filtering variables...\n62 of 62 variables necessary.\n5 of 8 mutex groups necessary.\n358 of 358 operators necessary.\n0 of 0 axiom rules necessary.\nReordering and filtering variables: [0.000s CPU, 0.004s wall-clock]\nTranslator variables: 62\nTranslator derived variables: 0\nTranslator facts: 133\nTranslator goal facts: 3\nTranslator mutex groups: 5\nTranslator total mutex groups size: 15\nTranslator operators: 358\nTranslator axioms: 0\nTranslator task size: 3439\nwarning: could not determine peak memory\nWriting output... [0.000s CPU, 0.008s wall-clock]\nDone! [0.062s CPU, 0.064s wall-clock]\ntranslate exit code: 0\n\nINFO     Running search (release).\nINFO     search stdin: output.sas\nINFO     search time limit: None\nINFO     search memory limit: None\nINFO     search command line string: 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\downward.exe' --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas\n[t=0.000177s, 832 KB] reading input...\n[t=0.003102s, 1008 KB] done reading input!\n[t=0.004915s, 1420 KB] Simplifying 1338 unary operators... done! [1114 unary operators]\n[t=0.005574s, 1420 KB] time to simplify: 0.000663s\n[t=0.005665s, 1420 KB] Initializing additive heuristic...\n[t=0.005670s, 1420 KB] Initializing FF heuristic...\n[t=0.005707s, 1420 KB] Building successor generator...done!\n[t=0.005872s, 1420 KB] peak memory difference for successor generator creation: 0 KB\n[t=0.005876s, 1420 KB] time for successor generation creation: 0.000157s\n[t=0.005883s, 1420 KB] Variables: 62\n[t=0.005887s, 1420 KB] FactPairs: 133\n[t=0.005892s, 1420 KB] Bytes per state: 12\n[t=0.005911s, 1420 KB] Conducting lazy best first search, (real) bound = 2147483647\n[t=0.005935s, 1420 KB] New best heuristic value for ff: 14\n[t=0.005941s, 1420 KB] g=0, 1 evaluated, 0 expanded\n[t=0.005958s, 1420 KB] Initial heuristic value for ff: 14\n[t=0.006733s, 1420 KB] New best heuristic value for ff: 13\n[t=0.006738s, 1420 KB] g=3, 62 evaluated, 61 expanded\n[t=0.006803s, 1420 KB] New best heuristic value for ff: 12\n[t=0.006807s, 1420 KB] g=4, 67 evaluated, 66 expanded\n[t=0.007352s, 1420 KB] New best heuristic value for ff: 11\n[t=0.007358s, 1420 KB] g=7, 115 evaluated, 114 expanded\n[t=0.007433s, 1420 KB] New best heuristic value for ff: 10\n[t=0.007438s, 1420 KB] g=8, 122 evaluated, 121 expanded\n[t=0.007453s, 1420 KB] New best heuristic value for ff: 9\n[t=0.007457s, 1420 KB] g=9, 123 evaluated, 122 expanded\n[t=23.824948s, 64592 KB] Completely explored state space -- no solution!\n[t=23.824986s, 64592 KB] Actual search time: 23.819074s\n[t=23.824993s, 64592 KB] Expanded 818741 state(s).\n[t=23.824993s, 64592 KB] Reopened 0 state(s).\n[t=23.824993s, 64592 KB] Evaluated 858137 state(s).\n[t=23.824993s, 64592 KB] Evaluations: 858137\n[t=23.824993s, 64592 KB] Generated 3626196 state(s).\n[t=23.824993s, 64592 KB] Dead ends: 39396 state(s).\n[t=23.824993s, 64592 KB] Number of registered states: 858137\n[t=23.824993s, 64592 KB] Int hash set load factor: 858137/1048576 = 0.818383\n[t=23.824993s, 64592 KB] Int hash set resizes: 20\n[t=23.824993s, 64592 KB] Search time: 23.819083s\n[t=23.824993s, 64592 KB] Total time: 23.824993s\nSearch stopped without finding a solution.\nRemove intermediate file output.sas\nsearch exit code: 12\n\nDriver aborting after search\n\n"
+  ],
+  "final_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'Streamlit_output_file\\temp_domain.pddl' 'Streamlit_output_file\\temp_problem.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing: [0.000s CPU, 0.003s wall-clock]\nNormalizing task... [0.000s CPU, 0.000s wall-clock]\nInstantiating...\nGenerating Datalog program... [0.000s CPU, 0.000s wall-clock]\nNormalizing Datalog program...\nNormalizing Datalog program: [0.016s CPU, 0.006s wall-clock]\nPreparing model... [0.000s CPU, 0.001s wall-clock]\nGenerated 103 rules.\nComputing model... [0.000s CPU, 0.005s wall-clock]\n629 relevant atoms\n682 auxiliary atoms\n1311 final queue length\n2153 total queue pushes\nCompleting instantiation... [0.016s CPU, 0.011s wall-clock]\nInstantiating: [0.031s CPU, 0.023s wall-clock]\nComputing fact groups...\nFinding invariants...\n24 initial candidates\nFinding invariants: [0.000s CPU, 0.005s wall-clock]\nChecking invariant weight... [0.000s CPU, 0.000s wall-clock]\nInstantiating groups... [0.000s CPU, 0.000s wall-clock]\nCollecting mutex groups... [0.000s CPU, 0.000s wall-clock]\nChoosing groups...\n36 uncovered facts\nChoosing groups: [0.000s CPU, 0.000s wall-clock]\nBuilding translation key... [0.000s CPU, 0.000s wall-clock]\nComputing fact groups: [0.000s CPU, 0.006s wall-clock]\nBuilding STRIPS to SAS dictionary... [0.000s CPU, 0.000s wall-clock]\nBuilding dictionary for full mutex groups... [0.000s CPU, 0.000s wall-clock]\nBuilding mutex information...\nBuilding mutex information: [0.000s CPU, 0.000s wall-clock]\nTranslating task...\nProcessing axioms...\nSimplifying axioms... [0.000s CPU, 0.000s wall-clock]\nTranslator axioms removed by simplifying: 0\nProcessing axioms: [0.000s CPU, 0.001s wall-clock]\nTranslating task: [0.016s CPU, 0.009s wall-clock]\n196 effect conditions simplified\n0 implied preconditions added\nDetecting unreachable propositions...\n116 operators removed\n0 axioms removed\n15 propositions removed\nDetecting unreachable propositions: [0.000s CPU, 0.004s wall-clock]\nReordering and filtering variables...\n25 of 42 variables necessary.\n5 of 13 mutex groups necessary.\n188 of 212 operators necessary.\n0 of 0 axiom rules necessary.\nReordering and filtering variables: [0.000s CPU, 0.002s wall-clock]\nTranslator variables: 25\nTranslator derived variables: 0\nTranslator facts: 81\nTranslator goal facts: 3\nTranslator mutex groups: 5\nTranslator total mutex groups size: 15\nTranslator operators: 188\nTranslator axioms: 0\nTranslator task size: 1222\nwarning: could not determine peak memory\nWriting output... [0.016s CPU, 0.006s wall-clock]\nDone! [0.062s CPU, 0.054s wall-clock]\ntranslate exit code: 0\n\nINFO     Running search (release).\nINFO     search stdin: output.sas\nINFO     search time limit: None\nINFO     search memory limit: None\nINFO     search command line string: 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\downward.exe' --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas\n[t=0.000196s, 820 KB] reading input...\n[t=0.001384s, 892 KB] done reading input!\n[t=0.003269s, 1288 KB] Simplifying 328 unary operators... done! [256 unary operators]\n[t=0.003449s, 1288 KB] time to simplify: 0.000184s\n[t=0.003482s, 1288 KB] Initializing additive heuristic...\n[t=0.003489s, 1288 KB] Initializing FF heuristic...\n[t=0.003527s, 1288 KB] Building successor generator...done!\n[t=0.003615s, 1288 KB] peak memory difference for successor generator creation: 0 KB\n[t=0.003619s, 1288 KB] time for successor generation creation: 0.000078s\n[t=0.003626s, 1288 KB] Variables: 25\n[t=0.003630s, 1288 KB] FactPairs: 81\n[t=0.003641s, 1288 KB] Bytes per state: 8\n[t=0.003664s, 1288 KB] Conducting lazy best first search, (real) bound = 2147483647\n[t=0.003682s, 1288 KB] Initial heuristic value for ff: infinity\n[t=0.003688s, 1288 KB] Completely explored state space -- no solution!\n[t=0.003692s, 1288 KB] Actual search time: 0.000023s\n[t=0.003695s, 1288 KB] Expanded 0 state(s).\n[t=0.003695s, 1288 KB] Reopened 0 state(s).\n[t=0.003695s, 1288 KB] Evaluated 1 state(s).\n[t=0.003695s, 1288 KB] Evaluations: 1\n[t=0.003695s, 1288 KB] Generated 0 state(s).\n[t=0.003695s, 1288 KB] Dead ends: 1 state(s).\n[t=0.003695s, 1288 KB] Number of registered states: 1\n[t=0.003695s, 1288 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.003695s, 1288 KB] Int hash set resizes: 0\n[t=0.003695s, 1288 KB] Search time: 0.000031s\n[t=0.003695s, 1288 KB] Total time: 0.003695s\nSearch stopped without finding a solution.\nRemove intermediate file output.sas\nsearch exit code: 12\n\nDriver aborting after search\n\n"
+  ],
+  "diagnostic_issues_count": 42,
+  "diagnostic_reports": [
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'fill' action requires the shot to be both empty and clean, which may be too restrictive. Consider relaxing the preconditions to allow filling a shot that is empty but not necessarily clean, or modify the action sequence to ensure shots are cleaned before filling."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-into-clean-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-into-clean-shaker' action requires the shaker to be both empty and clean, which may be too restrictive. Consider relaxing the preconditions to allow pouring into a shaker that is clean but not necessarily empty, or ensure the shaker is emptied and cleaned before pouring."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-into-used-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-into-used-shaker' action requires the shaker to be unshaken, which may be too restrictive. Consider relaxing the preconditions to allow pouring into a shaker that is not necessarily unshaken, or ensure the shaker is unshaken before pouring."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "shake",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'shake' action's effects may not align with the requirements of subsequent actions. Ensure that the effects of shaking (e.g., marking the shaker as shaken and containing the cocktail) are correctly utilized by actions like 'pour-from-shaker' and 'empty-shaker'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The initial state may lack necessary conditions for the planner to find a solution. Consider augmenting the initial state with additional facts or ensuring that all required initial conditions (e.g., hand-empty, on-table) are correctly specified."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'fill' action requires the shot to be clean and empty, but the natural language description allows filling a shot that is used by the same ingredient. Relax the preconditions of 'fill' to allow filling a shot that is either clean or used by the same ingredient."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "refill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'refill' action requires the shot to be used by the same ingredient being refilled. Ensure that the 'refill' action is only used when the shot is already used by the same ingredient, or modify the preconditions to allow refilling with a different ingredient."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-into-clean-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-into-clean-shaker' action requires the shaker to be clean and empty, but the natural language description allows pouring into a shaker that is used. Relax the preconditions to allow pouring into a shaker that is either clean or used."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-into-used-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-into-used-shaker' action requires the shaker to be unshaken, but the natural language description does not mention this requirement. Ensure that the shaker is unshaken before pouring into it, or remove this precondition if it is not necessary."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "empty-shot",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'empty-shot' action requires the shot to contain a beverage, but the natural language description does not specify any restrictions. Ensure that the shot contains a beverage before emptying it, or modify the preconditions to allow emptying any shot."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'fill' action's preconditions are too restrictive. The precondition '(or (empty ?s) (used-by ?s ?i))' should be relaxed to allow filling a shot that is either empty or used by any beverage, not necessarily the same ingredient. This will enable more flexible filling operations."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-into-clean-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-into-clean-shaker' action's preconditions are too restrictive. The precondition '(or (clean ?sh) (used-by ?sh ?i))' should be relaxed to allow pouring into a shaker that is either clean or used by any ingredient, not necessarily the same one. This will enable more flexible pouring operations."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-into-used-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-into-used-shaker' action's preconditions should include a check for the shaker being unshaken, similar to the 'pour-into-clean-shaker' action. Add '(unshaken ?sh)' to the preconditions to ensure consistency with the domain's state transitions."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "shake",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'shake' action's effects should include removing the 'unshaken' predicate and adding the 'shaken' predicate to properly reflect the state change after shaking. Add '(not (unshaken ?sh))' and '(shaken ?sh)' to the effects."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "empty-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'empty-shaker' action's preconditions should include a check for the shaker being shaken. Add '(shaken ?sh)' to the preconditions to ensure the shaker is in the correct state before emptying."
+    },
+    {
+      "error_category": "SYNTAX_PARSE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Warning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #3\n\t->Parsing action #3\n\t->Parsing action 'fill'\n\t->Parsing precondition\n\t->Parsing condition\n\t->Parsing literal\nUndefined variable\nGot: ?b\ntranslate exit code: 31",
+      "suggested_repair_hint": "The action 'fill' has an undefined variable '?b' in its preconditions. Ensure all variables used in preconditions and effects are declared in the action's parameters. Modify the precondition to use only declared variables."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Warning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #3\n\t->Parsing action #3\n\t->Parsing action 'fill'\n\t->Parsing precondition\n\t->Parsing condition\n\t->Parsing literal\nUndefined variable\nGot: ?b\ntranslate exit code: 31",
+      "suggested_repair_hint": "The action 'fill' uses a variable '?b' which is not declared in its parameters. Add '?b' to the parameters of the 'fill' action with the appropriate type, likely 'beverage' or 'ingredient', to resolve the type signature error."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None",
+      "suggested_repair_hint": "The planner could not find a plan, possibly due to overly restrictive preconditions in the 'fill' action. Review and relax the preconditions to ensure they are achievable given the initial state and goal conditions."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'fill' action requires the shot to be both empty and clean, which may be too restrictive. Consider relaxing the preconditions to allow filling a shot that is either empty or clean, but not necessarily both."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-into-clean-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-into-clean-shaker' action requires the shaker to be both clean and empty, which may be too restrictive. Consider relaxing the preconditions to allow pouring into a shaker that is either clean or empty, but not necessarily both."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-into-used-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-into-used-shaker' action requires the shaker to be unshaken, which may be too restrictive. Consider relaxing the preconditions to allow pouring into a shaker that is either unshaken or shaken, but not necessarily both."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "empty-shot",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'empty-shot' action requires the shot to contain a beverage, which may be too restrictive. Consider relaxing the preconditions to allow emptying a shot that contains any beverage, not just a specific one."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "refill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'refill' action requires the shot to be used by the same ingredient it is being refilled with, which may be too restrictive. Consider relaxing the preconditions to allow refilling a shot with any ingredient, not just the one it was previously used by."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'fill' action's preconditions are too restrictive. The precondition '(or (empty ?s) (clean ?s))' should be relaxed to '(and (empty ?s) (clean ?s))' to ensure the shot is both empty and clean before filling, aligning with the natural language requirements."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour-into-clean-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-into-clean-shaker' action is missing a precondition to ensure the shaker is clean. Add '(clean ?sh)' to the preconditions to match the natural language requirements."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-into-used-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-into-used-shaker' action's preconditions should include '(unshaken ?sh)' to ensure the shaker is unshaken before pouring, as specified in the natural language requirements."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "shake",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'shake' action's effects should include '(not (contains ?sh ?i1))' and '(not (contains ?sh ?i2))' to remove the ingredients from the shaker after shaking, as per the natural language requirements."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'fill' action requires the shot to be clean and empty, but the natural language description allows refilling a used shot. Consider relaxing the preconditions to allow filling a shot that is either clean or used by the same ingredient."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "refill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'refill' action requires the shot to be empty and used by the same ingredient, but the natural language description does not mention this restriction. Consider relaxing the preconditions to allow refilling a shot regardless of its previous contents."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "shake",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'shake' action requires the shaker to contain exactly two ingredients that are parts of the cocktail. Ensure that the initial state includes all necessary ingredients and that the 'part-of' and 'another-part-of' predicates are correctly defined for each cocktail."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-from-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-from-shaker' action requires the shot to be clean and empty, but the natural language description does not mention this restriction. Consider relaxing the preconditions to allow pouring into any shot, regardless of its current state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'fill' action's preconditions are too restrictive. The precondition '(or (clean ?s) (used-by ?s ?i))' should be relaxed to allow filling a shot that is either clean or already used by the same ingredient. This matches the natural language requirement that allows filling a clean shot or refilling a shot used by the same ingredient."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "shake",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'shake' action should include a precondition to ensure the shaker is at a specific level before shaking, as the natural language requirement implies movement between levels during pouring operations. Add '(shaker-at-level ?sh ?l)' to the preconditions where ?l is the current level of the shaker."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "pour-from-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-from-shaker' action's effects should include '(not (clean ?s))' and '(used-by ?s ?b)' to align with the natural language requirement that pouring a beverage into a shot makes it used by that beverage and no longer clean."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'fill' action's preconditions may be too restrictive. Consider relaxing the precondition '(clean ?s)' to allow filling shots that are not clean but are empty and used by the same ingredient, similar to the 'refill' action."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-into-clean-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-into-clean-shaker' action requires the shaker to be clean and empty, which may not always be necessary. Consider relaxing the precondition to allow pouring into a shaker that is not clean but is empty, or merging this action with 'pour-into-used-shaker'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-into-used-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-into-used-shaker' action requires the shaker to be unshaken, which may be too restrictive. Consider relaxing this precondition to allow pouring into a shaker that is either unshaken or shaken but not yet containing a cocktail."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "shake",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'shake' action's effects should ensure that the shaker is marked as shaken and contains the cocktail, but it may not be properly updating all necessary state variables. Verify that all relevant state variables are being updated correctly in the effects."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour-from-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-from-shaker' action may need additional preconditions to ensure that the shaker is at the correct level and that the shot is at the correct level. Consider adding preconditions to check the levels of both the shaker and the shot."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "fill",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'fill' action's preconditions are too restrictive. Consider relaxing the precondition '(clean ?s)' to allow filling a shot that is either clean or used by the same ingredient."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour-from-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-from-shaker' action may need additional preconditions to ensure the shot being poured into is at the correct level or that the shaker contains the correct beverage for the goal state."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "shake",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'shake' action's effects should ensure that the shaker's contents are updated to reflect the cocktail being made, and that the shaker's state is correctly marked as shaken."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: PRECONDITION_RELAXATION\n  - [LOCATION / COMPONENT]: fill (Calculated Suspiciousness: 1.000)\n  - [DESCRIPTION / RAW TRACE]: Completely explored state space -- no solution!\n  - [SUGGESTION FOR REPAIR]: The 'fill' action's preconditions are too restrictive. Consider relaxing the precondition '(clean ?s)' to allow filling a shot that is either clean or used by the same ingredient.\n\nIssue #2:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: PRECONDITION_INSERTION\n  - [LOCATION / COMPONENT]: pour-from-shaker (Calculated Suspiciousness: 1.000)\n  - [DESCRIPTION / RAW TRACE]: Completely explored state space -- no solution!\n  - [SUGGESTION FOR REPAIR]: The 'pour-from-shaker' action may need additional preconditions to ensure the shot being poured into is at the correct level or that the shaker contains the correct beverage for the goal state.\n\nIssue #3:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: EFFECT_ALIGNMENT\n  - [LOCATION / COMPONENT]: shake (Calculated Suspiciousness: 1.000)\n  - [DESCRIPTION / RAW TRACE]: Completely explored state space -- no solution!\n  - [SUGGESTION FOR REPAIR]: The 'shake' action's effects should ensure that the shaker's contents are updated to reflect the cocktail being made, and that the shaker's state is correctly marked as shaken.",
+  "plan_summary": {
+    "is_solvable": false,
+    "plan_length": 0,
+    "search_time_seconds": 3.1e-05,
+    "val_plan_valid": false,
+    "plan_steps": []
+  }
+}

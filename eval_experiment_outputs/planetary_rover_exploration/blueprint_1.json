@@ -1,0 +1,220 @@
+{
+  "domain_name": "planetary_rover_exploration",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "planetary_rover_exploration",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "rover": "object",
+      "waypoint": "object",
+      "lander": "object",
+      "instrument": "object",
+      "camera": "instrument",
+      "drill": "instrument",
+      "spectrometer": "instrument",
+      "antenna": "instrument",
+      "sample_store": "object",
+      "calibration_target": "object",
+      "objective": "object",
+      "data": "object"
+    },
+    "predicates": [
+      "(at ?r - rover ?w - waypoint)",
+      "(connected ?w1 - waypoint ?w2 - waypoint)",
+      "(energy_available ?r - rover)",
+      "(has_camera ?r - rover ?c - camera)",
+      "(has_drill ?r - rover ?d - drill)",
+      "(has_spectrometer ?r - rover ?s - spectrometer)",
+      "(has_antenna ?r - rover ?a - antenna)",
+      "(has_sample_store ?r - rover ?s - sample_store)",
+      "(sample_store_empty ?s - sample_store)",
+      "(sample_store_full ?s - sample_store)",
+      "(sample_store_dirty ?s - sample_store)",
+      "(calibration_target_visible ?t - calibration_target ?w - waypoint)",
+      "(calibrated ?c - camera ?w - waypoint)",
+      "(objective_at ?o - objective ?w - waypoint)",
+      "(stored ?r - rover ?d - data)",
+      "(transmitted ?d - data)",
+      "(line_of_sight ?w - waypoint ?l - lander)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_rover",
+        "parameters": {
+          "?r": "rover",
+          "?from": "waypoint",
+          "?to": "waypoint"
+        },
+        "preconditions": [
+          "(at ?r ?from)",
+          "(connected ?from ?to)",
+          "(energy_available ?r)"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "calibrate_camera",
+        "parameters": {
+          "?r": "rover",
+          "?c": "camera",
+          "?w": "waypoint",
+          "?t": "calibration_target"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(has_camera ?r ?c)",
+          "(calibration_target_visible ?t ?w)"
+        ],
+        "effects": [
+          "(calibrated ?c ?w)"
+        ]
+      },
+      {
+        "action_name": "capture_image",
+        "parameters": {
+          "?r": "rover",
+          "?c": "camera",
+          "?w": "waypoint",
+          "?o": "objective",
+          "?d": "data"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(has_camera ?r ?c)",
+          "(calibrated ?c ?w)",
+          "(objective_at ?o ?w)"
+        ],
+        "effects": [
+          "(stored ?r ?d)"
+        ]
+      },
+      {
+        "action_name": "analyze_soil",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint",
+          "?d": "drill",
+          "?s": "sample_store",
+          "?data": "data"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(has_drill ?r ?d)",
+          "(has_sample_store ?r ?s)",
+          "(sample_store_empty ?s)"
+        ],
+        "effects": [
+          "(not (sample_store_empty ?s))",
+          "(sample_store_full ?s)",
+          "(sample_store_dirty ?s)",
+          "(stored ?r ?data)"
+        ]
+      },
+      {
+        "action_name": "analyze_rock",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint",
+          "?s": "spectrometer",
+          "?store": "sample_store",
+          "?data": "data"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(has_spectrometer ?r ?s)",
+          "(has_sample_store ?r ?store)",
+          "(sample_store_empty ?store)"
+        ],
+        "effects": [
+          "(not (sample_store_empty ?store))",
+          "(sample_store_full ?store)",
+          "(sample_store_dirty ?store)",
+          "(stored ?r ?data)"
+        ]
+      },
+      {
+        "action_name": "transmit_data",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint",
+          "?l": "lander",
+          "?a": "antenna",
+          "?d": "data"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(has_antenna ?r ?a)",
+          "(stored ?r ?d)",
+          "(line_of_sight ?w ?l)"
+        ],
+        "effects": [
+          "(transmitted ?d)"
+        ]
+      },
+      {
+        "action_name": "clear_data",
+        "parameters": {
+          "?r": "rover",
+          "?d": "data"
+        },
+        "preconditions": [
+          "(stored ?r ?d)",
+          "(transmitted ?d)"
+        ],
+        "effects": [
+          "(not (stored ?r ?d))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "rover_mission_1",
+    "domain_name": "planetary_rover_exploration",
+    "objects": {
+      "r1": "rover",
+      "w1": "waypoint",
+      "w2": "waypoint",
+      "w3": "waypoint",
+      "lander1": "lander",
+      "cam1": "camera",
+      "drill1": "drill",
+      "spec1": "spectrometer",
+      "antenna1": "antenna",
+      "store1": "sample_store",
+      "calib1": "calibration_target",
+      "obj1": "objective",
+      "data1": "data",
+      "data2": "data"
+    },
+    "initial_state": [
+      "(at r1 w1)",
+      "(connected w1 w2)",
+      "(connected w2 w3)",
+      "(connected w1 w3)",
+      "(energy_available r1)",
+      "(has_camera r1 cam1)",
+      "(has_drill r1 drill1)",
+      "(has_spectrometer r1 spec1)",
+      "(has_antenna r1 antenna1)",
+      "(has_sample_store r1 store1)",
+      "(sample_store_empty store1)",
+      "(calibration_target_visible calib1 w2)",
+      "(objective_at obj1 w2)",
+      "(line_of_sight w2 lander1)"
+    ],
+    "goal_state": [
+      "(transmitted data1)",
+      "(transmitted data2)",
+      "(not (stored r1 data1))",
+      "(not (stored r1 data2))"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

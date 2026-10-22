@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-10-16T23:57:41.698020",
+  "domain_name": "satellite",
+  "run_index": 8,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 7,
+    "search_time_seconds": 0.000109,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(switch_on instrument0 satellite0)",
+      "(turn_to satellite0 star1 planet3)",
+      "(calibrate satellite0 instrument0 star1)",
+      "(turn_to satellite0 phenomenon2 star1)",
+      "(take_image satellite0 phenomenon2 instrument0 thermograph0)",
+      "(turn_to satellite0 planet3 phenomenon2)",
+      "(take_image satellite0 planet3 instrument0 image1)"
+    ]
+  }
+}

@@ -1,0 +1,232 @@
+{
+  "domain_name": "childsnack14",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "childsnack14",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "child": "object",
+      "bread-portion": "object",
+      "content-portion": "object",
+      "sandwich": "object",
+      "tray": "object",
+      "place": "object"
+    },
+    "predicates": [
+      "(at-kitchen-bread ?b - bread-portion)",
+      "(at-kitchen-content ?c - content-portion)",
+      "(no-gluten-bread ?b - bread-portion)",
+      "(no-gluten-content ?c - content-portion)",
+      "(allergic-to-gluten ?c - child)",
+      "(waiting-for ?c - child ?p - place)",
+      "(not-exist ?s - sandwich)",
+      "(at-kitchen-sandwich ?s - sandwich)",
+      "(no-gluten-sandwich ?s - sandwich)",
+      "(at-kitchen ?t - tray)",
+      "(on-tray ?s - sandwich ?t - tray)",
+      "(at ?t - tray ?p - place)",
+      "(served ?c - child)"
+    ],
+    "actions": [
+      {
+        "action_name": "make-no-gluten-sandwich",
+        "parameters": {
+          "?a": "sandwich",
+          "?b": "bread-portion",
+          "?c": "content-portion"
+        },
+        "preconditions": [
+          "(at-kitchen-bread ?b)",
+          "(at-kitchen-content ?c)",
+          "(no-gluten-bread ?b)",
+          "(no-gluten-content ?c)",
+          "(not-exist ?a)"
+        ],
+        "effects": [
+          "(at-kitchen-sandwich ?a)",
+          "(no-gluten-sandwich ?a)",
+          "(not (at-kitchen-bread ?b))",
+          "(not (at-kitchen-content ?c))",
+          "(not (not-exist ?a))"
+        ]
+      },
+      {
+        "action_name": "make-sandwich",
+        "parameters": {
+          "?a": "sandwich",
+          "?b": "bread-portion",
+          "?c": "content-portion"
+        },
+        "preconditions": [
+          "(at-kitchen-bread ?b)",
+          "(at-kitchen-content ?c)",
+          "(not-exist ?a)"
+        ],
+        "effects": [
+          "(at-kitchen-sandwich ?a)",
+          "(not (at-kitchen-bread ?b))",
+          "(not (at-kitchen-content ?c))",
+          "(not (not-exist ?a))"
+        ]
+      },
+      {
+        "action_name": "put-sandwich-on-tray",
+        "parameters": {
+          "?a": "sandwich",
+          "?b": "tray"
+        },
+        "preconditions": [
+          "(at-kitchen-sandwich ?a)",
+          "(at-kitchen ?b)"
+        ],
+        "effects": [
+          "(on-tray ?a ?b)",
+          "(not (at-kitchen-sandwich ?a))"
+        ]
+      },
+      {
+        "action_name": "serve-no-gluten-sandwich",
+        "parameters": {
+          "?a": "sandwich",
+          "?b": "child",
+          "?c": "tray",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(allergic-to-gluten ?b)",
+          "(on-tray ?a ?c)",
+          "(waiting-for ?b ?d)",
+          "(no-gluten-sandwich ?a)"
+        ],
+        "effects": [
+          "(served ?b)",
+          "(not (on-tray ?a ?c))"
+        ]
+      },
+      {
+        "action_name": "serve-sandwich",
+        "parameters": {
+          "?a": "sandwich",
+          "?b": "child",
+          "?c": "tray",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(not (allergic-to-gluten ?b))",
+          "(waiting-for ?b ?d)",
+          "(on-tray ?a ?c)"
+        ],
+        "effects": [
+          "(served ?b)",
+          "(not (on-tray ?a ?c))"
+        ]
+      },
+      {
+        "action_name": "move-tray",
+        "parameters": {
+          "?a": "tray",
+          "?b": "place",
+          "?c": "place"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(not (= ?b ?c))"
+        ],
+        "effects": [
+          "(at ?a ?c)",
+          "(not (at ?a ?b))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "childsnack14",
+    "objects": {
+      "child1": "child",
+      "child2": "child",
+      "child3": "child",
+      "child4": "child",
+      "child5": "child",
+      "child6": "child",
+      "bread1": "bread-portion",
+      "bread2": "bread-portion",
+      "bread3": "bread-portion",
+      "bread4": "bread-portion",
+      "bread5": "bread-portion",
+      "bread6": "bread-portion",
+      "content1": "content-portion",
+      "content2": "content-portion",
+      "content3": "content-portion",
+      "content4": "content-portion",
+      "content5": "content-portion",
+      "content6": "content-portion",
+      "tray1": "tray",
+      "tray2": "tray",
+      "table1": "place",
+      "table2": "place",
+      "table3": "place",
+      "sandw1": "sandwich",
+      "sandw2": "sandwich",
+      "sandw3": "sandwich",
+      "sandw4": "sandwich",
+      "sandw5": "sandwich",
+      "sandw6": "sandwich",
+      "sandw7": "sandwich",
+      "sandw8": "sandwich"
+    },
+    "initial_state": [
+      "(at-kitchen tray1)",
+      "(at-kitchen tray2)",
+      "(at-kitchen-bread bread1)",
+      "(at-kitchen-bread bread2)",
+      "(at-kitchen-bread bread3)",
+      "(at-kitchen-bread bread4)",
+      "(at-kitchen-bread bread5)",
+      "(at-kitchen-bread bread6)",
+      "(at-kitchen-content content1)",
+      "(at-kitchen-content content2)",
+      "(at-kitchen-content content3)",
+      "(at-kitchen-content content4)",
+      "(at-kitchen-content content5)",
+      "(at-kitchen-content content6)",
+      "(no-gluten-bread bread2)",
+      "(no-gluten-bread bread5)",
+      "(no-gluten-content content3)",
+      "(no-gluten-content content6)",
+      "(allergic-to-gluten child1)",
+      "(allergic-to-gluten child5)",
+      "(not (allergic-to-gluten child2))",
+      "(not (allergic-to-gluten child3))",
+      "(not (allergic-to-gluten child4))",
+      "(not (allergic-to-gluten child6))",
+      "(waiting-for child1 table2)",
+      "(waiting-for child2 table1)",
+      "(waiting-for child3 table3)",
+      "(waiting-for child4 table2)",
+      "(waiting-for child5 table1)",
+      "(waiting-for child6 table1)",
+      "(not-exist sandw1)",
+      "(not-exist sandw2)",
+      "(not-exist sandw3)",
+      "(not-exist sandw4)",
+      "(not-exist sandw5)",
+      "(not-exist sandw6)",
+      "(not-exist sandw7)",
+      "(not-exist sandw8)"
+    ],
+    "goal_state": [
+      "(served child1)",
+      "(served child2)",
+      "(served child3)",
+      "(served child4)",
+      "(served child5)",
+      "(served child6)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-10-13T05:39:55.770469",
+  "domain_name": "depot",
+  "run_index": 4,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 17,
+    "search_time_seconds": 0.005358,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(lift hoist0 crate0 pallet0 depot0)",
+      "(load hoist0 crate0 truck1 depot0)",
+      "(drive truck1 depot0 distributor1)",
+      "(lift hoist2 crate2 crate1 distributor1)",
+      "(load hoist2 crate2 truck1 distributor1)",
+      "(drive truck1 distributor1 depot0)",
+      "(unload hoist0 crate2 truck1 depot0)",
+      "(drive truck1 depot0 distributor0)",
+      "(drop hoist0 crate2 pallet0 depot0)",
+      "(drive truck1 distributor0 distributor1)",
+      "(lift hoist2 crate1 pallet2 distributor1)",
+      "(load hoist2 crate1 truck1 distributor1)",
+      "(unload hoist2 crate0 truck1 distributor1)",
+      "(drive truck1 distributor1 distributor0)",
+      "(unload hoist1 crate1 truck1 distributor0)",
+      "(drop hoist2 crate0 pallet2 distributor1)",
+      "(drop hoist1 crate1 crate3 distributor0)"
+    ]
+  }
+}

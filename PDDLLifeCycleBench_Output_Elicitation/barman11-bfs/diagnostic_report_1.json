@@ -1,0 +1,95 @@
+{
+  "timestamp": "2026-10-21T19:06:34.383352",
+  "domain_name": "barman11-bfs",
+  "run_index": 1,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking grasp-container\nType problem with proposition (empty a) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [
+    "VAL Error: Type-checking grasp-container\n...action passes type checking.\nType-checking leave-container\n...action passes type checking.\nType-checking fill-shot\nType problem with proposition (contains-cocktail a b) - parameter 2 is incorrectly typed\nEffects fail type-checking.\n\nType problem in domain description!"
+  ],
+  "diagnostic_issues_count": 11,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "grasp-container",
+      "raw_log": "VAL Error: Type-checking grasp-container Type problem with proposition (empty a) - parameter 1 is incorrectly typed Conditions fail type-checking.",
+      "suggested_repair_hint": "The predicate '(empty ?a - container)' is incorrectly typed. Ensure that the parameter type for 'empty' matches the expected type in the action 'grasp-container'. Specifically, the parameter '?a' should be of type 'hand' instead of 'container'. Update the predicate declaration to '(empty ?h - hand)' or declare a new predicate for the state of hands."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "fill-shot",
+      "raw_log": "Type problem with proposition (empty a) - parameter 1 is incorrectly typed Conditions fail type-checking.",
+      "suggested_repair_hint": "Declare a new dedicated predicate for the state of a shot being empty, such as '(empty-shot ?s - shot)', and update the 'fill-shot' action to require this new predicate instead of '(empty ?a)' for the shot."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "fill-shot",
+      "raw_log": "Type problem with proposition (contains a b) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Declare a new dedicated predicate for the state of a shot containing a cocktail, such as '(contains-cocktail ?s - shot ?c - cocktail)'. Update the 'fill-shot' action to use this new predicate instead of '(contains ?s - shot ?c - cocktail)' for the second parameter."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "refill-shot",
+      "raw_log": "Type problem with proposition (contains a b) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Declare a new dedicated predicate for the state of a shot containing a cocktail, such as '(contains-cocktail ?s - shot ?c - cocktail)'. Update the 'refill-shot' action to use this new predicate instead of '(contains ?s - shot ?c - cocktail)' for the second parameter."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "contains-cocktail",
+      "raw_log": "Type problem with proposition (contains-cocktail a b) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Declare a new dedicated predicate for cocktail containment, such as '(contains-cocktail ?s - shot ?c - cocktail)', ensuring that the second parameter is correctly typed as 'cocktail'. Update all actions that reference this predicate to use the new signature."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "fill-shot",
+      "raw_log": "Type problem with proposition (contains-cocktail a b) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Declare a new dedicated predicate for cocktail containment in shots, such as '(contains-cocktail ?s - shot ?c - cocktail)', and update the effects of the 'fill-shot' action to use this new predicate."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "refill-shot",
+      "raw_log": "Type problem with proposition (contains-cocktail a b) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Declare a new dedicated predicate for cocktail containment in shots, such as '(contains-cocktail ?s - shot ?c - cocktail)', and update the effects of the 'refill-shot' action to use this new predicate."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "fill-shot",
+      "raw_log": "Type problem with proposition (contains-cocktail a b) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Declare a new dedicated predicate for the state of a shot containing a cocktail, such as '(contains-cocktail ?s - shot ?c - cocktail)', and update the effects of the 'fill-shot' action to use this new predicate instead of '(contains ?s ?c)' which is incorrectly typed."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "refill-shot",
+      "raw_log": "Type problem with proposition (contains-cocktail a b) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Declare a new dedicated predicate for the state of a shot containing a cocktail, such as '(contains-cocktail ?s - shot ?c - cocktail)', and update the effects of the 'refill-shot' action to use this new predicate instead of '(contains ?s ?c)' which is incorrectly typed."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "contains-cocktail",
+      "raw_log": "Type problem with proposition (contains-cocktail a b) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Declare a new dedicated predicate for the cocktail state, such as '(contains-cocktail ?s - shot ?c - cocktail)', and ensure that all actions referencing this predicate use the correct parameter types."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "contains-cocktail",
+      "raw_log": "Type problem with proposition (contains-cocktail a b) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Declare a new dedicated predicate for the cocktail state, such as '(contains-cocktail ?s - shot ?c - cocktail)' and ensure that all actions referencing this predicate use the correct types."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: contains-cocktail\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (contains-cocktail a b) - parameter 2 is incorrectly typed\n  - [SUGGESTION FOR REPAIR]: Declare a new dedicated predicate for the cocktail state, such as '(contains-cocktail ?s - shot ?c - cocktail)' and ensure that all actions referencing this predicate use the correct types.",
+  "plan_summary": null
+}

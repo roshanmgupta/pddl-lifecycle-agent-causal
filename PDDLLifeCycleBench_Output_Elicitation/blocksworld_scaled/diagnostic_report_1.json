@@ -1,0 +1,81 @@
+{
+  "timestamp": "2026-10-20T12:27:57.007003",
+  "domain_name": "blocksworld_scaled",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 6,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking pick-up\nObject with unknown type: table\n\nErrors: 0, warnings: 1\n\nError: Error in type-checking!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 4,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "pick-up",
+      "raw_log": "VAL Error: Type-checking pick-up Object with unknown type: table",
+      "suggested_repair_hint": "Declare 'table' as a valid type in the 'types' section of the domain blueprint to resolve the type-checking error."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "pick-up",
+      "raw_log": "VAL Error: Type-checking pick-up Object with unknown type: table",
+      "suggested_repair_hint": "The predicate '(on ?a table)' in the preconditions of the 'pick-up' action is incorrect. The type 'table' should be declared as a valid type in the domain. Ensure that 'table' is defined as a type in the 'types' section of the domain blueprint."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "put-down",
+      "raw_log": "VAL Error: Problem in domain definition!",
+      "suggested_repair_hint": "Ensure that the predicate '(on ?a - table)' in the preconditions of the 'pick-up' action is correctly defined. The type 'table' should be declared in the types section, and the predicate should not be overloaded with different types."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "put-down",
+      "raw_log": "VAL Error: Problem in domain definition!",
+      "suggested_repair_hint": "Ensure that the predicate '(on ?a - table)' in the 'put-down' action has the correct type signature. The type 'table' should be defined in the types section, and the predicate should not be overloaded with incompatible types."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 30,
+    "search_time_seconds": 0.001651,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(unstack b1 b5)",
+      "(put-down b1)",
+      "(unstack b2 b8)",
+      "(put-down b2)",
+      "(unstack b4 b7)",
+      "(stack b4 b5)",
+      "(pick-up b8)",
+      "(stack b8 b1)",
+      "(unstack b4 b5)",
+      "(stack b4 b2)",
+      "(pick-up b5)",
+      "(stack b5 b8)",
+      "(unstack b4 b2)",
+      "(stack b4 b5)",
+      "(unstack b7 b3)",
+      "(stack b7 b2)",
+      "(unstack b3 b6)",
+      "(stack b3 b4)",
+      "(unstack b6 b9)",
+      "(put-down b6)",
+      "(unstack b7 b2)",
+      "(stack b7 b3)",
+      "(pick-up b9)",
+      "(stack b9 b2)",
+      "(unstack b7 b3)",
+      "(stack b7 b6)",
+      "(unstack b3 b4)",
+      "(stack b3 b9)",
+      "(unstack b7 b6)",
+      "(stack b7 b3)"
+    ]
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "domain_name": "planetary_rover_domain",
+  "run_index": 2,
+  "domain_blueprint": {
+    "domain_name": "planetary_rover_domain",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "rover": "object",
+      "waypoint": "object",
+      "lander": "object"
+    },
+    "predicates": [
+      "(at ?r - rover ?w - waypoint)",
+      "(lander_at ?l - lander ?w - waypoint)",
+      "(has_soil_data ?r - rover)",
+      "(has_rock_data ?r - rover)",
+      "(communicated_soil ?r - rover ?l - lander)",
+      "(communicated_rock ?r - rover ?l - lander)",
+      "(at_lander ?l - lander ?w - waypoint)",
+      "(can_traverse ?r - rover ?from - waypoint ?to - waypoint)",
+      "(visible ?w - waypoint ?l - lander)",
+      "(empty ?r - rover)",
+      "(have_soil_analysis ?r - rover ?w - waypoint)",
+      "(have_rock_analysis ?r - rover ?w - waypoint)",
+      "(available ?r - rover)",
+      "(communicated_soil_data ?w - waypoint)",
+      "(communicated_rock_data ?w - waypoint)"
+    ],
+    "actions": [
+      {
+        "action_name": "move",
+        "parameters": {
+          "?r": "rover",
+          "?from": "waypoint",
+          "?to": "waypoint"
+        },
+        "preconditions": [
+          "(at ?r ?from)"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "sample_soil",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint"
+        },
+        "preconditions": [
+          "(at ?r ?w)"
+        ],
+        "effects": [
+          "(has_soil_data ?r)"
+        ]
+      },
+      {
+        "action_name": "sample_rock",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint"
+        },
+        "preconditions": [
+          "(at ?r ?w)"
+        ],
+        "effects": [
+          "(has_rock_data ?r)"
+        ]
+      },
+      {
+        "action_name": "communicate_soil",
+        "parameters": {
+          "?r": "rover",
+          "?l": "lander",
+          "?w": "waypoint"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(lander_at ?l ?w)",
+          "(has_soil_data ?r)"
+        ],
+        "effects": [
+          "(communicated_soil ?r ?l)"
+        ]
+      },
+      {
+        "action_name": "communicate_rock",
+        "parameters": {
+          "?r": "rover",
+          "?l": "lander",
+          "?w": "waypoint"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(lander_at ?l ?w)",
+          "(has_rock_data ?r)"
+        ],
+        "effects": [
+          "(communicated_rock ?r ?l)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "rover_soil_communication",
+    "domain_name": "planetary_rover_domain",
+    "objects": {
+      "r1": "rover",
+      "w1": "waypoint",
+      "w2": "waypoint",
+      "l1": "lander"
+    },
+    "initial_state": [
+      "(at r1 w1)",
+      "(lander_at l1 w2)"
+    ],
+    "goal_state": [
+      "(at r1 w2)",
+      "(communicated_soil r1 l1)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

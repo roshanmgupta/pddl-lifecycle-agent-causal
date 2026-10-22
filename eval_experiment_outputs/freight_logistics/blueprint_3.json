@@ -1,0 +1,174 @@
+{
+  "domain_name": "freight_logistics",
+  "run_index": 3,
+  "domain_blueprint": {
+    "domain_name": "freight_logistics",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "truck": "object",
+      "crate": "object",
+      "location": "object",
+      "hoist": "object",
+      "pallet": "object",
+      "stackable": "object",
+      "transportable": "object"
+    },
+    "predicates": [
+      "(truck_at ?t - truck ?l - location)",
+      "(crate_at ?c - crate ?l - location)",
+      "(on_crate_pallet ?c - crate ?p - pallet)",
+      "(on_crate_crate ?c1 - crate ?c2 - crate)",
+      "(loaded ?c - crate ?t - truck)",
+      "(empty ?t - truck)",
+      "(hoist_at ?h - hoist ?l - location)",
+      "(holding ?h - hoist ?c - crate)",
+      "(connected ?l1 - location ?l2 - location)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_truck",
+        "parameters": {
+          "?t": "truck",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(truck_at ?t ?from)",
+          "(connected ?from ?to)"
+        ],
+        "effects": [
+          "(not (truck_at ?t ?from))",
+          "(truck_at ?t ?to)"
+        ]
+      },
+      {
+        "action_name": "load_crate",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(hoist_at ?h ?l)",
+          "(truck_at ?t ?l)",
+          "(holding ?h ?c)",
+          "(empty ?t)"
+        ],
+        "effects": [
+          "(not (holding ?h ?c))",
+          "(loaded ?c ?t)",
+          "(not (empty ?t))",
+          "(hoist_at ?h ?l)"
+        ]
+      },
+      {
+        "action_name": "unload_crate",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(hoist_at ?h ?l)",
+          "(truck_at ?t ?l)",
+          "(loaded ?c ?t)"
+        ],
+        "effects": [
+          "(holding ?h ?c)",
+          "(not (loaded ?c ?t))",
+          "(empty ?t)",
+          "(hoist_at ?h ?l)"
+        ]
+      },
+      {
+        "action_name": "stack_crate",
+        "parameters": {
+          "?h": "hoist",
+          "?c1": "crate",
+          "?c2": "crate",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(hoist_at ?h ?l)",
+          "(holding ?h ?c1)",
+          "(crate_at ?c2 ?l)"
+        ],
+        "effects": [
+          "(not (holding ?h ?c1))",
+          "(on_crate_crate ?c1 ?c2)",
+          "(hoist_at ?h ?l)"
+        ]
+      },
+      {
+        "action_name": "unstack_crate",
+        "parameters": {
+          "?h": "hoist",
+          "?c1": "crate",
+          "?c2": "crate",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(hoist_at ?h ?l)",
+          "(on_crate_crate ?c1 ?c2)"
+        ],
+        "effects": [
+          "(holding ?h ?c1)",
+          "(not (on_crate_crate ?c1 ?c2))",
+          "(hoist_at ?h ?l)"
+        ]
+      },
+      {
+        "action_name": "move_crate",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(hoist_at ?h ?from)",
+          "(holding ?h ?c)",
+          "(connected ?from ?to)"
+        ],
+        "effects": [
+          "(not (crate_at ?c ?from))",
+          "(crate_at ?c ?to)",
+          "(hoist_at ?h ?to)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "deliver_crates",
+    "domain_name": "freight_logistics",
+    "objects": {
+      "t1": "truck",
+      "c1": "crate",
+      "c2": "crate",
+      "l1": "location",
+      "l2": "location",
+      "h1": "hoist",
+      "p1": "pallet"
+    },
+    "initial_state": [
+      "(truck_at t1 l1)",
+      "(crate_at c1 l1)",
+      "(crate_at c2 l1)",
+      "(hoist_at h1 l1)",
+      "(empty t1)",
+      "(connected l1 l2)",
+      "(holding h1 c1)"
+    ],
+    "goal_state": [
+      "(crate_at c1 l2)",
+      "(on_crate_crate c2 c1)"
+    ]
+  },
+  "iteration_count": 14,
+  "is_valid": false
+}

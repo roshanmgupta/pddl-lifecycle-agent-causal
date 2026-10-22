@@ -1,0 +1,158 @@
+{
+  "domain_name": "regional_courier",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "regional_courier",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "driver": "object",
+      "truck": "object",
+      "package": "object",
+      "location": "object"
+    },
+    "predicates": [
+      "(at ?x - object ?l - location)",
+      "(in ?x - object ?t - truck)",
+      "(has_driver ?t - truck)",
+      "(footpath ?l1 - location ?l2 - location)",
+      "(road ?l1 - location ?l2 - location)",
+      "(certified ?d - driver)",
+      "(active ?d - driver)"
+    ],
+    "actions": [
+      {
+        "action_name": "walk_driver",
+        "parameters": {
+          "?d": "driver",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(at ?d ?from)",
+          "(footpath ?from ?to)"
+        ],
+        "effects": [
+          "(not (at ?d ?from))",
+          "(at ?d ?to)"
+        ]
+      },
+      {
+        "action_name": "board_truck",
+        "parameters": {
+          "?d": "driver",
+          "?t": "truck",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at ?d ?l)",
+          "(at ?t ?l)",
+          "(not (has_driver ?t))"
+        ],
+        "effects": [
+          "(not (at ?d ?l))",
+          "(in ?d ?t)",
+          "(has_driver ?t)"
+        ]
+      },
+      {
+        "action_name": "disembark_truck",
+        "parameters": {
+          "?d": "driver",
+          "?t": "truck",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(in ?d ?t)",
+          "(at ?t ?l)"
+        ],
+        "effects": [
+          "(not (in ?d ?t))",
+          "(not (has_driver ?t))",
+          "(at ?d ?l)"
+        ]
+      },
+      {
+        "action_name": "load_package",
+        "parameters": {
+          "?p": "package",
+          "?t": "truck",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at ?p ?l)",
+          "(at ?t ?l)",
+          "(has_driver ?t)"
+        ],
+        "effects": [
+          "(not (at ?p ?l))",
+          "(in ?p ?t)"
+        ]
+      },
+      {
+        "action_name": "unload_package",
+        "parameters": {
+          "?p": "package",
+          "?t": "truck",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(in ?p ?t)",
+          "(at ?t ?l)",
+          "(has_driver ?t)"
+        ],
+        "effects": [
+          "(not (in ?p ?t))",
+          "(at ?p ?l)"
+        ]
+      },
+      {
+        "action_name": "drive_truck",
+        "parameters": {
+          "?t": "truck",
+          "?d": "driver",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(at ?t ?from)",
+          "(in ?d ?t)",
+          "(road ?from ?to)",
+          "(certified ?d)",
+          "(active ?d)"
+        ],
+        "effects": [
+          "(not (at ?t ?from))",
+          "(at ?t ?to)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "courier_delivery",
+    "domain_name": "regional_courier",
+    "objects": {
+      "d1": "driver",
+      "t1": "truck",
+      "p1": "package",
+      "loc_a": "location",
+      "loc_b": "location"
+    },
+    "initial_state": [
+      "(at d1 loc_a)",
+      "(at t1 loc_a)",
+      "(at p1 loc_a)",
+      "(footpath loc_a loc_b)",
+      "(road loc_a loc_b)",
+      "(certified d1)",
+      "(active d1)"
+    ],
+    "goal_state": [
+      "(at p1 loc_b)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

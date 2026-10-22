@@ -1,0 +1,240 @@
+{
+  "domain_name": "blocksworld",
+  "run_index": 14,
+  "domain_blueprint": {
+    "domain_name": "blocksworld",
+    "requirements": [
+      ":strips",
+      ":typing",
+      ":equality",
+      ":negative-preconditions"
+    ],
+    "types": {
+      "city": "object",
+      "location": "object",
+      "physical_object": "object",
+      "package": "physical_object",
+      "vehicle": "physical_object",
+      "truck": "vehicle",
+      "airplane": "vehicle",
+      "block": "object"
+    },
+    "predicates": [
+      "(at ?obj - physical_object ?loc - location)",
+      "(inside ?pkg - package ?veh - vehicle)",
+      "(in-city ?loc - location ?city - city)",
+      "(airport ?loc - location)",
+      "(on ?x - block ?y - block)",
+      "(ontable ?x - block)",
+      "(clear ?x - block)",
+      "(handempty)",
+      "(holding ?x - block)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_truck",
+        "parameters": {
+          "?t": "truck",
+          "?from": "location",
+          "?to": "location",
+          "?city": "city"
+        },
+        "preconditions": [
+          "(at ?t ?from)",
+          "(in-city ?from ?city)",
+          "(in-city ?to ?city)"
+        ],
+        "effects": [
+          "(not (at ?t ?from))",
+          "(at ?t ?to)"
+        ]
+      },
+      {
+        "action_name": "fly_airplane",
+        "parameters": {
+          "?a": "airplane",
+          "?from": "location",
+          "?to": "location",
+          "?from_city": "city",
+          "?to_city": "city"
+        },
+        "preconditions": [
+          "(at ?a ?from)",
+          "(airport ?from)",
+          "(airport ?to)",
+          "(in-city ?from ?from_city)",
+          "(in-city ?to ?to_city)",
+          "(not (= ?from_city ?to_city))"
+        ],
+        "effects": [
+          "(not (at ?a ?from))",
+          "(at ?a ?to)"
+        ]
+      },
+      {
+        "action_name": "load_truck",
+        "parameters": {
+          "?p": "package",
+          "?t": "truck",
+          "?loc": "location"
+        },
+        "preconditions": [
+          "(at ?p ?loc)",
+          "(at ?t ?loc)"
+        ],
+        "effects": [
+          "(not (at ?p ?loc))",
+          "(inside ?p ?t)"
+        ]
+      },
+      {
+        "action_name": "unload_truck",
+        "parameters": {
+          "?p": "package",
+          "?t": "truck",
+          "?loc": "location"
+        },
+        "preconditions": [
+          "(inside ?p ?t)",
+          "(at ?t ?loc)"
+        ],
+        "effects": [
+          "(not (inside ?p ?t))",
+          "(at ?p ?loc)"
+        ]
+      },
+      {
+        "action_name": "load_airplane",
+        "parameters": {
+          "?p": "package",
+          "?a": "airplane",
+          "?apt": "location"
+        },
+        "preconditions": [
+          "(at ?p ?apt)",
+          "(at ?a ?apt)",
+          "(airport ?apt)"
+        ],
+        "effects": [
+          "(not (at ?p ?apt))",
+          "(inside ?p ?a)"
+        ]
+      },
+      {
+        "action_name": "unload_airplane",
+        "parameters": {
+          "?p": "package",
+          "?a": "airplane",
+          "?apt": "location"
+        },
+        "preconditions": [
+          "(inside ?p ?a)",
+          "(at ?a ?apt)",
+          "(airport ?apt)"
+        ],
+        "effects": [
+          "(not (inside ?p ?a))",
+          "(at ?p ?apt)"
+        ]
+      },
+      {
+        "action_name": "pick_up",
+        "parameters": {
+          "?x": "block"
+        },
+        "preconditions": [
+          "(clear ?x)",
+          "(ontable ?x)",
+          "(handempty)"
+        ],
+        "effects": [
+          "(not (ontable ?x))",
+          "(not (clear ?x))",
+          "(not (handempty))",
+          "(holding ?x)"
+        ]
+      },
+      {
+        "action_name": "put_down",
+        "parameters": {
+          "?x": "block"
+        },
+        "preconditions": [
+          "(holding ?x)"
+        ],
+        "effects": [
+          "(not (holding ?x))",
+          "(clear ?x)",
+          "(ontable ?x)",
+          "(handempty)"
+        ]
+      },
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?x": "block",
+          "?y": "block"
+        },
+        "preconditions": [
+          "(holding ?x)",
+          "(clear ?y)"
+        ],
+        "effects": [
+          "(not (holding ?x))",
+          "(not (clear ?y))",
+          "(clear ?x)",
+          "(handempty)",
+          "(on ?x ?y)"
+        ]
+      },
+      {
+        "action_name": "unstack",
+        "parameters": {
+          "?x": "block",
+          "?y": "block"
+        },
+        "preconditions": [
+          "(on ?x ?y)",
+          "(clear ?x)",
+          "(handempty)"
+        ],
+        "effects": [
+          "(holding ?x)",
+          "(clear ?y)",
+          "(not (clear ?x))",
+          "(not (handempty))",
+          "(not (on ?x ?y))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "logistics_problem",
+    "domain_name": "blocksworld",
+    "objects": {
+      "t1": "truck",
+      "p1": "airplane",
+      "pkg1": "package",
+      "loc1": "location",
+      "apt1": "location",
+      "apt2": "location",
+      "city1": "city",
+      "city2": "city"
+    },
+    "initial_state": [
+      "(at pkg1 loc1)",
+      "(at t1 loc1)",
+      "(at p1 apt1)",
+      "(in-city loc1 city1)",
+      "(in-city apt1 city1)",
+      "(in-city apt2 city2)",
+      "(airport apt1)",
+      "(airport apt2)"
+    ],
+    "goal_state": [
+      "(at pkg1 apt2)"
+    ]
+  },
+  "iteration_count": 6,
+  "is_valid": true
+}

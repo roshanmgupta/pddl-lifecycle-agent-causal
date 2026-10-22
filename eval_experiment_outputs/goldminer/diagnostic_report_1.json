@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-10-14T02:12:18.132488",
+  "domain_name": "goldminer",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 5,
+    "search_time_seconds": 0.0002,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(move r1 f0-0f f1-0f)",
+      "(pick-bomb r1 f1-0f)",
+      "(detonate-bomb r1 f1-0f f1-1f)",
+      "(move r1 f1-0f f1-1f)",
+      "(pick-gold r1 f1-1f)"
+    ]
+  }
+}

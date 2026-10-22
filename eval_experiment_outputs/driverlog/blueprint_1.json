@@ -1,0 +1,177 @@
+{
+  "domain_name": "driverlog",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "driverlog",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "driver": "object",
+      "truck": "object",
+      "object": "object",
+      "location": "object"
+    },
+    "predicates": [
+      "(at ?x - object ?y - location)",
+      "(in ?x - object ?y - truck)",
+      "(empty ?x - truck)",
+      "(driving ?x - driver ?y - truck)",
+      "(linked ?x - location ?y - location)",
+      "(path ?x - location ?y - location)"
+    ],
+    "actions": [
+      {
+        "action_name": "load",
+        "parameters": {
+          "?a": "object",
+          "?b": "truck",
+          "?c": "location"
+        },
+        "preconditions": [
+          "(at ?a ?c)",
+          "(at ?b ?c)"
+        ],
+        "effects": [
+          "(in ?a ?b)",
+          "(not (at ?a ?c))"
+        ]
+      },
+      {
+        "action_name": "unload",
+        "parameters": {
+          "?a": "object",
+          "?b": "truck",
+          "?c": "location"
+        },
+        "preconditions": [
+          "(in ?a ?b)",
+          "(at ?b ?c)"
+        ],
+        "effects": [
+          "(at ?a ?c)",
+          "(not (in ?a ?b))"
+        ]
+      },
+      {
+        "action_name": "board",
+        "parameters": {
+          "?a": "driver",
+          "?b": "truck",
+          "?c": "location"
+        },
+        "preconditions": [
+          "(at ?a ?c)",
+          "(at ?b ?c)",
+          "(empty ?b)"
+        ],
+        "effects": [
+          "(driving ?a ?b)",
+          "(not (at ?a ?c))",
+          "(not (empty ?b))"
+        ]
+      },
+      {
+        "action_name": "disembark",
+        "parameters": {
+          "?a": "driver",
+          "?b": "truck",
+          "?c": "location"
+        },
+        "preconditions": [
+          "(driving ?a ?b)",
+          "(at ?b ?c)"
+        ],
+        "effects": [
+          "(at ?a ?c)",
+          "(empty ?b)",
+          "(not (driving ?a ?b))"
+        ]
+      },
+      {
+        "action_name": "drive",
+        "parameters": {
+          "?a": "truck",
+          "?b": "location",
+          "?c": "location",
+          "?d": "driver"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(driving ?d ?a)",
+          "(linked ?b ?c)"
+        ],
+        "effects": [
+          "(at ?a ?c)",
+          "(not (at ?a ?b))"
+        ]
+      },
+      {
+        "action_name": "walk",
+        "parameters": {
+          "?a": "driver",
+          "?b": "location",
+          "?c": "location"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(path ?b ?c)"
+        ],
+        "effects": [
+          "(at ?a ?c)",
+          "(not (at ?a ?b))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "driverlog",
+    "objects": {
+      "driver1": "driver",
+      "driver2": "driver",
+      "truck1": "truck",
+      "truck2": "truck",
+      "package1": "object",
+      "package2": "object",
+      "s0": "location",
+      "s1": "location",
+      "s2": "location",
+      "p1-0": "location",
+      "p1-2": "location"
+    },
+    "initial_state": [
+      "(at driver1 s2)",
+      "(at driver2 s2)",
+      "(at truck1 s0)",
+      "(empty truck1)",
+      "(at truck2 s0)",
+      "(empty truck2)",
+      "(at package1 s0)",
+      "(at package2 s0)",
+      "(linked s0 s1)",
+      "(linked s1 s0)",
+      "(linked s0 s2)",
+      "(linked s2 s0)",
+      "(linked s2 s1)",
+      "(linked s1 s2)",
+      "(path s1 p1-0)",
+      "(path p1-0 s1)",
+      "(path s0 p1-0)",
+      "(path p1-0 s0)",
+      "(path s1 p1-2)",
+      "(path p1-2 s1)",
+      "(path s2 p1-2)",
+      "(path p1-2 s2)"
+    ],
+    "goal_state": [
+      "(at driver1 s1)",
+      "(at truck1 s1)",
+      "(at package1 s0)",
+      "(at package2 s0)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

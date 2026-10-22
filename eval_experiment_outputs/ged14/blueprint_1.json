@@ -1,0 +1,476 @@
+{
+  "domain_name": "ged14",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "ged14",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null,
+      "gene": "object"
+    },
+    "predicates": [
+      "(normal ?g - gene)",
+      "(inverted ?g - gene)",
+      "(present ?g - gene)",
+      "(clockwise ?g1 - gene ?g2 - gene)",
+      "(idle)",
+      "(being_cut)",
+      "(has_been_cut)",
+      "(splicing_happening)",
+      "(performing_inverse_splicing)",
+      "(finished)",
+      "(at_cut_point_1 ?g - gene)",
+      "(at_cut_point_2 ?g - gene)",
+      "(at_splice_point_1 ?g - gene)",
+      "(at_splice_point_2 ?g - gene)",
+      "(last_in_sequence ?g - gene)",
+      "(first_in_sequence ?g - gene)",
+      "(next_in_sequence_after ?g1 - gene ?g2 - gene)",
+      "(splice_next ?g1 - gene ?g2 - gene)",
+      "(splicing_last_one)",
+      "(performing_inverse_splice_next ?g1 - gene ?g2 - gene)",
+      "(performing_inverse_splicing_last)",
+      "(at_last_cut_point ?g - gene)"
+    ],
+    "actions": [
+      {
+        "action_name": "begin_cutting",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(idle)",
+          "(clockwise ?a ?b)",
+          "(not (= ?a ?b))"
+        ],
+        "effects": [
+          "(being_cut)",
+          "(at_cut_point_1 ?a)",
+          "(at_last_cut_point ?a)",
+          "(first_in_sequence ?b)",
+          "(last_in_sequence ?b)",
+          "(not (idle))",
+          "(not (clockwise ?a ?b))"
+        ]
+      },
+      {
+        "action_name": "continue_cutting",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(being_cut)",
+          "(last_in_sequence ?a)",
+          "(clockwise ?a ?b)",
+          "(not (= ?a ?b))"
+        ],
+        "effects": [
+          "(next_in_sequence_after ?a ?b)",
+          "(last_in_sequence ?b)",
+          "(not (clockwise ?a ?b))",
+          "(not (last_in_sequence ?a))"
+        ]
+      },
+      {
+        "action_name": "end_cut",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(being_cut)",
+          "(last_in_sequence ?a)",
+          "(clockwise ?a ?b)",
+          "(not (= ?a ?b))"
+        ],
+        "effects": [
+          "(at_cut_point_2 ?b)",
+          "(not (clockwise ?a ?b))"
+        ]
+      },
+      {
+        "action_name": "end_cut_at_points",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(being_cut)",
+          "(at_cut_point_1 ?a)",
+          "(at_cut_point_2 ?b)"
+        ],
+        "effects": [
+          "(has_been_cut)",
+          "(clockwise ?a ?b)",
+          "(not (being_cut))",
+          "(not (at_cut_point_1 ?a))",
+          "(not (at_cut_point_2 ?b))"
+        ]
+      },
+      {
+        "action_name": "begin_transpose_splice",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(has_been_cut)",
+          "(clockwise ?a ?b)",
+          "(not (= ?a ?b))"
+        ],
+        "effects": [
+          "(splicing_happening)",
+          "(at_splice_point_1 ?a)",
+          "(at_splice_point_2 ?b)",
+          "(not (has_been_cut))",
+          "(not (clockwise ?a ?b))"
+        ]
+      },
+      {
+        "action_name": "continue_splice_1",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(splicing_happening)",
+          "(first_in_sequence ?a)",
+          "(next_in_sequence_after ?a ?b)"
+        ],
+        "effects": [
+          "(first_in_sequence ?b)",
+          "(splice_next ?a ?b)",
+          "(not (first_in_sequence ?a))",
+          "(not (next_in_sequence_after ?a ?b))",
+          "(not (splicing_happening))"
+        ]
+      },
+      {
+        "action_name": "continue_splice_2",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(splice_next ?a ?b)",
+          "(at_splice_point_1 ?b)"
+        ],
+        "effects": [
+          "(clockwise ?b ?a)",
+          "(at_splice_point_1 ?a)",
+          "(splicing_happening)",
+          "(not (at_splice_point_1 ?b))",
+          "(not (splice_next ?a ?b))"
+        ]
+      },
+      {
+        "action_name": "end_splice_1",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(splicing_happening)",
+          "(at_splice_point_1 ?b)",
+          "(first_in_sequence ?a)",
+          "(last_in_sequence ?a)"
+        ],
+        "effects": [
+          "(splicing_last_one)",
+          "(clockwise ?b ?a)",
+          "(at_splice_point_1 ?a)",
+          "(not (splicing_happening))",
+          "(not (first_in_sequence ?a))",
+          "(not (last_in_sequence ?a))",
+          "(not (at_splice_point_1 ?b))"
+        ]
+      },
+      {
+        "action_name": "end_splice_2",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(splicing_last_one)",
+          "(at_splice_point_1 ?a)",
+          "(at_splice_point_2 ?b)"
+        ],
+        "effects": [
+          "(finished)",
+          "(clockwise ?a ?b)",
+          "(not (splicing_last_one))",
+          "(not (at_splice_point_1 ?a))",
+          "(not (at_splice_point_2 ?b))"
+        ]
+      },
+      {
+        "action_name": "begin_transverse_splice",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(has_been_cut)",
+          "(clockwise ?a ?b)",
+          "(not (= ?a ?b))"
+        ],
+        "effects": [
+          "(performing_inverse_splicing)",
+          "(at_splice_point_1 ?a)",
+          "(at_splice_point_2 ?b)",
+          "(not (has_been_cut))",
+          "(not (clockwise ?a ?b))"
+        ]
+      },
+      {
+        "action_name": "begin_inverse_splice",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(has_been_cut)",
+          "(clockwise ?a ?b)",
+          "(at_last_cut_point ?a)",
+          "(not (= ?a ?b))"
+        ],
+        "effects": [
+          "(performing_inverse_splicing)",
+          "(at_splice_point_1 ?a)",
+          "(at_splice_point_2 ?b)",
+          "(not (has_been_cut))",
+          "(not (clockwise ?a ?b))"
+        ]
+      },
+      {
+        "action_name": "begin_inverse_splice_special_case",
+        "parameters": {
+          "?a": "gene"
+        },
+        "preconditions": [
+          "(has_been_cut)",
+          "(clockwise ?a ?a)",
+          "(at_last_cut_point ?a)"
+        ],
+        "effects": [
+          "(performing_inverse_splicing)",
+          "(at_splice_point_1 ?a)",
+          "(at_splice_point_2 ?a)",
+          "(not (has_been_cut))",
+          "(not (clockwise ?a ?a))"
+        ]
+      },
+      {
+        "action_name": "continue_inverse_splice_1a",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(performing_inverse_splicing)",
+          "(normal ?a)",
+          "(last_in_sequence ?a)",
+          "(next_in_sequence_after ?b ?a)"
+        ],
+        "effects": [
+          "(last_in_sequence ?b)",
+          "(performing_inverse_splice_next ?a ?a)",
+          "(inverted ?a)",
+          "(not (last_in_sequence ?a))",
+          "(not (next_in_sequence_after ?b ?a))",
+          "(not (normal ?a))",
+          "(not (performing_inverse_splicing))"
+        ]
+      },
+      {
+        "action_name": "continue_inverse_splice_1b",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(performing_inverse_splicing)",
+          "(inverted ?a)",
+          "(last_in_sequence ?a)",
+          "(next_in_sequence_after ?b ?a)"
+        ],
+        "effects": [
+          "(last_in_sequence ?b)",
+          "(performing_inverse_splice_next ?a ?a)",
+          "(normal ?a)",
+          "(not (last_in_sequence ?a))",
+          "(not (next_in_sequence_after ?b ?a))",
+          "(not (inverted ?a))",
+          "(not (performing_inverse_splicing))"
+        ]
+      },
+      {
+        "action_name": "continue_inverse_splice_2",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(performing_inverse_splice_next ?a ?b)",
+          "(at_splice_point_1 ?b)"
+        ],
+        "effects": [
+          "(performing_inverse_splicing)",
+          "(clockwise ?b ?a)",
+          "(at_splice_point_1 ?a)",
+          "(not (performing_inverse_splice_next ?a ?b))",
+          "(not (at_splice_point_1 ?b))"
+        ]
+      },
+      {
+        "action_name": "end_inverse_splice_1a",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(performing_inverse_splicing)",
+          "(normal ?a)",
+          "(at_splice_point_1 ?b)",
+          "(first_in_sequence ?a)",
+          "(last_in_sequence ?a)"
+        ],
+        "effects": [
+          "(performing_inverse_splicing_last)",
+          "(clockwise ?b ?a)",
+          "(at_splice_point_1 ?a)",
+          "(inverted ?a)",
+          "(not (performing_inverse_splicing))",
+          "(not (at_splice_point_1 ?b))",
+          "(not (first_in_sequence ?a))",
+          "(not (last_in_sequence ?a))",
+          "(not (normal ?a))"
+        ]
+      },
+      {
+        "action_name": "end_inverse_splice_1b",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(performing_inverse_splicing)",
+          "(inverted ?a)",
+          "(at_splice_point_1 ?b)",
+          "(first_in_sequence ?a)",
+          "(last_in_sequence ?a)"
+        ],
+        "effects": [
+          "(performing_inverse_splicing_last)",
+          "(clockwise ?b ?a)",
+          "(at_splice_point_1 ?a)",
+          "(normal ?a)",
+          "(not (performing_inverse_splicing))",
+          "(not (at_splice_point_1 ?b))",
+          "(not (first_in_sequence ?a))",
+          "(not (last_in_sequence ?a))",
+          "(not (inverted ?a))"
+        ]
+      },
+      {
+        "action_name": "end_inverse_splice_2",
+        "parameters": {
+          "?a": "gene",
+          "?b": "gene"
+        },
+        "preconditions": [
+          "(performing_inverse_splicing_last)",
+          "(at_splice_point_1 ?a)",
+          "(at_splice_point_2 ?b)"
+        ],
+        "effects": [
+          "(finished)",
+          "(clockwise ?a ?b)",
+          "(not (performing_inverse_splicing_last))",
+          "(not (at_splice_point_1 ?a))",
+          "(not (at_splice_point_2 ?b))"
+        ]
+      },
+      {
+        "action_name": "invert_single_gene_a",
+        "parameters": {
+          "?a": "gene"
+        },
+        "preconditions": [
+          "(idle)",
+          "(normal ?a)"
+        ],
+        "effects": [
+          "(inverted ?a)",
+          "(not (normal ?a))"
+        ]
+      },
+      {
+        "action_name": "invert_single_gene_b",
+        "parameters": {
+          "?a": "gene"
+        },
+        "preconditions": [
+          "(idle)",
+          "(inverted ?a)"
+        ],
+        "effects": [
+          "(normal ?a)",
+          "(not (inverted ?a))"
+        ]
+      },
+      {
+        "action_name": "reset_1",
+        "parameters": {
+          "?a": "gene"
+        },
+        "preconditions": [
+          "(finished)",
+          "(at_last_cut_point ?a)"
+        ],
+        "effects": [
+          "(idle)",
+          "(not (at_last_cut_point ?a))",
+          "(not (finished))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "ged14",
+    "objects": {
+      "SUB1": "gene",
+      "SUB2": "gene",
+      "SUB3": "gene"
+    },
+    "initial_state": [
+      "(normal SUB2)",
+      "(normal SUB3)",
+      "(normal SUB1)",
+      "(present SUB2)",
+      "(present SUB3)",
+      "(present SUB1)",
+      "(clockwise SUB1 SUB2)",
+      "(clockwise SUB3 SUB1)",
+      "(clockwise SUB2 SUB3)",
+      "(idle)"
+    ],
+    "goal_state": [
+      "(normal SUB2)",
+      "(inverted SUB3)",
+      "(normal SUB1)",
+      "(clockwise SUB1 SUB2)",
+      "(clockwise SUB3 SUB1)",
+      "(clockwise SUB2 SUB3)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

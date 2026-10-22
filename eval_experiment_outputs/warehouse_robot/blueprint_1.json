@@ -1,0 +1,110 @@
+{
+  "domain_name": "warehouse_robot",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "warehouse_robot",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot": "object",
+      "room": "object",
+      "ball": "object",
+      "gripper": "object"
+    },
+    "predicates": [
+      "(at ?r - robot ?l - room)",
+      "(connected ?l1 - room ?l2 - room)",
+      "(in ?b - ball ?l - room)",
+      "(holding ?r - robot ?g - gripper ?b - ball)",
+      "(empty ?g - gripper)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_robot",
+        "parameters": {
+          "?r": "robot",
+          "?from": "room",
+          "?to": "room"
+        },
+        "preconditions": [
+          "(at ?r ?from)",
+          "(connected ?from ?to)"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "pick_up_ball",
+        "parameters": {
+          "?r": "robot",
+          "?g": "gripper",
+          "?b": "ball",
+          "?l": "room"
+        },
+        "preconditions": [
+          "(at ?r ?l)",
+          "(in ?b ?l)",
+          "(empty ?g)"
+        ],
+        "effects": [
+          "(holding ?r ?g ?b)",
+          "(not (empty ?g))",
+          "(not (in ?b ?l))"
+        ]
+      },
+      {
+        "action_name": "release_ball",
+        "parameters": {
+          "?r": "robot",
+          "?g": "gripper",
+          "?b": "ball",
+          "?l": "room"
+        },
+        "preconditions": [
+          "(at ?r ?l)",
+          "(holding ?r ?g ?b)"
+        ],
+        "effects": [
+          "(in ?b ?l)",
+          "(empty ?g)",
+          "(not (holding ?r ?g ?b))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "relocate_balls",
+    "domain_name": "warehouse_robot",
+    "objects": {
+      "r1": "robot",
+      "g1": "gripper",
+      "g2": "gripper",
+      "room_a": "room",
+      "room_b": "room",
+      "room_c": "room",
+      "ball1": "ball",
+      "ball2": "ball"
+    },
+    "initial_state": [
+      "(at r1 room_a)",
+      "(connected room_a room_b)",
+      "(connected room_b room_a)",
+      "(connected room_b room_c)",
+      "(connected room_c room_b)",
+      "(in ball1 room_a)",
+      "(in ball2 room_b)",
+      "(empty g1)",
+      "(empty g2)"
+    ],
+    "goal_state": [
+      "(in ball1 room_c)",
+      "(in ball2 room_c)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

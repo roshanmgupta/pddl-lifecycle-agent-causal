@@ -1,0 +1,137 @@
+{
+  "domain_name": "blocks00",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "blocks00",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null
+    },
+    "constants": {},
+    "predicates": [
+      "(clear ?x - object)",
+      "(on ?x - object ?y - object)",
+      "(on-table ?x - object)",
+      "(holding ?x - object)",
+      "(hand-empty)"
+    ],
+    "actions": [
+      {
+        "action_name": "pick-up",
+        "parameters": {
+          "?a": "object"
+        },
+        "preconditions": [
+          "(clear ?a)",
+          "(on-table ?a)",
+          "(hand-empty)"
+        ],
+        "effects": [
+          "(holding ?a)",
+          "(not (on-table ?a))",
+          "(not (clear ?a))",
+          "(not (hand-empty))"
+        ]
+      },
+      {
+        "action_name": "put-down",
+        "parameters": {
+          "?a": "object"
+        },
+        "preconditions": [
+          "(holding ?a)"
+        ],
+        "effects": [
+          "(clear ?a)",
+          "(on-table ?a)",
+          "(not (holding ?a))",
+          "(hand-empty)"
+        ]
+      },
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?a": "object",
+          "?b": "object"
+        },
+        "preconditions": [
+          "(holding ?a)",
+          "(clear ?b)"
+        ],
+        "effects": [
+          "(clear ?a)",
+          "(not (holding ?a))",
+          "(on ?a ?b)",
+          "(not (clear ?b))",
+          "(hand-empty)"
+        ]
+      },
+      {
+        "action_name": "unstack",
+        "parameters": {
+          "?a": "object",
+          "?b": "object"
+        },
+        "preconditions": [
+          "(on ?a ?b)",
+          "(clear ?a)",
+          "(hand-empty)"
+        ],
+        "effects": [
+          "(holding ?a)",
+          "(clear ?b)",
+          "(not (clear ?a))",
+          "(not (hand-empty))",
+          "(not (on ?a ?b))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1.pddl",
+    "domain_name": "blocks00",
+    "objects": {
+      "D": "object",
+      "A": "object",
+      "H": "object",
+      "G": "object",
+      "B": "object",
+      "J": "object",
+      "E": "object",
+      "I": "object",
+      "F": "object",
+      "C": "object"
+    },
+    "initial_state": [
+      "(clear C)",
+      "(clear F)",
+      "(on-table I)",
+      "(on-table F)",
+      "(on C E)",
+      "(on E J)",
+      "(on J B)",
+      "(on B G)",
+      "(on G H)",
+      "(on H A)",
+      "(on A D)",
+      "(on D I)",
+      "(hand-empty)"
+    ],
+    "goal_state": [
+      "(on D C)",
+      "(on C F)",
+      "(on F J)",
+      "(on J E)",
+      "(on E H)",
+      "(on H B)",
+      "(on B A)",
+      "(on A G)",
+      "(on G I)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": false
+}

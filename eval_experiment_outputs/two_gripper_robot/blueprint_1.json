@@ -1,0 +1,100 @@
+{
+  "domain_name": "two_gripper_robot",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "two_gripper_robot",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot": "object",
+      "room": "object",
+      "gripper": "object",
+      "spherical_object": "object"
+    },
+    "predicates": [
+      "(at ?r - robot ?l - room)",
+      "(free ?r - robot ?g - gripper)",
+      "(carrying ?r - robot ?o - spherical_object ?g - gripper)",
+      "(at_obj ?o - spherical_object ?l - room)"
+    ],
+    "actions": [
+      {
+        "action_name": "move",
+        "parameters": {
+          "?r": "robot",
+          "?from": "room",
+          "?to": "room"
+        },
+        "preconditions": [
+          "(at ?r ?from)"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "pick",
+        "parameters": {
+          "?r": "robot",
+          "?o": "spherical_object",
+          "?g": "gripper",
+          "?l": "room"
+        },
+        "preconditions": [
+          "(at_obj ?o ?l)",
+          "(at ?r ?l)",
+          "(free ?r ?g)"
+        ],
+        "effects": [
+          "(not (at_obj ?o ?l))",
+          "(not (free ?r ?g))",
+          "(carrying ?r ?o ?g)"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?r": "robot",
+          "?o": "spherical_object",
+          "?g": "gripper",
+          "?l": "room"
+        },
+        "preconditions": [
+          "(carrying ?r ?o ?g)",
+          "(at ?r ?l)"
+        ],
+        "effects": [
+          "(not (carrying ?r ?o ?g))",
+          "(at_obj ?o ?l)",
+          "(free ?r ?g)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "transport_spherical_objects",
+    "domain_name": "two_gripper_robot",
+    "objects": {
+      "r1": "robot",
+      "room1": "room",
+      "room2": "room",
+      "g1": "gripper",
+      "g2": "gripper",
+      "obj1": "spherical_object"
+    },
+    "initial_state": [
+      "(at r1 room1)",
+      "(free r1 g1)",
+      "(free r1 g2)",
+      "(at_obj obj1 room1)"
+    ],
+    "goal_state": [
+      "(at_obj obj1 room2)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

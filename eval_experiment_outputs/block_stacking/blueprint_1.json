@@ -1,0 +1,68 @@
+{
+  "domain_name": "block_stacking",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "block_stacking",
+    "requirements": [
+      "One cannot place more than one block on another block.",
+      "b5 is on top of b3.",
+      "b4 is on top of b2.",
+      "b2 is on top of b1.",
+      "b3 is on top of b4.",
+      "b1 is on the table.",
+      "b5 is clear."
+    ],
+    "types": {
+      "block": "object",
+      "location": "object"
+    },
+    "predicates": [
+      "(at ?r - block ?l - location)",
+      "(on ?x - block ?y - block)",
+      "(clear ?l - location)"
+    ],
+    "actions": [
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?r": "block",
+          "?target": "block",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(at ?r ?from)",
+          "(not (on ?r ?target))"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "block_stack_target",
+    "domain_name": "block_stacking",
+    "objects": {
+      "b1": "block",
+      "b2": "block",
+      "b3": "block",
+      "b4": "block",
+      "b5": "block",
+      "table": "location"
+    },
+    "initial_state": [
+      "(at b1 table)"
+    ],
+    "goal_state": [
+      "(at b1 loc_c)",
+      "(at b2 loc_d)",
+      "(at b3 loc_b)",
+      "(at b4 loc_a)",
+      "(at b5 loc_b3)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

@@ -1,0 +1,98 @@
+{
+  "timestamp": "2026-10-13T04:16:46.589287",
+  "domain_name": "depots_domain",
+  "run_index": 4,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking load\nType problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [
+    "VAL Error: Type-checking load\nType problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "diagnostic_issues_count": 10,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the parameter types in the 'load' action's preconditions match the declared predicate signatures. Specifically, verify that '(at ?t ?d)' uses the correct types for '?t' and '?d'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "AST Blueprint",
+      "suspiciousness_score": 0.9,
+      "raw_log": "VAL Error: Type-checking load\nType problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!",
+      "suggested_repair_hint": "Resolve oracle failure: VAL Error: Type-checking load\nType problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.\nType problem in domain description!",
+      "suggested_repair_hint": "Ensure that the parameters in the 'load' action's preconditions match the declared types. Specifically, verify that the types of '?t' and '?d' in '(at ?t ?d)' are correctly aligned with their declarations in the action's parameters."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "VAL Error: Type-checking load\nType problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!",
+      "suggested_repair_hint": "The 'load' action has a type mismatch in the predicate '(at ?t ?d)'. Ensure that the types of parameters '?t' and '?d' match their declarations in the predicate. Specifically, '?t' should be of type 'truck' and '?d' should be of type 'depot'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure the predicate '(at ?t ?d)' in the 'load' action's preconditions correctly matches the types declared in the domain. Specifically, verify that '?t' is of type 'truck' and '?d' is of type 'depot'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the parameter types in the 'load' action's preconditions match the declared predicate signatures. Specifically, verify that the types for '?t' and '?d' in '(at ?t ?d)' are correctly aligned with the predicate declaration."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.\nType problem in domain description!",
+      "suggested_repair_hint": "Ensure that the parameters in the 'load' action's preconditions match the declared types. Specifically, verify that the first parameter of '(at ?t ?d)' is correctly typed as 'truck' and the second as 'depot'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "VAL Error: Type-checking load\nType problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!",
+      "suggested_repair_hint": "The 'load' action's preconditions contain a type mismatch in the proposition '(at t d)'. Ensure that the parameters in the predicate match the declared types. Specifically, the first parameter should be of type 'truck' and the second parameter should be of type 'depot'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "VAL Error: Type-checking load\nType problem with proposition (at t d) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!",
+      "suggested_repair_hint": "The 'load' action's preconditions contain a type mismatch in the proposition '(at t d)'. Ensure that the parameters in the predicate match the declared types. Specifically, verify that 't' is of type 'truck' and 'd' is of type 'depot'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (at t d) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the predicate '(at ?t ?d)' in the 'load' action's preconditions correctly matches the types declared in the domain. Specifically, verify that '?t' is of type 'truck' and '?d' is of type 'depot'."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: load (Suspiciousness: 1.0)\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (at t d) - parameter 1 is incorrectly typed\n  - [SUGGESTION FOR REPAIR]: Ensure that the predicate '(at ?t ?d)' in the 'load' action's preconditions correctly matches the types declared in the domain. Specifically, verify that '?t' is of type 'truck' and '?d' is of type 'depot'.",
+  "plan_summary": null
+}

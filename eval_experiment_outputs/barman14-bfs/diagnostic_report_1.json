@@ -1,0 +1,91 @@
+{
+  "timestamp": "2026-10-14T01:10:57.845140",
+  "domain_name": "barman14-bfs",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 3,
+  "initial_verification_errors": [
+    "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds."
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 4,
+  "diagnostic_reports": [
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "shake",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'shake' action requires both ingredients to be present in the shaker and the shaker to be unshaken. Ensure that the preconditions for 'shake' are correctly met by verifying that the shaker contains the required ingredients and is unshaken before attempting to shake."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "shake",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'shake' action requires both ingredients to be in the shaker before shaking, but the preconditions do not ensure that the shaker contains both ingredients. Modify the preconditions to ensure that the shaker contains both ingredients before shaking."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour-beverage",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-beverage' action requires the shaker to be at a specific level, but the preconditions do not ensure that the shaker is at the correct level before pouring. Add a precondition to ensure the shaker is at the correct level before pouring."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "shake",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'shake' action requires both ingredients to be in the shaker before shaking. Consider relaxing the preconditions to allow shaking with only one ingredient or ensuring that both ingredients are added to the shaker before attempting to shake."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 36,
+    "search_time_seconds": 0.030698,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(grasp right shot5)",
+      "(fill shot5 ingredient2 dispenser2 right left)",
+      "(pour-clean-shaker shot5 ingredient2 shaker1 right l0 l1)",
+      "(clean-shot shot5 ingredient2 right left)",
+      "(fill shot5 ingredient3 dispenser3 right left)",
+      "(grasp left shaker1)",
+      "(leave right shot5)",
+      "(shake cocktail2 ingredient2 ingredient1 shaker1 left right)",
+      "(pour-beverage cocktail2 shot2 left shaker1 l1 l2)",
+      "(empty-shaker left shaker1 cocktail2 l2 l0)",
+      "(clean-shaker left right shaker1)",
+      "(grasp right shot5)",
+      "(pour-clean-shaker shot5 ingredient3 shaker1 right l0 l1)",
+      "(leave left shaker1)",
+      "(refill shot5 ingredient3 dispenser3 right left)",
+      "(grasp left shaker1)",
+      "(leave right shot5)",
+      "(shake cocktail1 ingredient3 ingredient1 shaker1 left right)",
+      "(pour-beverage cocktail1 shot4 left shaker1 l1 l2)",
+      "(empty-shaker left shaker1 cocktail1 l2 l0)",
+      "(clean-shaker left right shaker1)",
+      "(grasp right shot5)",
+      "(pour-clean-shaker shot5 ingredient3 shaker1 right l0 l1)",
+      "(leave left shaker1)",
+      "(refill shot5 ingredient3 dispenser3 right left)",
+      "(grasp left shaker1)",
+      "(leave right shot5)",
+      "(shake cocktail3 ingredient3 ingredient1 shaker1 left right)",
+      "(pour-beverage cocktail3 shot3 left shaker1 l1 l2)",
+      "(empty-shaker left shaker1 cocktail3 l2 l0)",
+      "(clean-shaker left right shaker1)",
+      "(grasp right shot5)",
+      "(pour-clean-shaker shot5 ingredient3 shaker1 right l0 l1)",
+      "(leave right shot5)",
+      "(shake cocktail4 ingredient3 ingredient1 shaker1 left right)",
+      "(pour-beverage cocktail4 shot1 left shaker1 l1 l2)"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+1: (board p2 a1 c1)
+2: (board p1 a1 c1)
+3: (fly_normal a1 c1 c2 f1)
+4: (refuel a1 c2 f1)
+5: (debark p2 a1 c2)
+6: (fly_normal a1 c2 c3 f1)
+7: (debark p1 a1 c3)

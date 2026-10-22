@@ -1,0 +1,56 @@
+(define (domain hiking14)
+  (:requirements :strips :typing :equality)
+  (:types
+    car tent person couple place - object
+  )
+  (:predicates
+    (at_person ?p - person ?pl - place)
+    (at_car ?c - car ?pl - place)
+    (at_tent ?t - tent ?pl - place)
+    (walked_to ?c - couple ?pl - place)
+    (next_to ?pl1 - place ?pl2 - place)
+    (partners ?c - couple ?p1 - person ?p2 - person)
+    (tent_up ?t - tent)
+    (tent_down ?t - tent)
+  )
+  (:action put_down_tent
+    :parameters (?p - person ?pl - place ?t - tent)
+    :precondition (and (at_person ?p ?pl) (at_tent ?t ?pl) (tent_up ?t))
+    :effect (and (tent_down ?t) (not (tent_up ?t)))
+  )
+  (:action put_up_tent
+    :parameters (?p - person ?pl - place ?t - tent)
+    :precondition (and (at_person ?p ?pl) (at_tent ?t ?pl) (tent_down ?t))
+    :effect (and (tent_up ?t) (not (tent_down ?t)))
+  )
+  (:action drive_person
+    :parameters (?p - person ?from - place ?to - place ?c - car)
+    :precondition (and (at_person ?p ?from) (at_car ?c ?from))
+    :effect (and (at_person ?p ?to) (at_car ?c ?to)
+                 (not (at_person ?p ?from)) (not (at_car ?c ?from)))
+  )
+  (:action drive_person_with_tent
+    :parameters (?p - person ?from - place ?to - place ?c - car ?t - tent)
+    :precondition (and (at_person ?p ?from) (at_car ?c ?from) (at_tent ?t ?from) (tent_down ?t))
+    :effect (and (at_person ?p ?to) (at_car ?c ?to) (at_tent ?t ?to)
+                 (not (at_person ?p ?from)) (not (at_car ?c ?from)) (not (at_tent ?t ?from)))
+  )
+  (:action drive_two_persons
+    :parameters (?p1 - person ?p2 - person ?from - place ?to - place ?c - car)
+    :precondition (and (at_person ?p1 ?from) (at_person ?p2 ?from) (at_car ?c ?from) (not (= ?p1 ?p2)))
+    :effect (and (at_person ?p1 ?to) (at_person ?p2 ?to) (at_car ?c ?to)
+                 (not (at_person ?p1 ?from)) (not (at_person ?p2 ?from)) (not (at_car ?c ?from)))
+  )
+  (:action drive_two_persons_with_tent
+    :parameters (?p1 - person ?p2 - person ?from - place ?to - place ?c - car ?t - tent)
+    :precondition (and (at_person ?p1 ?from) (at_person ?p2 ?from) (at_car ?c ?from) (at_tent ?t ?from) (tent_down ?t) (not (= ?p1 ?p2)))
+    :effect (and (at_person ?p1 ?to) (at_person ?p2 ?to) (at_car ?c ?to) (at_tent ?t ?to)
+                 (not (at_person ?p1 ?from)) (not (at_person ?p2 ?from)) (not (at_car ?c ?from)) (not (at_tent ?t ?from)))
+  )
+  (:action walk_together
+    :parameters (?from - place ?to - place ?t - tent ?p1 - person ?p2 - person ?cp - couple)
+    :precondition (and (at_tent ?t ?to) (tent_up ?t) (at_person ?p1 ?from) (at_person ?p2 ?from) (walked_to ?cp ?from) (next_to ?from ?to) (partners ?cp ?p1 ?p2) (not (= ?p1 ?p2)))
+    :effect (and (at_person ?p1 ?to) (at_person ?p2 ?to) (walked_to ?cp ?to)
+                 (not (at_person ?p1 ?from)) (not (at_person ?p2 ?from)) (not (walked_to ?cp ?from)))
+  )
+)

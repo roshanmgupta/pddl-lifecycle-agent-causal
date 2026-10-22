@@ -1,0 +1,136 @@
+{
+  "domain_name": "transportation_logistics",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "transportation_logistics",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "driver": "entity",
+      "truck": "entity",
+      "package": "entity",
+      "location": "object",
+      "human": "object",
+      "vehicle": "object",
+      "entity": "object"
+    },
+    "predicates": [
+      "(at ?e - entity ?l - location)",
+      "(path_connected ?from - location ?to - location)",
+      "(road_connected ?from - location ?to - location)",
+      "(boarded ?d - driver ?t - truck)",
+      "(loaded ?p - package ?t - truck)"
+    ],
+    "actions": [
+      {
+        "action_name": "walk",
+        "parameters": {
+          "?d": "driver",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(at ?d ?from)",
+          "(path_connected ?from ?to)"
+        ],
+        "effects": [
+          "(not (at ?d ?from))",
+          "(at ?d ?to)"
+        ]
+      },
+      {
+        "action_name": "board_truck",
+        "parameters": {
+          "?d": "driver",
+          "?t": "truck",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at ?d ?l)",
+          "(at ?t ?l)"
+        ],
+        "effects": [
+          "(boarded ?d ?t)",
+          "(not (at ?d ?l))"
+        ]
+      },
+      {
+        "action_name": "drive_truck",
+        "parameters": {
+          "?d": "driver",
+          "?t": "truck",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(boarded ?d ?t)",
+          "(at ?t ?from)",
+          "(road_connected ?from ?to)"
+        ],
+        "effects": [
+          "(not (at ?t ?from))",
+          "(at ?t ?to)"
+        ]
+      },
+      {
+        "action_name": "load_package",
+        "parameters": {
+          "?p": "package",
+          "?t": "truck",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at ?p ?l)",
+          "(at ?t ?l)"
+        ],
+        "effects": [
+          "(loaded ?p ?t)",
+          "(not (at ?p ?l))"
+        ]
+      },
+      {
+        "action_name": "unload_package",
+        "parameters": {
+          "?p": "package",
+          "?t": "truck",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(loaded ?p ?t)",
+          "(at ?t ?l)"
+        ],
+        "effects": [
+          "(at ?p ?l)",
+          "(not (loaded ?p ?t))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "delivery_coordination",
+    "domain_name": "transportation_logistics",
+    "objects": {
+      "d1": "driver",
+      "t1": "truck",
+      "p1": "package",
+      "loc_a": "location",
+      "loc_b": "location",
+      "loc_c": "location"
+    },
+    "initial_state": [
+      "(at d1 loc_a)",
+      "(at t1 loc_a)",
+      "(at p1 loc_a)",
+      "(path_connected loc_a loc_b)",
+      "(road_connected loc_a loc_c)",
+      "(road_connected loc_c loc_b)"
+    ],
+    "goal_state": [
+      "(at p1 loc_b)"
+    ]
+  },
+  "iteration_count": 2,
+  "is_valid": true
+}

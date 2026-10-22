@@ -1,0 +1,98 @@
+{
+  "timestamp": "2026-10-14T14:54:13.316432",
+  "domain_name": "mystery98",
+  "run_index": 1,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking overcome\nType problem with proposition (craves b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [
+    "VAL Error: Type-checking overcome\nType problem with proposition (craves b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "diagnostic_issues_count": 10,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "overcome",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (craves b c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the predicate '(craves ?b ?c)' in the 'overcome' action has correctly typed parameters. Specifically, verify that '?b' is of type 'pleasure' and '?c' is of type 'food' as declared in the predicate signature."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "overcome",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (craves b c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the predicate '(craves ?b ?c)' in the 'overcome' action has correctly typed parameters. Verify that '?b' is of type 'pleasure' and '?c' is of type 'food' as per the predicate declaration."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "overcome",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (craves b c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the predicate '(craves ?b ?c)' in the 'overcome' action has correctly typed parameters. The first parameter should be of type 'pleasure' and the second of type 'food'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "overcome",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (craves b c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the predicate '(craves ?b ?c)' in the 'overcome' action has the correct types for its parameters. Specifically, verify that ?b is of type 'pleasure' and ?c is of type 'food'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "overcome",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (craves b c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The predicate (craves ?p - pleasure ?f - food) in the 'overcome' action's preconditions is incorrectly typed. The second parameter should be of type 'pleasure' but is being used as type 'food'. Ensure the predicate signature matches the declared types in the domain."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "overcome",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type-checking overcome\nType problem with proposition (craves b c) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The predicate (craves ?b ?c) in the 'overcome' action's preconditions has a type mismatch. Ensure that the first parameter of 'craves' is of type 'pleasure' when used with '?b' (a pleasure) and the second parameter is of type 'food' when used with '?c' (a food). Verify the predicate declaration matches these types."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "overcome",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (craves b c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The 'overcome' action has a type mismatch in its preconditions. The predicate '(craves ?b ?c)' is being used with '?b' as a pleasure and '?c' as food, but the predicate declaration expects '?a - pain' as the first argument. Update the predicate declaration to include both '(craves ?a - pain ?f - food)' and '(craves ?p - pleasure ?f - food)' as separate predicates or ensure the correct predicate is used in the action."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "overcome",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Problem in domain definition!",
+      "suggested_repair_hint": "The predicate '(craves ?p - pleasure ?f - food)' in the preconditions of the 'overcome' action does not match the variable names used in the action parameters. The variable '?p' should be '?b' to match the parameter name. Update the predicate to '(craves ?b ?c)' to align with the action's parameter names."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "succumb",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Problem in domain definition!",
+      "suggested_repair_hint": "The parameter '?d' in the 'succumb' action is declared as type 'object', but the predicate '(orbits ?d ?e)' expects '?d' to be of type 'planet'. Update the type of '?d' in the action parameters to 'planet' to match the predicate's type requirements."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "overcome",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (craves b c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The predicate '(craves ?p - pleasure ?f - food)' in the 'overcome' action's preconditions is incorrectly typed. The second parameter should be of type 'pleasure' but is being used as type 'food'. Ensure the predicate signatures match their declarations in the domain's predicates section."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: overcome (Suspiciousness: 1.0)\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (craves b c) - parameter 1 is incorrectly typed\n  - [SUGGESTION FOR REPAIR]: The predicate '(craves ?p - pleasure ?f - food)' in the 'overcome' action's preconditions is incorrectly typed. The second parameter should be of type 'pleasure' but is being used as type 'food'. Ensure the predicate signatures match their declarations in the domain's predicates section.",
+  "plan_summary": null
+}

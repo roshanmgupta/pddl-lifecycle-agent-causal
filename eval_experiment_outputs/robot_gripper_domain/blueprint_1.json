@@ -1,0 +1,103 @@
+{
+  "domain_name": "robot_gripper_domain",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "robot_gripper_domain",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot": "object",
+      "gripper": "object",
+      "ball": "object",
+      "room": "object"
+    },
+    "predicates": [
+      "(at ?r - robot ?ro - room)",
+      "(empty ?g - gripper)",
+      "(holding ?r - robot ?g - gripper ?b - ball)",
+      "(in ?b - ball ?ro - room)"
+    ],
+    "actions": [
+      {
+        "action_name": "move",
+        "parameters": {
+          "?r": "robot",
+          "?from": "room",
+          "?to": "room"
+        },
+        "preconditions": [
+          "(at ?r ?from)"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "pick",
+        "parameters": {
+          "?r": "robot",
+          "?g": "gripper",
+          "?b": "ball",
+          "?ro": "room"
+        },
+        "preconditions": [
+          "(at ?r ?ro)",
+          "(empty ?g)",
+          "(in ?b ?ro)"
+        ],
+        "effects": [
+          "(not (empty ?g))",
+          "(not (in ?b ?ro))",
+          "(holding ?r ?g ?b)"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?r": "robot",
+          "?g": "gripper",
+          "?b": "ball",
+          "?ro": "room"
+        },
+        "preconditions": [
+          "(at ?r ?ro)",
+          "(holding ?r ?g ?b)"
+        ],
+        "effects": [
+          "(empty ?g)",
+          "(in ?b ?ro)",
+          "(not (holding ?r ?g ?b))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "robot_gripper_problem",
+    "domain_name": "robot_gripper_domain",
+    "objects": {
+      "r1": "robot",
+      "left": "gripper",
+      "right": "gripper",
+      "ball1": "ball",
+      "ball2": "ball",
+      "rooma": "room",
+      "roomb": "room"
+    },
+    "initial_state": [
+      "(at r1 rooma)",
+      "(empty left)",
+      "(empty right)",
+      "(in ball1 rooma)",
+      "(in ball2 rooma)"
+    ],
+    "goal_state": [
+      "(in ball1 roomb)",
+      "(in ball2 roomb)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

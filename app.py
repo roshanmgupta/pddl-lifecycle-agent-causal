@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 import streamlit as st
 import json
 import os
@@ -8,6 +14,35 @@ import glob
 import difflib
 from dotenv import load_dotenv
 load_dotenv(override=True)
+
+from config.paths import (
+    get_benchmark_dir,
+    get_autoplanbench_dir,
+    get_autoplanbench_prompts_dir,
+    get_nl2pddl_dir,
+    get_nl2pddl_prompts_dir,
+    get_temp_domain_path,
+    get_temp_problem_path,
+    get_temp_gt_domain_path,
+    get_temp_plan_path,
+    get_temp_eval_plan_path,
+    get_generated_output_dir,
+    get_flaw_output_dir,
+    get_evolve_output_dir,
+    get_elicitation_output_dir,
+    get_generated_domain_filename,
+    get_generated_problem_filename,
+    get_generated_plan_filename,
+)
+
+from benchmark.pure_strips_benchmarks import (
+    AUTOPLANBENCH_PURE_STRIPS_10,
+    NL2PDDL_PURE_STRIPS_10,
+    load_autoplanbench_original_domain_data,
+    load_nl2pddl_original_domain_data,
+    list_autoplanbench_problem_files,
+    list_nl2pddl_problem_files,
+)
 
 # Set Streamlit Page Configuration
 st.set_page_config(
@@ -116,20 +151,27 @@ def save_output_to_disk(state: dict, task: Optional[Any] = None) -> tuple:
             is_evolve = True
 
     if is_flaw:
-        base_dir = "PDDLLifeCycleBench_Output_Flaw"
+        base_dir = str(get_flaw_output_dir())
     elif is_evolve:
-        base_dir = "PDDLLifeCycleBench_Output__Evolve"
+        base_dir = str(get_evolve_output_dir())
     else:
-        base_dir = "PDDLLifeCycleBench_Output_Elicitation"
+        base_dir = str(get_elicitation_output_dir())
 
     output_dir = os.path.join(base_dir, d_name)
     os.makedirs(output_dir, exist_ok=True)
     
-    existing_domain_files = glob.glob(os.path.join(output_dir, "domain_*.pddl"))
+    dom_stem = Path(get_generated_domain_filename()).stem
+    dom_ext = Path(get_generated_domain_filename()).suffix or ".pddl"
+    prob_stem = Path(get_generated_problem_filename()).stem
+    prob_ext = Path(get_generated_problem_filename()).suffix or ".pddl"
+    plan_stem = Path(get_generated_plan_filename()).stem
+    plan_ext = Path(get_generated_plan_filename()).suffix or ".txt"
+
+    existing_domain_files = glob.glob(os.path.join(output_dir, f"{dom_stem}_*{dom_ext}"))
     existing_indices = []
     for fpath in existing_domain_files:
         fname = os.path.basename(fpath)
-        match = re.search(r"domain_(\d+)\.pddl", fname)
+        match = re.search(rf"{re.escape(dom_stem)}_(\d+)\{re.escape(dom_ext)}", fname)
         if match:
             existing_indices.append(int(match.group(1)))
             
@@ -138,11 +180,11 @@ def save_output_to_disk(state: dict, task: Optional[Any] = None) -> tuple:
     domain_pddl = state.get("generated_domain_pddl", "")
     problem_pddl = state.get("generated_problem_pddl", "")
     
-    dom_file_path = os.path.join(output_dir, f"domain_{next_idx}.pddl")
-    prob_file_path = os.path.join(output_dir, f"problem_{next_idx}.pddl")
+    dom_file_path = os.path.join(output_dir, f"{dom_stem}_{next_idx}{dom_ext}")
+    prob_file_path = os.path.join(output_dir, f"{prob_stem}_{next_idx}{prob_ext}")
     json_file_path = os.path.join(output_dir, f"blueprint_{next_idx}.json")
     diag_file_path = os.path.join(output_dir, f"diagnostic_report_{next_idx}.json")
-    plan_file_path = os.path.join(output_dir, f"plan_{next_idx}.txt")
+    plan_file_path = os.path.join(output_dir, f"{plan_stem}_{next_idx}{plan_ext}")
     
     if domain_pddl:
         with open(dom_file_path, "w", encoding="utf-8") as f:
@@ -224,8 +266,10 @@ st.sidebar.title("⚙️ Agent Controls & Benchmarks")
 input_mode = st.sidebar.radio(
     "Select Requirement Input Mode:",
     [
-        "📖 Extracted Prompts (prompt_autoplanbench/)",
-        "📚 NL2PDDL Prompts (prompt_NL2PDDL/)",
+        "🚀 AutoPlanBench (Pure STRIPS+Typing - 10 Curated Domains)",
+        "🎯 NL2PDDL (Pure STRIPS+Typing - 10 Curated Domains)",
+        # "📖 Extracted Prompts (prompt_autoplanbench/)",
+        # "📚 NL2PDDL Prompts (prompt_NL2PDDL/)",
         "🏛️ IPC Benchmark Archive (PDDL 2.1 Typed)",
         "📋 Synthetic Fault Tasks (Curated)",
         "🧬 Continuous Evolution (Evolve Domain & Problem)"
@@ -244,212 +288,234 @@ initial_prob_bp_input = {}
 initial_errors_input = []
 hist_case = None
 
-if input_mode == "📖 Extracted Prompts (prompt_autoplanbench/)":
-    prompt_base = "prompt_autoplanbench"
-    avail_prompt_domains = []
-    if os.path.isdir(prompt_base):
-        avail_prompt_domains = sorted([
-            d for d in os.listdir(prompt_base)
-            if os.path.isdir(os.path.join(prompt_base, d))
-        ])
+if input_mode == "🚀 AutoPlanBench (Pure STRIPS+Typing - 10 Curated Domains)":
+    sel_domain = st.sidebar.selectbox(
+        "Choose Pure STRIPS Domain (Top 10):",
+        AUTOPLANBENCH_PURE_STRIPS_10,
+        index=0,
+        help="Strictly pure (:requirements :strips :typing) domains from autoplanbench/data/."
+    )
     
-    if not avail_prompt_domains:
-        st.sidebar.error("No prompt directories found in `prompt_autoplanbench/`. Please run `scripts/extract_prompts.py` first.")
-        req_text = ""
-    else:
-        default_p_idx = avail_prompt_domains.index("satellite") if "satellite" in avail_prompt_domains else 0
-        sel_prompt_domain = st.sidebar.selectbox("Choose Benchmark Domain:", avail_prompt_domains, index=default_p_idx)
+    avail_prob_files = list_autoplanbench_problem_files(sel_domain)
+    sel_instance = st.sidebar.selectbox(
+        "Choose Problem Instance:",
+        avail_prob_files,
+        index=0 if avail_prob_files else 0
+    )
+    
+    unified_prompt, dom_desc, prob_desc, ref_dom, ref_inst, prob_files = load_autoplanbench_original_domain_data(
+        sel_domain, sel_instance
+    )
+    
+    req_text = st.sidebar.text_area(
+        "Natural Language Requirements (Domain & Problem):",
+        value=unified_prompt,
+        height=220,
+        help=f"Specification loaded directly from original autoplanbench/data/{sel_domain}/."
+    )
+    
+    with st.sidebar.expander(f"📄 Domain Rules (`{sel_domain}/domain_encoding.txt`)", expanded=False):
+        st.text(dom_desc)
         
-        domain_folder = os.path.join(prompt_base, sel_prompt_domain)
-        dom_desc_file = os.path.join(domain_folder, "domain_description.txt")
-        prob_desc_file = os.path.join(domain_folder, "problem_description.txt")
+    with st.sidebar.expander(f"📄 Problem Scenario (`{sel_domain}/{sel_instance}`)", expanded=False):
+        st.text(prob_desc)
         
-        dom_desc = ""
-        prob_desc = ""
-        if os.path.exists(dom_desc_file):
-            with open(dom_desc_file, "r", encoding="utf-8") as f:
-                dom_desc = f.read().strip()
-        if os.path.exists(prob_desc_file):
-            with open(prob_desc_file, "r", encoding="utf-8") as f:
-                prob_desc = f.read().strip()
+    if ref_dom or ref_inst:
+        with st.sidebar.expander(f"🏛️ Benchmark Reference Ground-Truth PDDL", expanded=False):
+            if ref_dom:
+                st.caption(f"**Domain**: `{sel_domain}/domain.pddl`")
+                st.code(ref_dom, language="lisp")
+            if ref_inst:
+                st.caption(f"**Problem**: `{sel_domain}/{sel_instance}`")
+                st.code(ref_inst, language="lisp")
                 
-        unified_prompt = f"{dom_desc}\n\n{prob_desc}"
-        #unified_prompt = f"=== DOMAIN SPECIFICATION ===\n{dom_desc}\n\n=== PROBLEM SCENARIO ===\n{prob_desc}"
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("Phase 4 Maintenance Settings")
+    enable_maintenance = st.sidebar.checkbox(
+        "Enable Phase 4 Historical Regression Suite",
+        value=False,
+        help="Verifies that the generated domain retains backward compatibility against the benchmark instance."
+    )
+    if enable_maintenance and prob_files:
+        chosen_instances = st.sidebar.multiselect(
+            "Choose Historical Problem Instance(s) (Phase 4):",
+            prob_files,
+            default=[sel_instance] if sel_instance in prob_files else ([prob_files[0]] if prob_files else []),
+            help="Select one or more historical instances to verify backward compatibility."
+        )
+        historical_suite_input = []
+        d_folder = Path(get_autoplanbench_dir()) / sel_domain / "orig_problems"
+        for inst_name in chosen_instances:
+            inst_path = d_folder / inst_name
+            if inst_path.exists():
+                with open(inst_path, "r", encoding="utf-8") as f:
+                    inst_txt = f.read()
+                parsed_bp = parse_pddl_problem_to_blueprint(inst_txt)
+                if parsed_bp and parsed_bp.get("objects"):
+                    historical_suite_input.append({
+                        "case_id": f"{sel_domain}_{inst_name.replace('.pddl', '')}",
+                        "problem_blueprint": parsed_bp,
+                        "raw_pddl": inst_txt
+                    })
+        if historical_suite_input:
+            st.sidebar.success(f"📁 **{len(historical_suite_input)} Regression Case(s) Loaded**: {[c['case_id'] for c in historical_suite_input]}")
+    elif enable_maintenance and ref_inst:
+        parsed_bp = parse_pddl_problem_to_blueprint(ref_inst)
+        if parsed_bp and parsed_bp.get("objects"):
+            historical_suite_input = [{
+                "case_id": f"{sel_domain}_{sel_instance}",
+                "problem_blueprint": parsed_bp,
+                "raw_pddl": ref_inst
+            }]
+            st.sidebar.success(f"📁 **Regression Case Loaded**: `{sel_domain}_{sel_instance}`")
+
+elif input_mode == "🎯 NL2PDDL (Pure STRIPS+Typing - 10 Curated Domains)":
+    sel_domain = st.sidebar.selectbox(
+        "Choose Pure STRIPS NL2PDDL Domain (Top 10):",
+        NL2PDDL_PURE_STRIPS_10,
+        index=0,
+        help="Strictly pure (:requirements :strips :typing) domains from NL2PDDL/test/."
+    )
+    
+    avail_prob_files = list_nl2pddl_problem_files(sel_domain)
+    sel_instance = st.sidebar.selectbox(
+        "Choose Problem Instance:",
+        avail_prob_files,
+        index=0 if avail_prob_files else 0
+    )
+    
+    unified_prompt, dom_desc, prob_desc, ref_dom, ref_inst, prob_files = load_nl2pddl_original_domain_data(
+        sel_domain, sel_instance
+    )
+    
+    req_text = st.sidebar.text_area(
+        "Natural Language Requirements (Domain & Problem):",
+        value=unified_prompt,
+        height=220,
+        help=f"Specification loaded directly from original NL2PDDL/test/{sel_domain}/."
+    )
+    
+    with st.sidebar.expander(f"📄 Domain Rules (`{sel_domain}/domains/`)", expanded=False):
+        st.text(dom_desc)
         
-        req_text = st.sidebar.text_area(
-            "Natural Language Requirements (Domain & Problem):",
-            value=unified_prompt,
-            height=220,
-            help="Full natural language specification including domain mechanics and problem scenario from prompt/."
-        )
+    with st.sidebar.expander(f"📄 Problem Scenario (`{sel_domain}/problems/{sel_instance}`)", expanded=False):
+        st.text(prob_desc)
         
-        with st.sidebar.expander(f"📄 Domain Rules (`{sel_prompt_domain}/domain_description.txt`)", expanded=False):
-            st.text(dom_desc)
-            
-        with st.sidebar.expander(f"📄 Problem Scenario (`{sel_prompt_domain}/problem_description.txt`)", expanded=False):
-            st.text(prob_desc)
-            
-        # Optional reference ground-truth PDDL from autoplanbench/data/
-        apb_data_dir = os.path.join("autoplanbench", "data", sel_prompt_domain)
-        ref_dom = ""
-        ref_inst = ""
-        ref_inst_name = "instance-1.pddl"
-        if os.path.isdir(apb_data_dir):
-            dom_path = os.path.join(apb_data_dir, "domain.pddl")
-            if os.path.exists(dom_path):
-                with open(dom_path, "r", encoding="utf-8") as f:
-                    ref_dom = f.read()
-            probs_dir = os.path.join(apb_data_dir, "orig_problems")
-            if os.path.isdir(probs_dir):
-                prob_files = sorted(
-                    [f for f in os.listdir(probs_dir) if f.endswith(".pddl")],
-                    key=lambda x: int(re.search(r'\d+', x).group(0)) if re.search(r'\d+', x) else 9999
-                )
-                if prob_files:
-                    ref_inst_name = prob_files[0]
-                    with open(os.path.join(probs_dir, ref_inst_name), "r", encoding="utf-8") as f:
-                        ref_inst = f.read()
-                        
-        if ref_dom or ref_inst:
-            with st.sidebar.expander(f"🏛️ Benchmark Reference Ground-Truth PDDL", expanded=False):
-                if ref_dom:
-                    st.caption(f"**Domain**: `{sel_prompt_domain}/domain.pddl`")
-                    st.code(ref_dom, language="lisp")
-                if ref_inst:
-                    st.caption(f"**Problem**: `{ref_inst_name}`")
-                    st.code(ref_inst, language="lisp")
-                    
-        st.sidebar.markdown("---")
-        st.sidebar.subheader("Phase 4 Maintenance Settings")
-        enable_maintenance = st.sidebar.checkbox(
-            "Enable Phase 4 Historical Regression Suite",
-            value=False,
-            help="Verifies that the generated domain retains backward compatibility against the benchmark instance."
+    if ref_dom or ref_inst:
+        with st.sidebar.expander(f"🏛️ NL2PDDL Reference Ground-Truth PDDL", expanded=False):
+            if ref_dom:
+                st.caption(f"**Domain**: `{sel_domain}/domains/domain_gold.pddl`")
+                st.code(ref_dom, language="lisp")
+            if ref_inst:
+                st.caption(f"**Problem**: `{sel_domain}/problems/{sel_instance}`")
+                st.code(ref_inst, language="lisp")
+                
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("Phase 4 Maintenance Settings")
+    enable_maintenance = st.sidebar.checkbox(
+        "Enable Phase 4 Historical Regression Suite",
+        value=False,
+        help="Verifies that the generated domain retains backward compatibility against the benchmark problem."
+    )
+    if enable_maintenance and prob_files:
+        chosen_instances = st.sidebar.multiselect(
+            "Choose Historical Problem Instance(s) (Phase 4):",
+            prob_files,
+            default=[sel_instance] if sel_instance in prob_files else ([prob_files[0]] if prob_files else []),
+            help="Select one or more historical instances to verify backward compatibility."
         )
-        if enable_maintenance and 'prob_files' in locals() and prob_files:
-            chosen_instances = st.sidebar.multiselect(
-                "Choose Historical Problem Instance(s) (Phase 4):",
-                prob_files,
-                default=[prob_files[0]] if prob_files else [],
-                help="Select one or more historical instances to verify backward compatibility."
-            )
-            historical_suite_input = []
-            for inst_name in chosen_instances:
-                inst_path = os.path.join(probs_dir, inst_name)
-                if os.path.exists(inst_path):
-                    with open(inst_path, "r", encoding="utf-8") as f:
-                        inst_txt = f.read()
-                    parsed_bp = parse_pddl_problem_to_blueprint(inst_txt)
-                    if parsed_bp and parsed_bp.get("objects"):
-                        historical_suite_input.append({
-                            "case_id": f"{sel_prompt_domain}_{inst_name.replace('.pddl', '')}",
-                            "problem_blueprint": parsed_bp,
-                            "raw_pddl": inst_txt
-                        })
-            if historical_suite_input:
-                st.sidebar.success(f"📁 **{len(historical_suite_input)} Regression Case(s) Loaded**: {[c['case_id'] for c in historical_suite_input]}")
-        elif enable_maintenance and ref_inst:
-            parsed_bp = parse_pddl_problem_to_blueprint(ref_inst)
-            if parsed_bp and parsed_bp.get("objects"):
-                historical_suite_input = [{
-                    "case_id": f"{sel_prompt_domain}_{ref_inst_name}",
-                    "problem_blueprint": parsed_bp,
-                    "raw_pddl": ref_inst
-                }]
-                st.sidebar.success(f"📁 **Regression Case Loaded**: `{sel_prompt_domain}_{ref_inst_name}`")
+        historical_suite_input = []
+        d_folder = Path(get_nl2pddl_dir()) / sel_domain / "problems"
+        for inst_name in chosen_instances:
+            inst_path = d_folder / inst_name
+            if inst_path.exists():
+                with open(inst_path, "r", encoding="utf-8", errors="ignore") as f:
+                    inst_txt = f.read()
+                parsed_bp = parse_pddl_problem_to_blueprint(inst_txt)
+                if parsed_bp and parsed_bp.get("objects"):
+                    historical_suite_input.append({
+                        "case_id": f"{sel_domain}_{inst_name.replace('.pddl', '')}",
+                        "problem_blueprint": parsed_bp,
+                        "raw_pddl": inst_txt
+                    })
+        if historical_suite_input:
+            st.sidebar.success(f"📁 **{len(historical_suite_input)} Regression Case(s) Loaded**: {[c['case_id'] for c in historical_suite_input]}")
+    elif enable_maintenance and ref_inst:
+        parsed_bp = parse_pddl_problem_to_blueprint(ref_inst)
+        if parsed_bp and parsed_bp.get("objects"):
+            historical_suite_input = [{
+                "case_id": f"{sel_domain}_{sel_instance}",
+                "problem_blueprint": parsed_bp,
+                "raw_pddl": ref_inst
+            }]
+            st.sidebar.success(f"📁 **Regression Case Loaded**: `{sel_domain}_{sel_instance}`")
 
-elif input_mode == "📚 NL2PDDL Prompts (prompt_NL2PDDL/)":
-    nl2pddl_base = "prompt_NL2PDDL" if os.path.isdir("prompt_NL2PDDL") else "promt_NL2PDLL"
-    avail_nl2pddl_domains = []
-    if os.path.isdir(nl2pddl_base):
-        avail_nl2pddl_domains = sorted([
-            d for d in os.listdir(nl2pddl_base)
-            if os.path.isdir(os.path.join(nl2pddl_base, d))
-        ])
-
-    if not avail_nl2pddl_domains:
-        st.sidebar.error("No prompt directories found in `prompt_NL2PDDL/`. Please run `scripts/extract_nl2pddl_prompts.py` first.")
-        req_text = ""
-    else:
-        default_nl_idx = avail_nl2pddl_domains.index("BLOCKSWORLD") if "BLOCKSWORLD" in avail_nl2pddl_domains else 0
-        sel_nl_domain = st.sidebar.selectbox("Choose NL2PDDL Domain:", avail_nl2pddl_domains, index=default_nl_idx)
-
-        domain_folder = os.path.join(nl2pddl_base, sel_nl_domain)
-        dom_desc_file = os.path.join(domain_folder, "domain_description.txt")
-        prob_desc_file = os.path.join(domain_folder, "problem_description.txt")
-
-        dom_desc = ""
-        prob_desc = ""
-        if os.path.exists(dom_desc_file):
-            with open(dom_desc_file, "r", encoding="utf-8") as f:
-                dom_desc = f.read().strip()
-        if os.path.exists(prob_desc_file):
-            with open(prob_desc_file, "r", encoding="utf-8") as f:
-                prob_desc = f.read().strip()
-
-        unified_prompt = f"=== DOMAIN SPECIFICATION ===\n{dom_desc}\n\n=== PROBLEM SCENARIO ===\n{prob_desc}"
-
-        req_text = st.sidebar.text_area(
-            "Natural Language Requirements (Domain & Problem):",
-            value=unified_prompt,
-            height=220,
-            help="Full natural language specification including domain mechanics and problem scenario from NL2PDDL."
-        )
-
-        with st.sidebar.expander(f"📄 Domain Rules (`{sel_nl_domain}/domain_description.txt`)", expanded=False):
-            st.text(dom_desc)
-
-        with st.sidebar.expander(f"📄 Problem Scenario (`{sel_nl_domain}/problem_description.txt`)", expanded=False):
-            st.text(prob_desc)
-
-        # Reference ground-truth PDDL from NL2PDDL/test/<domain>/
-        nl_test_dir = os.path.join("NL2PDDL", "test", sel_nl_domain)
-        ref_dom = ""
-        ref_inst = ""
-        ref_inst_name = "problem_gold.pddl"
-        if os.path.isdir(nl_test_dir):
-            doms_dir = os.path.join(nl_test_dir, "domains")
-            if os.path.isdir(doms_dir):
-                dom_files = os.listdir(doms_dir)
-                gold_d = "domain_gold.pddl" if "domain_gold.pddl" in dom_files else (dom_files[0] if dom_files else None)
-                if gold_d:
-                    with open(os.path.join(doms_dir, gold_d), "r", encoding="utf-8", errors="ignore") as f:
-                        ref_dom = f.read()
-
-            probs_dir = os.path.join(nl_test_dir, "problems")
-            if os.path.isdir(probs_dir):
-                prob_files = os.listdir(probs_dir)
-                gold_p = "problem_gold.pddl" if "problem_gold.pddl" in prob_files else (prob_files[0] if prob_files else None)
-                if gold_p:
-                    ref_inst_name = gold_p
-                    with open(os.path.join(probs_dir, gold_p), "r", encoding="utf-8", errors="ignore") as f:
-                        ref_inst = f.read()
-
-        if ref_dom or ref_inst:
-            with st.sidebar.expander(f"🏛️ NL2PDDL Reference Ground-Truth PDDL", expanded=False):
-                if ref_dom:
-                    st.caption(f"**Domain**: `{sel_nl_domain}/domains/{gold_d}`")
-                    st.code(ref_dom, language="lisp")
-                if ref_inst:
-                    st.caption(f"**Problem**: `{sel_nl_domain}/problems/{ref_inst_name}`")
-                    st.code(ref_inst, language="lisp")
-
-        st.sidebar.markdown("---")
-        st.sidebar.subheader("Phase 4 Maintenance Settings")
-        enable_maintenance = st.sidebar.checkbox(
-            "Enable Phase 4 Historical Regression Suite",
-            value=False,
-            help="Verifies that the generated domain retains backward compatibility against the benchmark problem."
-        )
-        if enable_maintenance and ref_inst:
-            parsed_bp = parse_pddl_problem_to_blueprint(ref_inst)
-            if parsed_bp and parsed_bp.get("objects"):
-                historical_suite_input = [{
-                    "case_id": f"{sel_nl_domain}_{ref_inst_name}",
-                    "problem_blueprint": parsed_bp,
-                    "raw_pddl": ref_inst
-                }]
-                st.sidebar.success(f"📁 **Regression Case Loaded**: `{sel_nl_domain}_{ref_inst_name}`")
+# ==============================================================================
+# COMMENTED OUT: PROMPT BENCHMARKS (prompt_autoplanbench/ & prompt_NL2PDDL/)
+# ==============================================================================
+# elif input_mode == "📖 Extracted Prompts (prompt_autoplanbench/)":
+#     prompt_base = str(get_autoplanbench_prompts_dir())
+#     avail_prompt_domains = []
+#     if os.path.isdir(prompt_base):
+#         avail_prompt_domains = sorted([
+#             d for d in os.listdir(prompt_base)
+#             if os.path.isdir(os.path.join(prompt_base, d))
+#         ])
+#     if not avail_prompt_domains:
+#         st.sidebar.error(f"No prompt directories found in `{prompt_base}/`.")
+#         req_text = ""
+#     else:
+#         default_p_idx = avail_prompt_domains.index("satellite") if "satellite" in avail_prompt_domains else 0
+#         sel_prompt_domain = st.sidebar.selectbox("Choose Benchmark Domain:", avail_prompt_domains, index=default_p_idx)
+#         domain_folder = os.path.join(prompt_base, sel_prompt_domain)
+#         dom_desc_file = os.path.join(domain_folder, "domain_description.txt")
+#         prob_desc_file = os.path.join(domain_folder, "problem_description.txt")
+#         dom_desc = ""
+#         prob_desc = ""
+#         if os.path.exists(dom_desc_file):
+#             with open(dom_desc_file, "r", encoding="utf-8") as f:
+#                 dom_desc = f.read().strip()
+#         if os.path.exists(prob_desc_file):
+#             with open(prob_desc_file, "r", encoding="utf-8") as f:
+#                 prob_desc = f.read().strip()
+#         unified_prompt = f"{dom_desc}\n\n{prob_desc}"
+#         req_text = st.sidebar.text_area(
+#             "Natural Language Requirements (Domain & Problem):",
+#             value=unified_prompt,
+#             height=220
+#         )
+#
+# elif input_mode == "📚 NL2PDDL Prompts (prompt_NL2PDDL/)":
+#     nl2pddl_base = str(get_nl2pddl_prompts_dir())
+#     avail_nl2pddl_domains = []
+#     if os.path.isdir(nl2pddl_base):
+#         avail_nl2pddl_domains = sorted([
+#             d for d in os.listdir(nl2pddl_base)
+#             if os.path.isdir(os.path.join(nl2pddl_base, d))
+#         ])
+#     if not avail_nl2pddl_domains:
+#         st.sidebar.error(f"No prompt directories found in `{nl2pddl_base}/`.")
+#         req_text = ""
+#     else:
+#         default_nl_idx = avail_nl2pddl_domains.index("BLOCKSWORLD") if "BLOCKSWORLD" in avail_nl2pddl_domains else 0
+#         sel_nl_domain = st.sidebar.selectbox("Choose NL2PDDL Domain:", avail_nl2pddl_domains, index=default_nl_idx)
+#         domain_folder = os.path.join(nl2pddl_base, sel_nl_domain)
+#         dom_desc_file = os.path.join(domain_folder, "domain_description.txt")
+#         prob_desc_file = os.path.join(domain_folder, "problem_description.txt")
+#         dom_desc = ""
+#         prob_desc = ""
+#         if os.path.exists(dom_desc_file):
+#             with open(dom_desc_file, "r", encoding="utf-8") as f:
+#                 dom_desc = f.read().strip()
+#         if os.path.exists(prob_desc_file):
+#             with open(prob_desc_file, "r", encoding="utf-8") as f:
+#                 prob_desc = f.read().strip()
+#         unified_prompt = f"=== DOMAIN SPECIFICATION ===\n{dom_desc}\n\n=== PROBLEM SCENARIO ===\n{prob_desc}"
+#         req_text = st.sidebar.text_area(
+#             "Natural Language Requirements (Domain & Problem):",
+#             value=unified_prompt,
+#             height=220
+#         )
 
 
 elif input_mode == "🏛️ IPC Benchmark Archive (PDDL 2.1 Typed)":
@@ -664,10 +730,10 @@ elif input_mode == "🧬 Continuous Evolution (Evolve Domain & Problem)":
 
     elif sel_source.startswith("📁 Saved Runs"):
         output_roots = [
-            "PDDLLifeCycleBench_Output_Flaw",
-            "PDDLLifeCycleBench_Output__Evolve",
-            "PDDLLifeCycleBench_Output_Elicitation",
-            "Streamlit_output_file"
+            str(get_flaw_output_dir()),
+            str(get_evolve_output_dir()),
+            str(get_elicitation_output_dir()),
+            str(get_generated_output_dir())
         ]
         chosen_root = st.sidebar.selectbox("Choose Saved Runs Track Folder:", output_roots, index=0)
         output_root = chosen_root
@@ -838,7 +904,7 @@ max_iterations = st.sidebar.slider(
     "Max Iterations:",
     min_value=1,
     max_value=15,
-    value=10 if system_choice in ["CLOSED_LOOP_AST_AGENT", "ABLATION_NO_TRIAGE"] else 5
+    value=5 if system_choice in ["CLOSED_LOOP_AST_AGENT", "ABLATION_NO_TRIAGE"] else 5
 )
 
 # Check if selected task is a Synthetic Fault Repair or Domain Evolution Task
@@ -869,8 +935,9 @@ active_task = selected_task if selected_task else BenchmarkTask(
     title="Continuous Domain Evolution Specification" if is_evolution_task else "Custom Domain Specification",
     natural_language_requirements=req_text,
     initial_domain_pddl=initial_domain_pddl_input,
-    initial_problem_pddl=initial_problem_pddl_input,
-    ground_truth_domain_pddl="",
+    initial_problem_pddl=initial_problem_pddl_input or (ref_inst if ('ref_inst' in locals() and ref_inst) else ""),
+    ground_truth_domain_pddl=ref_dom if ('ref_dom' in locals() and ref_dom) else "",
+    ground_truth_problem_pddl=ref_inst if ('ref_inst' in locals() and ref_inst) else "",
     historical_regression_problems=[
         c.get("raw_pddl") or (compile_problem_pddl(c.get("problem_blueprint")) if c.get("problem_blueprint") else "")
         for c in historical_suite_input
@@ -1020,25 +1087,25 @@ if run_agent:
                         time.sleep(0.3)
                             
                     elif node_name == "triage":
+                        cur_it = current_state.get("iteration_count", 0)
+                        max_it = current_state.get("max_iterations", 10)
                         if system_choice == "ABLATION_NO_TRIAGE":
-                            status_container.write("🔬 **Node 4 [TRIAGE - ABLATION]**: Diagnostic LLM Agent BYPASSED (Ablation Study). Raw oracle error logs routed directly to repair without root-cause localization.")
+                            status_container.write(f"🔬 **Node 4 [TRIAGE - ABLATION] (Iteration {cur_it + 1}/{max_it})**: Diagnostic LLM Agent BYPASSED (Ablation Study). Raw oracle error logs routed directly to repair without root-cause localization.")
                         else:
                             reports = node_output.get("diagnostic_reports", [])
-                            status_container.write(f"🔍 **Node 4 [TRIAGE]**: Diagnostic LLM Agent categorized {len(reports)} diagnostic item(s):")
+                            status_container.write(f"🔍 **Node 4 [TRIAGE] (Iteration {cur_it + 1}/{max_it})**: Diagnostic LLM Agent categorized {len(reports)} diagnostic item(s):")
                             for r in reports:
                                 cumulative_issue_count += 1
                                 if isinstance(r, dict):
                                     err_cat = r.get("error_category", "UNKNOWN")
                                     op_type = r.get("repair_operation_type", "GENERAL")
                                     element = r.get("faulty_element", "General")
-                                    score = r.get("suspiciousness_score", 1.0)
                                     log_text = r.get("raw_log", "")
                                     hint = r.get("suggested_repair_hint", "")
                                 else:
                                     err_cat = getattr(r, "error_category", "UNKNOWN")
                                     op_type = getattr(r, "repair_operation_type", "GENERAL")
                                     element = getattr(r, "faulty_element", "General")
-                                    score = getattr(r, "suspiciousness_score", 1.0)
                                     log_text = getattr(r, "raw_log", "")
                                     hint = getattr(r, "suggested_repair_hint", "")
 
@@ -1047,7 +1114,6 @@ if run_agent:
                                     expanded=True
                                 ):
                                     st.markdown(f"- **Target AST Operation**: `{op_type}`")
-                                    st.markdown(f"- **Fault Suspiciousness Score**: `{score}`")
                                     if hint:
                                         st.info(f"**Actionable Repair Hint**: {hint}")
                                     if log_text:
@@ -1056,7 +1122,9 @@ if run_agent:
                         time.sleep(0.3)
                             
                     elif node_name == "repair":
-                        status_container.write("🔧 **Node 5 [REPAIR]**: Reasoning LLM executing surgical AST repair on faulty blueprint nodes...")
+                        cur_it = current_state.get("iteration_count", 1)
+                        max_it = current_state.get("max_iterations", 10)
+                        status_container.write(f"🔧 **Node 5 [REPAIR] (Iteration {cur_it}/{max_it})**: Reasoning LLM executing surgical AST repair on faulty blueprint nodes...")
                         status_container.caption("-> Blueprint updated in memory. Looping back to Python deterministic Compiler.")
                         time.sleep(0.3)
 
@@ -1064,19 +1132,64 @@ if run_agent:
             exec_time = time.time() - start_time
 
             # Capture plan result if model is verified
-            if not has_errors and not current_state.get("generated_plan_result"):
+            if not has_errors:
                 dom_str = current_state.get("generated_domain_pddl")
                 prob_str = current_state.get("generated_problem_pddl")
+                plan_res = current_state.get("generated_plan_result")
+                gt_dom = getattr(active_task, "ground_truth_domain_pddl", None) if active_task else None
+                gt_prob = getattr(active_task, "ground_truth_problem_pddl", None) if active_task else None
+
                 if dom_str and prob_str:
-                    from tools.symbolic_oracles import run_fast_downward_with_plan
-                    os.makedirs("Streamlit_output_file", exist_ok=True)
-                    tmp_d = "Streamlit_output_file/temp_domain.pddl"
-                    tmp_p = "Streamlit_output_file/temp_problem.pddl"
+                    tmp_d = get_temp_domain_path()
+                    tmp_p = get_temp_problem_path()
                     with open(tmp_d, "w", encoding="utf-8") as f:
                         f.write(dom_str)
                     with open(tmp_p, "w", encoding="utf-8") as f:
                         f.write(prob_str)
-                    current_state["generated_plan_result"] = run_fast_downward_with_plan(tmp_d, tmp_p)
+                    
+                    tmp_gt = None
+                    tmp_gt_p = tmp_p
+                    if gt_dom:
+                        tmp_gt = get_temp_gt_domain_path()
+                        with open(tmp_gt, "w", encoding="utf-8") as f:
+                            f.write(gt_dom)
+                    if gt_prob:
+                        tmp_gt_p = tmp_p + ".gt.pddl"
+                        with open(tmp_gt_p, "w", encoding="utf-8") as f:
+                            f.write(gt_prob)
+
+                    if not plan_res or not plan_res.get("is_solvable"):
+                        from tools.symbolic_oracles import run_fast_downward_with_plan
+                        plan_res = run_fast_downward_with_plan(
+                            tmp_d, tmp_p, ground_truth_domain_path=tmp_gt
+                        )
+                        current_state["generated_plan_result"] = plan_res
+                    elif tmp_gt and plan_res.get("plan_steps") and not plan_res.get("semantic_soundness_valid"):
+                        from tools.symbolic_oracles import validate_plan_semantic_soundness
+                        tmp_plan = get_temp_eval_plan_path()
+                        with open(tmp_plan, "w", encoding="utf-8") as pf:
+                            for idx_s, stp in enumerate(plan_res["plan_steps"], 1):
+                                pf.write(f"{idx_s}: {stp}\n")
+                        pss_valid, pss_log = validate_plan_semantic_soundness(
+                            tmp_gt, tmp_gt_p, tmp_plan, generated_domain_path=tmp_d
+                        )
+                        plan_res["semantic_soundness_valid"] = pss_valid
+                        plan_res["semantic_soundness_log"] = pss_log
+                        if os.path.exists(tmp_plan):
+                            try: os.remove(tmp_plan)
+                            except Exception: pass
+                        if tmp_gt_p != tmp_p and os.path.exists(tmp_gt_p):
+                            try: os.remove(tmp_gt_p)
+                            except Exception: pass
+
+                if gt_dom and dom_str:
+                    try:
+                        from eval.action_reconstruction import evaluate_action_reconstruction
+                        are_res = evaluate_action_reconstruction(gt_dom, dom_str)
+                        if plan_res:
+                            plan_res["are_res"] = are_res
+                    except Exception:
+                        pass
 
             # Rigorous Empirical Evaluation of the generated candidate model
             metrics = evaluate_candidate_pddl(
@@ -1298,19 +1411,32 @@ if final_state:
             prob_str = final_state.get("generated_problem_pddl")
             if dom_str and prob_str:
                 from tools.symbolic_oracles import run_fast_downward_with_plan
-                os.makedirs("Streamlit_output_file", exist_ok=True)
-                tmp_d = "Streamlit_output_file/temp_domain.pddl"
-                tmp_p = "Streamlit_output_file/temp_problem.pddl"
+                tmp_d = get_temp_domain_path()
+                tmp_p = get_temp_problem_path()
                 with open(tmp_d, "w", encoding="utf-8") as f:
                     f.write(dom_str)
                 with open(tmp_p, "w", encoding="utf-8") as f:
                     f.write(prob_str)
-                plan_res = run_fast_downward_with_plan(tmp_d, tmp_p)
+                tmp_gt = None
+                gt_dom = (
+                    (getattr(selected_task, "ground_truth_domain_pddl", None) if selected_task else None)
+                    or (getattr(active_task, "ground_truth_domain_pddl", None) if 'active_task' in locals() and active_task else None)
+                    or (ref_dom if ('ref_dom' in locals() and ref_dom) else None)
+                )
+                if gt_dom:
+                    tmp_gt = get_temp_gt_domain_path()
+                    with open(tmp_gt, "w", encoding="utf-8") as f:
+                        f.write(gt_dom)
+
+                plan_res = run_fast_downward_with_plan(tmp_d, tmp_p, ground_truth_domain_path=tmp_gt)
                 final_state["generated_plan_result"] = plan_res
+
                 if saved_info and len(saved_info) >= 4 and plan_res.get("is_solvable") and plan_res.get("plan_steps"):
                     s_name, s_idx = saved_info[0], saved_info[1]
                     s_dir = os.path.dirname(saved_info[2])
-                    p_path = os.path.join(s_dir, f"plan_{s_idx}.txt")
+                    plan_stem = Path(get_generated_plan_filename()).stem
+                    plan_ext = Path(get_generated_plan_filename()).suffix or ".txt"
+                    p_path = os.path.join(s_dir, f"{plan_stem}_{s_idx}{plan_ext}")
                     with open(p_path, "w", encoding="utf-8") as pf:
                         for idx_s, stp in enumerate(plan_res["plan_steps"], 1):
                             pf.write(f"{idx_s}: {stp}\n")
@@ -1318,19 +1444,81 @@ if final_state:
                                   saved_info[4] if len(saved_info) > 4 else None, p_path)
                     st.session_state["last_saved_info"] = saved_info
         if plan_res:
+            dom_str_check = final_state.get("generated_domain_pddl")
+            prob_str_check = final_state.get("generated_problem_pddl")
+            gt_dom = (
+                (getattr(selected_task, "ground_truth_domain_pddl", None) if selected_task else None)
+                or (getattr(active_task, "ground_truth_domain_pddl", None) if 'active_task' in locals() and active_task else None)
+                or (ref_dom if ('ref_dom' in locals() and ref_dom) else None)
+            )
+            gt_prob = (
+                (getattr(selected_task, "ground_truth_problem_pddl", None) if selected_task else None)
+                or (getattr(active_task, "ground_truth_problem_pddl", None) if 'active_task' in locals() and active_task else None)
+                or (ref_inst if ('ref_inst' in locals() and ref_inst) else None)
+            )
+
+            # Evaluate Action Reconstruction Error (ARE) against ground truth
+            are_data = plan_res.get("are_data")
+            if not are_data and gt_dom and dom_str_check:
+                try:
+                    from eval.action_reconstruction import evaluate_action_reconstruction
+                    are_data = evaluate_action_reconstruction(gt_dom, dom_str_check)
+                    plan_res["are_data"] = are_data
+                except Exception as e:
+                    print(f"[Action Reconstruction Error]: {e}")
+
+            if gt_dom and prob_str_check and plan_res.get("plan_steps") and plan_res.get("semantic_soundness_valid") is not True:
+                tmp_gt = get_temp_gt_domain_path()
+                tmp_d = get_temp_domain_path()
+                tmp_p = get_temp_problem_path()
+                tmp_gt_p = tmp_p + ".gt.pddl" if gt_prob else tmp_p
+                tmp_plan = get_temp_eval_plan_path()
+                with open(tmp_gt, "w", encoding="utf-8") as f: f.write(gt_dom)
+                if dom_str_check:
+                    with open(tmp_d, "w", encoding="utf-8") as f: f.write(dom_str_check)
+                with open(tmp_p, "w", encoding="utf-8") as f: f.write(prob_str_check)
+                if gt_prob:
+                    with open(tmp_gt_p, "w", encoding="utf-8") as f: f.write(gt_prob)
+                with open(tmp_plan, "w", encoding="utf-8") as f:
+                    for idx_s, stp in enumerate(plan_res["plan_steps"], 1):
+                        f.write(f"{idx_s}: {stp}\n")
+                from tools.symbolic_oracles import validate_plan_semantic_soundness
+                pss_valid, pss_log = validate_plan_semantic_soundness(
+                    tmp_gt, tmp_gt_p, tmp_plan, generated_domain_path=tmp_d
+                )
+                plan_res["semantic_soundness_valid"] = pss_valid
+                plan_res["semantic_soundness_log"] = pss_log
+                if os.path.exists(tmp_plan):
+                    try: os.remove(tmp_plan)
+                    except Exception: pass
+                if tmp_gt_p != tmp_p and os.path.exists(tmp_gt_p):
+                    try: os.remove(tmp_gt_p)
+                    except Exception: pass
+
             p_solvable = plan_res.get("is_solvable", False)
             p_len = plan_res.get("plan_length", 0)
             p_time = plan_res.get("search_time", 0.0)
             p_val = plan_res.get("val_plan_valid", False)
+            p_pss = plan_res.get("semantic_soundness_valid")
             
-            st.markdown("### 🚀 Classical Plan Synthesis & Formal Verification")
-            st.caption("Empirical proof generated by symbolic oracles (Fast Downward & VAL) running against the generated domain model.")
+            st.markdown("### 🚀 Classical Plan Synthesis & Non-Circular Formal Verification")
+            st.caption("Empirical proof generated by symbolic oracles (Fast Downward & VAL) with non-circular ground-truth semantic soundness checking.")
             
-            m1, m2, m3, m4 = st.columns(4)
+            m1, m2, m3, m4, m5 = st.columns(5)
             m1.metric("Planner Status", "Solution Found ✅" if p_solvable else "Unsolvable ❌")
             m2.metric("Plan Length", f"{p_len} steps")
             m3.metric("Search Time", f"{p_time:.4f}s")
-            m4.metric("VAL Certificate", "Plan Valid 🛡️" if p_val else "Not Validated ⚠️")
+            m4.metric("Model Consistency (D_gen)", "Valid 🛡️" if p_val else "Invalid ⚠️")
+            if p_pss is True:
+                f1_val = are_data.get("macro_structural_f1") if are_data else None
+                f1_str = f" (F1: {f1_val})" if f1_val is not None else ""
+                m5.metric("Semantic Soundness (D_gt)", f"Sound 🏛️{f1_str}")
+            elif p_pss is False:
+                f1_val = are_data.get("macro_structural_f1") if are_data else None
+                f1_str = f" (F1: {f1_val})" if f1_val is not None else ""
+                m5.metric("Semantic Soundness (D_gt)", f"Partial / Div ❌{f1_str}")
+            else:
+                m5.metric("Semantic Soundness (D_gt)", "N/A (No D_gt)")
             
             if p_solvable and plan_res.get("plan_steps"):
                 st.markdown("#### 📋 Synthesized Action Sequence (`sas_plan`)")
@@ -1339,6 +1527,17 @@ if final_state:
                 st.dataframe(formatted_steps, width='stretch')
                 if saved_info and len(saved_info) > 5 and saved_info[5]:
                     st.caption(f"💾 Plan saved to local disk: `{saved_info[5]}`")
+
+            # Always display the Semantic Soundness & Action Reconstruction table if ground truth is available
+            if are_data:
+                with st.expander("🏛️ Semantic Soundness & Action Reconstruction (ARE / Ground-Truth Alignment)", expanded=True):
+                    st.caption("Operator-level alignment derived via Kuhn-Munkres Maximum Weight Bipartite Matching on classical STRIPS state-transition invariants (Oswald et al., ICAPS/AAAI 2024).")
+                    st.markdown(f"**Macro Structural F1**: `{are_data.get('macro_structural_f1', 0.0)}` | **Action F1**: `{are_data.get('action_f1', 0.0)}` | **Verdict**: `{are_data.get('verdict', 'N/A')}`")
+                    st.markdown("**Discovered Operator Mapping (Bipartite Bijection)**:")
+                    st.json(are_data.get("action_mapping", {}))
+                    if are_data.get("detailed_operator_reports"):
+                        st.markdown("**Component-by-Component STRIPS Transition Metrics**:")
+                        st.dataframe(are_data["detailed_operator_reports"], width='stretch')
                 
             col_log1, col_log2 = st.columns(2)
             with col_log1:
@@ -1402,17 +1601,17 @@ if final_state:
         # 1. Prominent Classical Causal Graph Diagnostics Section
         causal_data = final_state.get("causal_graph_analysis")
         if not causal_data:
-            from tools.sbfl_analyzer import run_causal_graph_sbfl_analysis
+            from tools.causal_triage_analyzer import run_causal_triage_analysis
             d_bp = final_state.get("pddl_domain_blueprint") or {}
             p_bp = final_state.get("pddl_problem_blueprint") or {}
             if d_bp and d_bp.get("actions"):
-                causal_data = run_causal_graph_sbfl_analysis(d_bp, p_bp, init_errors)
+                causal_data = run_causal_triage_analysis(d_bp, p_bp, init_errors)
 
         if causal_data and causal_data.get("diagnostic_summary"):
             with st.expander("🕸️ Causal Graph & DTG Structural Diagnostics (Torralba & Hoffmann Invariants)", expanded=True):
                 st.code(causal_data.get("diagnostic_summary"), language="text")
                 if causal_data.get("details"):
-                    st.caption("Action Grounded Causal Relevance & Spectrum Matrix:")
+                    st.caption("Action Grounded Causal Relevance & Invariant Topology:")
                     st.json(causal_data.get("details"))
 
         # 2. Captured Oracle Diagnostic Error Output (Clean Expander, Normal Size)
@@ -1431,20 +1630,17 @@ if final_state:
                     err_cat = r.get("error_category")
                     op_type = r.get("repair_operation_type")
                     element = r.get("faulty_element")
-                    score = r.get("suspiciousness_score", 1.0)
                     log_text = r.get("raw_log")
                     hint = r.get("suggested_repair_hint")
                 else:
                     err_cat = r.error_category
                     op_type = r.repair_operation_type
                     element = r.faulty_element
-                    score = r.suspiciousness_score
                     log_text = r.raw_log
                     hint = r.suggested_repair_hint
 
                 with st.expander(f"📌 Issue #{idx}: [{err_cat}] - Faulty Element: '{element or 'General'}' (Click to Expand)", expanded=True):
                     st.markdown(f"- **Target AST Operation**: `{op_type}`")
-                    st.markdown(f"- **Fault Suspiciousness Score**: `{score}`")
                     st.info(f"**Actionable Repair Hint**: {hint}")
                     st.markdown("**Exact Raw Error Log from Solver/Validator:**")
                     st.code(log_text, language="text")

@@ -1,0 +1,246 @@
+{
+  "domain_name": "pipeline_distribution",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "pipeline_distribution",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "pipe": "object",
+      "area": "object",
+      "product": "object",
+      "batch_atom": "object"
+    },
+    "predicates": [
+      "(normal ?p - pipe)",
+      "(being_push_updated ?p - pipe)",
+      "(being_pop_updated ?p - pipe)",
+      "(first_in ?b - batch_atom ?p - pipe)",
+      "(last_in ?b - batch_atom ?p - pipe)",
+      "(on ?b - batch_atom ?a - area)",
+      "(connect ?a1 - area ?a2 - area ?p - pipe)",
+      "(follows ?b1 - batch_atom ?b2 - batch_atom)",
+      "(product_of ?b - batch_atom ?p - product)",
+      "(may_interface ?p1 - product ?p2 - product)",
+      "(unitary ?p - pipe)"
+    ],
+    "actions": [
+      {
+        "action_name": "push_start",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "batch_atom",
+          "?C": "area",
+          "?D": "area",
+          "?E": "batch_atom",
+          "?F": "product",
+          "?G": "product"
+        },
+        "preconditions": [
+          "(normal ?A)",
+          "(first_in ?E ?A)",
+          "(connect ?C ?D ?A)",
+          "(on ?B ?C)",
+          "(not (unitary ?A))",
+          "(product_of ?B ?F)",
+          "(product_of ?E ?G)",
+          "(may_interface ?F ?G)"
+        ],
+        "effects": [
+          "(being_push_updated ?A)",
+          "(first_in ?B ?A)",
+          "(follows ?E ?B)",
+          "(not (normal ?A))",
+          "(not (first_in ?E ?A))",
+          "(not (on ?B ?C))"
+        ]
+      },
+      {
+        "action_name": "push_end",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "area",
+          "?C": "area",
+          "?D": "batch_atom",
+          "?E": "batch_atom"
+        },
+        "preconditions": [
+          "(being_push_updated ?A)",
+          "(last_in ?D ?A)",
+          "(connect ?B ?C ?A)",
+          "(not (unitary ?A))",
+          "(follows ?D ?E)"
+        ],
+        "effects": [
+          "(normal ?A)",
+          "(last_in ?E ?A)",
+          "(on ?D ?C)",
+          "(not (being_push_updated ?A))",
+          "(not (follows ?D ?E))",
+          "(not (last_in ?D ?A))"
+        ]
+      },
+      {
+        "action_name": "pop_start",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "batch_atom",
+          "?C": "area",
+          "?D": "area",
+          "?E": "batch_atom",
+          "?F": "product",
+          "?G": "product"
+        },
+        "preconditions": [
+          "(normal ?A)",
+          "(last_in ?E ?A)",
+          "(connect ?C ?D ?A)",
+          "(on ?B ?D)",
+          "(not (unitary ?A))",
+          "(product_of ?B ?F)",
+          "(product_of ?E ?G)",
+          "(may_interface ?F ?G)"
+        ],
+        "effects": [
+          "(being_pop_updated ?A)",
+          "(last_in ?B ?A)",
+          "(follows ?B ?E)",
+          "(not (normal ?A))",
+          "(not (last_in ?E ?A))",
+          "(not (on ?B ?D))"
+        ]
+      },
+      {
+        "action_name": "pop_end",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "area",
+          "?C": "area",
+          "?D": "batch_atom",
+          "?E": "batch_atom"
+        },
+        "preconditions": [
+          "(being_pop_updated ?A)",
+          "(first_in ?D ?A)",
+          "(connect ?B ?C ?A)",
+          "(not (unitary ?A))",
+          "(follows ?E ?D)"
+        ],
+        "effects": [
+          "(normal ?A)",
+          "(first_in ?E ?A)",
+          "(on ?D ?B)",
+          "(not (being_pop_updated ?A))",
+          "(not (follows ?E ?D))",
+          "(not (first_in ?D ?A))"
+        ]
+      },
+      {
+        "action_name": "push_unitary",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "batch_atom",
+          "?C": "area",
+          "?D": "area",
+          "?E": "batch_atom",
+          "?F": "product",
+          "?G": "product"
+        },
+        "preconditions": [
+          "(first_in ?E ?A)",
+          "(connect ?C ?D ?A)",
+          "(on ?B ?C)",
+          "(unitary ?A)",
+          "(product_of ?B ?F)",
+          "(product_of ?E ?G)",
+          "(may_interface ?F ?G)"
+        ],
+        "effects": [
+          "(first_in ?B ?A)",
+          "(last_in ?B ?A)",
+          "(on ?E ?D)",
+          "(not (first_in ?E ?A))",
+          "(not (last_in ?E ?A))",
+          "(not (on ?B ?C))"
+        ]
+      },
+      {
+        "action_name": "pop_unitary",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "batch_atom",
+          "?C": "area",
+          "?D": "area",
+          "?E": "batch_atom",
+          "?F": "product",
+          "?G": "product"
+        },
+        "preconditions": [
+          "(last_in ?E ?A)",
+          "(connect ?C ?D ?A)",
+          "(on ?B ?D)",
+          "(unitary ?A)",
+          "(product_of ?B ?F)",
+          "(product_of ?E ?G)",
+          "(may_interface ?F ?G)"
+        ],
+        "effects": [
+          "(last_in ?B ?A)",
+          "(first_in ?B ?A)",
+          "(on ?E ?C)",
+          "(not (last_in ?E ?A))",
+          "(not (first_in ?E ?A))",
+          "(not (on ?B ?D))"
+        ]
+      },
+      {
+        "action_name": "initialize_pipe",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "batch_atom",
+          "?C": "area",
+          "?D": "area"
+        },
+        "preconditions": [
+          "(connect ?C ?D ?A)",
+          "(on ?B ?C)"
+        ],
+        "effects": [
+          "(normal ?A)",
+          "(first_in ?B ?A)",
+          "(last_in ?B ?A)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "pipeline_problem",
+    "domain_name": "pipeline_distribution",
+    "objects": {
+      "pipe1": "pipe",
+      "area1": "area",
+      "area2": "area",
+      "batch1": "batch_atom",
+      "batch2": "batch_atom",
+      "product1": "product",
+      "product2": "product"
+    },
+    "initial_state": [
+      "(connect area1 area2 pipe1)",
+      "(on batch1 area1)",
+      "(product_of batch1 product1)",
+      "(product_of batch2 product2)",
+      "(may_interface product1 product2)"
+    ],
+    "goal_state": [
+      "(on batch2 area2)"
+    ]
+  },
+  "iteration_count": 2,
+  "errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'PDDL_file\\temp_domain_2.pddl' 'PDDL_file\\temp_problem_2.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing: [0.000s CPU, 0.002s wall-clock]\nNormalizing task... [0.000s CPU, 0.000s wall-clock]\nInstantiating...\nGenerating Datalog program... [0.000s CPU, 0.000s wall-clock]\nNormalizing Datalog program...\nNormalizing Datalog program: [0.016s CPU, 0.006s wall-clock]\nPreparing model... [0.000s CPU, 0.001s wall-clock]\nGenerated 95 rules.\nComputing model... [0.000s CPU, 0.000s wall-clock]\n30 relevant atoms\n54 auxiliary atoms\n84 final queue length\n84 total queue pushes\nCompleting instantiation... [0.000s CPU, 0.000s wall-clock]\nInstantiating: [0.016s CPU, 0.008s wall-clock]\nNo relaxed solution! Generating unsolvable task...\nTranslator variables: 1\nTranslator derived variables: 0\nTranslator facts: 2\nTranslator goal facts: 1\nTranslator mutex groups: 0\nTranslator total mutex groups size: 0\nTranslator operators: 0\nTranslator axioms: 0\nTranslator task size: 4\nwarning: could not determine peak memory\nWriting output... [0.000s CPU, 0.001s wall-clock]\nDone! [0.016s CPU, 0.011s wall-clock]\ntranslate exit code: 0\n\nINFO     Running search (release).\nINFO     search stdin: output.sas\nINFO     search time limit: None\nINFO     search memory limit: None\nINFO     search command line string: 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\downward.exe' --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas\n[t=0.000133s, 768 KB] reading input...\n[t=0.000233s, 788 KB] done reading input!\n[t=0.001962s, 1208 KB] Simplifying 0 unary operators... done! [0 unary operators]\n[t=0.001980s, 1208 KB] time to simplify: 0.000021s\n[t=0.001985s, 1208 KB] Initializing additive heuristic...\n[t=0.001988s, 1208 KB] Initializing FF heuristic...\n[t=0.002016s, 1208 KB] Building successor generator...done!\n[t=0.002025s, 1208 KB] peak memory difference for successor generator creation: 0 KB\n[t=0.002031s, 1208 KB] time for successor generation creation: 0.000003s\n[t=0.002035s, 1208 KB] Variables: 1\n[t=0.002037s, 1208 KB] FactPairs: 2\n[t=0.002041s, 1208 KB] Bytes per state: 4\n[t=0.002063s, 1208 KB] Conducting lazy best first search, (real) bound = 2147483647\n[t=0.002073s, 1208 KB] Initial heuristic value for ff: infinity\n[t=0.002078s, 1208 KB] Completely explored state space -- no solution!\n[t=0.002081s, 1208 KB] Actual search time: 0.000014s\n[t=0.002084s, 1208 KB] Expanded 0 state(s).\n[t=0.002084s, 1208 KB] Reopened 0 state(s).\n[t=0.002084s, 1208 KB] Evaluated 1 state(s).\n[t=0.002084s, 1208 KB] Evaluations: 1\n[t=0.002084s, 1208 KB] Generated 0 state(s).\n[t=0.002084s, 1208 KB] Dead ends: 1 state(s).\n[t=0.002084s, 1208 KB] Number of registered states: 1\n[t=0.002084s, 1208 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.002084s, 1208 KB] Int hash set resizes: 0\n[t=0.002084s, 1208 KB] Search time: 0.000021s\n[t=0.002084s, 1208 KB] Total time: 0.002084s\nSearch stopped without finding a solution.\nRemove intermediate file output.sas\nsearch exit code: 12\n\nDriver aborting after search\n\n"
+  ],
+  "is_valid": false
+}

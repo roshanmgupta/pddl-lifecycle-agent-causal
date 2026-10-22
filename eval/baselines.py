@@ -1,10 +1,18 @@
+import sys
 import os
 import re
 import time
+from pathlib import Path
 from typing import Tuple, Dict, Any, Optional
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from benchmark.schema import BenchmarkTask, LifecycleTaskType
 from config.model_config import invoke_raw_llm_with_telemetry
 from tools.symbolic_oracles import run_val_validator, run_fast_downward_with_plan
+from config.paths import get_eval_output_dir
 
 def extract_pddl_blocks(raw_text: str) -> Tuple[str, str]:
     """Extracts domain.pddl and problem.pddl code blocks from raw LLM output text."""
@@ -112,9 +120,10 @@ Respond ONLY with the PDDL code blocks.
     cumulative_cost = 0.0
     last_raw_response = ""
 
-    os.makedirs("Streamlit_output_file", exist_ok=True)
-    dom_file = f"Streamlit_output_file/temp_baseline_unstructured_dom_{task.task_id}.pddl"
-    prob_file = f"Streamlit_output_file/temp_baseline_unstructured_prob_{task.task_id}.pddl"
+    eval_dir = str(get_eval_output_dir())
+    os.makedirs(eval_dir, exist_ok=True)
+    dom_file = os.path.join(eval_dir, f"temp_baseline_unstructured_dom_{task.task_id}.pddl")
+    prob_file = os.path.join(eval_dir, f"temp_baseline_unstructured_prob_{task.task_id}.pddl")
 
     for iteration in range(1, max_retries + 1):
         try:

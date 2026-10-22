@@ -1,0 +1,553 @@
+{
+  "domain_name": "labyrinth23",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "labyrinth23",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "card": "object",
+      "direction": "object",
+      "directionv": "direction",
+      "directionh": "direction",
+      "gridpos": "object"
+    },
+    "predicates": [
+      "(robot-at ?c - card)",
+      "(card-at ?c - card ?x - gridpos ?y - gridpos)",
+      "(blocked ?c - card ?d - direction)",
+      "(cards-moving)",
+      "(cards-moving-west)",
+      "(cards-moving-east)",
+      "(cards-moving-north)",
+      "(cards-moving-south)",
+      "(next-moving-card ?c - card)",
+      "(new-headtail-card ?c - card)",
+      "(next-to ?x - gridpos ?y - gridpos)",
+      "(minimum-position ?x - gridpos)",
+      "(maximum-position ?x - gridpos)",
+      "(on-left)"
+    ],
+    "actions": [
+      {
+        "action_name": "move-west",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "directionh",
+          "?e": "card",
+          "?f": "gridpos",
+          "?g": "gridpos",
+          "?h": "direction"
+        },
+        "preconditions": [
+          "(= ?d w)",
+          "(robot-at ?a)",
+          "(card-at ?a ?b ?c)",
+          "(card-at ?e ?f ?g)",
+          "(next-to ?b ?f)",
+          "(= ?c ?g)",
+          "(not (cards-moving))",
+          "(not (= ?d ?h))",
+          "(not (blocked ?a ?d))",
+          "(not (blocked ?e ?h))"
+        ],
+        "effects": [
+          "(robot-at ?e)",
+          "(not (robot-at ?a))"
+        ]
+      },
+      {
+        "action_name": "move-east",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "directionh",
+          "?e": "card",
+          "?f": "gridpos",
+          "?g": "gridpos",
+          "?h": "direction"
+        },
+        "preconditions": [
+          "(= ?d e)",
+          "(robot-at ?a)",
+          "(card-at ?a ?b ?c)",
+          "(card-at ?e ?f ?g)",
+          "(next-to ?f ?b)",
+          "(= ?c ?g)",
+          "(not (cards-moving))",
+          "(not (= ?d ?h))",
+          "(not (blocked ?a ?d))",
+          "(not (blocked ?e ?h))"
+        ],
+        "effects": [
+          "(robot-at ?e)",
+          "(not (robot-at ?a))"
+        ]
+      },
+      {
+        "action_name": "move-north",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "directionv",
+          "?e": "card",
+          "?f": "gridpos",
+          "?g": "gridpos",
+          "?h": "direction"
+        },
+        "preconditions": [
+          "(= ?d n)",
+          "(robot-at ?a)",
+          "(card-at ?a ?b ?c)",
+          "(card-at ?e ?f ?g)",
+          "(next-to ?c ?g)",
+          "(= ?b ?f)",
+          "(not (cards-moving))",
+          "(not (= ?d ?h))",
+          "(not (blocked ?a ?d))",
+          "(not (blocked ?e ?h))"
+        ],
+        "effects": [
+          "(robot-at ?e)",
+          "(not (robot-at ?a))"
+        ]
+      },
+      {
+        "action_name": "move-south",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "directionv",
+          "?e": "card",
+          "?f": "gridpos",
+          "?g": "gridpos",
+          "?h": "direction"
+        },
+        "preconditions": [
+          "(= ?d s)",
+          "(robot-at ?a)",
+          "(card-at ?a ?b ?c)",
+          "(card-at ?e ?f ?g)",
+          "(next-to ?g ?c)",
+          "(= ?b ?f)",
+          "(not (cards-moving))",
+          "(not (= ?d ?h))",
+          "(not (blocked ?a ?d))",
+          "(not (blocked ?e ?h))"
+        ],
+        "effects": [
+          "(robot-at ?e)",
+          "(not (robot-at ?a))"
+        ]
+      },
+      {
+        "action_name": "start-moving-card-west",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "card",
+          "?e": "gridpos"
+        },
+        "preconditions": [
+          "(card-at ?a ?b ?c)",
+          "(minimum-position ?b)",
+          "(card-at ?d ?e ?c)",
+          "(next-to ?e ?b)",
+          "(not (cards-moving))",
+          "(not (cards-moving-west))",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(cards-moving)",
+          "(cards-moving-west)",
+          "(new-headtail-card ?a)",
+          "(next-moving-card ?d)",
+          "(not (card-at ?a ?b ?c))"
+        ]
+      },
+      {
+        "action_name": "move-card-west",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "card",
+          "?e": "gridpos",
+          "?f": "gridpos"
+        },
+        "preconditions": [
+          "(cards-moving)",
+          "(cards-moving-west)",
+          "(next-moving-card ?a)",
+          "(card-at ?a ?b ?c)",
+          "(card-at ?d ?e ?c)",
+          "(next-to ?b ?f)",
+          "(next-to ?e ?b)",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(card-at ?a ?f ?c)",
+          "(next-moving-card ?d)",
+          "(not (card-at ?a ?b ?c))",
+          "(not (next-moving-card ?a))"
+        ]
+      },
+      {
+        "action_name": "stop-moving-card-west",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "gridpos",
+          "?e": "card"
+        },
+        "preconditions": [
+          "(cards-moving)",
+          "(cards-moving-west)",
+          "(next-moving-card ?a)",
+          "(card-at ?a ?b ?c)",
+          "(next-to ?b ?d)",
+          "(maximum-position ?b)",
+          "(new-headtail-card ?e)",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(card-at ?a ?d ?c)",
+          "(card-at ?e ?b ?c)",
+          "(not (cards-moving))",
+          "(not (cards-moving-west))",
+          "(not (card-at ?a ?b ?c))",
+          "(not (new-headtail-card ?e))",
+          "(not (next-moving-card ?a))"
+        ]
+      },
+      {
+        "action_name": "start-moving-card-east",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "card",
+          "?e": "gridpos"
+        },
+        "preconditions": [
+          "(card-at ?a ?b ?c)",
+          "(maximum-position ?b)",
+          "(card-at ?d ?e ?c)",
+          "(next-to ?b ?e)",
+          "(not (cards-moving))",
+          "(not (cards-moving-east))",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(cards-moving)",
+          "(cards-moving-east)",
+          "(new-headtail-card ?a)",
+          "(next-moving-card ?d)",
+          "(not (card-at ?a ?b ?c))"
+        ]
+      },
+      {
+        "action_name": "move-card-east",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "card",
+          "?e": "gridpos",
+          "?f": "gridpos"
+        },
+        "preconditions": [
+          "(cards-moving)",
+          "(cards-moving-east)",
+          "(next-moving-card ?a)",
+          "(card-at ?a ?b ?c)",
+          "(card-at ?d ?e ?c)",
+          "(next-to ?f ?b)",
+          "(next-to ?b ?e)",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(card-at ?a ?f ?c)",
+          "(next-moving-card ?d)",
+          "(not (card-at ?a ?b ?c))",
+          "(not (next-moving-card ?a))"
+        ]
+      },
+      {
+        "action_name": "stop-moving-card-east",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "gridpos",
+          "?e": "card"
+        },
+        "preconditions": [
+          "(cards-moving)",
+          "(cards-moving-east)",
+          "(next-moving-card ?a)",
+          "(card-at ?a ?b ?c)",
+          "(next-to ?d ?b)",
+          "(minimum-position ?b)",
+          "(new-headtail-card ?e)",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(card-at ?a ?d ?c)",
+          "(card-at ?e ?b ?c)",
+          "(not (cards-moving))",
+          "(not (cards-moving-east))",
+          "(not (card-at ?a ?b ?c))",
+          "(not (new-headtail-card ?e))",
+          "(not (next-moving-card ?a))"
+        ]
+      },
+      {
+        "action_name": "start-moving-card-north",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "card",
+          "?e": "gridpos"
+        },
+        "preconditions": [
+          "(card-at ?a ?b ?c)",
+          "(minimum-position ?c)",
+          "(card-at ?d ?b ?e)",
+          "(next-to ?e ?c)",
+          "(not (cards-moving))",
+          "(not (cards-moving-north))",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(cards-moving)",
+          "(cards-moving-north)",
+          "(new-headtail-card ?a)",
+          "(next-moving-card ?d)",
+          "(not (card-at ?a ?b ?c))"
+        ]
+      },
+      {
+        "action_name": "move-card-north",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "card",
+          "?e": "gridpos",
+          "?f": "gridpos"
+        },
+        "preconditions": [
+          "(cards-moving)",
+          "(cards-moving-north)",
+          "(next-moving-card ?a)",
+          "(card-at ?a ?b ?c)",
+          "(card-at ?d ?b ?e)",
+          "(next-to ?c ?f)",
+          "(next-to ?e ?c)",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(card-at ?a ?b ?f)",
+          "(next-moving-card ?d)",
+          "(not (card-at ?a ?b ?c))",
+          "(not (next-moving-card ?a))"
+        ]
+      },
+      {
+        "action_name": "stop-moving-card-north",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "gridpos",
+          "?e": "card"
+        },
+        "preconditions": [
+          "(cards-moving)",
+          "(cards-moving-north)",
+          "(next-moving-card ?a)",
+          "(card-at ?a ?b ?c)",
+          "(next-to ?c ?d)",
+          "(maximum-position ?c)",
+          "(new-headtail-card ?e)",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(card-at ?a ?b ?d)",
+          "(card-at ?e ?b ?c)",
+          "(not (cards-moving))",
+          "(not (cards-moving-north))",
+          "(not (card-at ?a ?b ?c))",
+          "(not (new-headtail-card ?e))",
+          "(not (next-moving-card ?a))"
+        ]
+      },
+      {
+        "action_name": "start-moving-card-south",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "card",
+          "?e": "gridpos"
+        },
+        "preconditions": [
+          "(card-at ?a ?b ?c)",
+          "(maximum-position ?c)",
+          "(card-at ?d ?b ?e)",
+          "(next-to ?c ?e)",
+          "(not (cards-moving))",
+          "(not (cards-moving-south))",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(cards-moving)",
+          "(cards-moving-south)",
+          "(new-headtail-card ?a)",
+          "(next-moving-card ?d)",
+          "(not (card-at ?a ?b ?c))"
+        ]
+      },
+      {
+        "action_name": "move-card-south",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "card",
+          "?e": "gridpos",
+          "?f": "gridpos"
+        },
+        "preconditions": [
+          "(cards-moving)",
+          "(cards-moving-south)",
+          "(next-moving-card ?a)",
+          "(card-at ?a ?b ?c)",
+          "(card-at ?d ?b ?e)",
+          "(next-to ?f ?c)",
+          "(next-to ?c ?e)",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(card-at ?a ?b ?f)",
+          "(next-moving-card ?d)",
+          "(not (card-at ?a ?b ?c))",
+          "(not (next-moving-card ?a))"
+        ]
+      },
+      {
+        "action_name": "stop-moving-card-south",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos",
+          "?d": "gridpos",
+          "?e": "card"
+        },
+        "preconditions": [
+          "(cards-moving)",
+          "(cards-moving-south)",
+          "(next-moving-card ?a)",
+          "(card-at ?a ?b ?c)",
+          "(next-to ?d ?c)",
+          "(minimum-position ?c)",
+          "(new-headtail-card ?e)",
+          "(not (robot-at ?a))"
+        ],
+        "effects": [
+          "(card-at ?a ?b ?d)",
+          "(card-at ?e ?b ?c)",
+          "(not (cards-moving))",
+          "(not (cards-moving-south))",
+          "(not (card-at ?a ?b ?c))",
+          "(not (new-headtail-card ?e))",
+          "(not (next-moving-card ?a))"
+        ]
+      },
+      {
+        "action_name": "leave-card",
+        "parameters": {
+          "?a": "card",
+          "?b": "gridpos",
+          "?c": "gridpos"
+        },
+        "preconditions": [
+          "(robot-at ?a)",
+          "(card-at ?a ?b ?c)",
+          "(maximum-position ?b)",
+          "(maximum-position ?c)",
+          "(not (cards-moving))",
+          "(not (blocked ?a s))"
+        ],
+        "effects": [
+          "(on-left)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "labyrinth23",
+    "objects": {
+      "pos0": "gridpos",
+      "pos1": "gridpos",
+      "pos2": "gridpos",
+      "card0": "card",
+      "card1": "card",
+      "card2": "card",
+      "card3": "card",
+      "card4": "card",
+      "card5": "card",
+      "card6": "card",
+      "card7": "card",
+      "card8": "card",
+      "n": "directionv",
+      "s": "directionv",
+      "e": "directionh",
+      "w": "directionh"
+    },
+    "initial_state": [
+      "(maximum-position pos2)",
+      "(minimum-position pos0)",
+      "(next-to pos1 pos0)",
+      "(next-to pos2 pos1)",
+      "(card-at card0 pos0 pos0)",
+      "(card-at card4 pos1 pos0)",
+      "(card-at card2 pos2 pos0)",
+      "(card-at card3 pos0 pos1)",
+      "(card-at card7 pos1 pos1)",
+      "(card-at card5 pos2 pos1)",
+      "(card-at card6 pos0 pos2)",
+      "(card-at card1 pos1 pos2)",
+      "(card-at card8 pos2 pos2)",
+      "(blocked card0 n)",
+      "(blocked card4 w)",
+      "(blocked card2 n)",
+      "(blocked card3 n)",
+      "(blocked card7 s)",
+      "(blocked card7 w)",
+      "(blocked card5 e)",
+      "(blocked card6 e)",
+      "(blocked card6 s)",
+      "(blocked card1 n)",
+      "(blocked card8 e)",
+      "(robot-at card0)"
+    ],
+    "goal_state": [
+      "(on-left)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

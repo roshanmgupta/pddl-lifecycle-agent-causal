@@ -1,0 +1,160 @@
+{
+  "domain_name": "depots_domain",
+  "run_index": 6,
+  "domain_blueprint": {
+    "domain_name": "depots_domain",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "crate": "object",
+      "hoist": "object",
+      "locatable": "object",
+      "pallet": "object",
+      "place": "object",
+      "truck": "object",
+      "depot": "place",
+      "distributor": "place"
+    },
+    "predicates": [
+      "(at-hoist ?h - hoist ?d - place)",
+      "(at-truck ?t - truck ?d - place)",
+      "(on ?c - crate ?p - pallet)",
+      "(on ?c - crate ?o - crate)",
+      "(in ?c - crate ?t - truck)",
+      "(clear ?x - (either pallet crate))",
+      "(needs-maintenance ?h - hoist)"
+    ],
+    "actions": [
+      {
+        "action_name": "lift",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?p": "pallet",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(at-hoist ?h ?d)",
+          "(on ?c ?p)",
+          "(clear ?c)"
+        ],
+        "effects": [
+          "(not (on ?c ?p))",
+          "(not (clear ?c))",
+          "(clear ?p)",
+          "(needs-maintenance ?h)"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?p": "pallet",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(at-hoist ?h ?d)",
+          "(clear ?p)"
+        ],
+        "effects": [
+          "(on ?c ?p)",
+          "(clear ?c)",
+          "(not (clear ?p))",
+          "(needs-maintenance ?h)"
+        ]
+      },
+      {
+        "action_name": "load",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(at-hoist ?h ?d)",
+          "(at-truck ?t ?d)",
+          "(clear ?c)"
+        ],
+        "effects": [
+          "(in ?c ?t)",
+          "(not (clear ?c))",
+          "(needs-maintenance ?h)"
+        ]
+      },
+      {
+        "action_name": "unload",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(at-hoist ?h ?d)",
+          "(at-truck ?t ?d)",
+          "(in ?c ?t)"
+        ],
+        "effects": [
+          "(not (in ?c ?t))",
+          "(clear ?c)",
+          "(needs-maintenance ?h)"
+        ]
+      },
+      {
+        "action_name": "drive",
+        "parameters": {
+          "?t": "truck",
+          "?from": "place",
+          "?to": "place"
+        },
+        "preconditions": [
+          "(at-truck ?t ?from)"
+        ],
+        "effects": [
+          "(not (at-truck ?t ?from))",
+          "(at-truck ?t ?to)"
+        ]
+      },
+      {
+        "action_name": "service-hoist",
+        "parameters": {
+          "?h": "hoist",
+          "?d": "place"
+        },
+        "preconditions": [
+          "(at-hoist ?h ?d)",
+          "(needs-maintenance ?h)"
+        ],
+        "effects": [
+          "(not (needs-maintenance ?h))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "depots_problem",
+    "domain_name": "depots_domain",
+    "objects": {
+      "t1": "truck",
+      "h1": "hoist",
+      "d1": "depot",
+      "c1": "crate",
+      "p1": "pallet"
+    },
+    "initial_state": [
+      "(at-hoist h1 d1)",
+      "(at-truck t1 d1)",
+      "(on c1 p1)",
+      "(clear c1)"
+    ],
+    "goal_state": [
+      "(in c1 t1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-10-20T13:37:26.317992",
+  "domain_name": "satellite",
+  "run_index": 5,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking turn-satellite\n...action passes type checking.\nType-checking switch-on-instrument\nType problem with proposition (power-available i) - parameter 1 is incorrectly typed\nEffects fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [
+    "VAL Error: Type-checking turn-satellite\n...action passes type checking.\nType-checking switch-on-instrument\n...action passes type checking.\nType-checking switch-off-instrument\nType problem with proposition (power-available i) - parameter 1 is incorrectly typed\nEffects fail type-checking.\n\nType problem in domain description!"
+  ],
+  "diagnostic_issues_count": 5,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "switch-on-instrument",
+      "raw_log": "Type problem with proposition (power-available i) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Change the effect '(power-available ?i)' to '(power-available ?s)' in the 'switch-on-instrument' action to ensure the correct type is used."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "switch-off-instrument",
+      "raw_log": "Type problem with proposition (power-available i) - parameter 1 is incorrectly typed Conditions fail type-checking.",
+      "suggested_repair_hint": "Change the precondition '(power-available ?i)' in the 'switch-off-instrument' action to '(power-available ?s)' to match the correct type for the satellite."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "switch-off-instrument",
+      "raw_log": "Type problem with proposition (power-available i) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Change the predicate 'power-available' to accept only satellites as its parameter. Ensure that all actions referencing this predicate use the correct type signature."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "switch-off-instrument",
+      "raw_log": "Type problem with proposition (power-available i) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Change the predicate 'power-available' to accept only satellites as its parameter. Ensure that all actions using this predicate are consistent with this type."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": null,
+      "raw_log": "Type problem in domain description!",
+      "suggested_repair_hint": "Review all predicates and ensure that their parameter types are consistent with their usage in actions. Specifically, ensure that 'power-available' is not conflated with other types."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: switch-off-instrument\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (power-available i) - parameter 1 is incorrectly typed\n  - [SUGGESTION FOR REPAIR]: Change the predicate 'power-available' to accept only satellites as its parameter. Ensure that all actions using this predicate are consistent with this type.",
+  "plan_summary": null
+}

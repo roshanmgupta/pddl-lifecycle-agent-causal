@@ -1,0 +1,124 @@
+{
+  "domain_name": "parking_lot",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "parking_lot",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "car": "object",
+      "curb": "object"
+    },
+    "predicates": [
+      "(at ?c - car ?loc - object)",
+      "(behind ?c1 - car ?c2 - car)",
+      "(clear ?c - car)",
+      "(clear_curb ?curb - curb)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_curb_to_curb",
+        "parameters": {
+          "?a": "car",
+          "?b": "curb",
+          "?c": "curb"
+        },
+        "preconditions": [
+          "(clear ?a)",
+          "(clear_curb ?c)",
+          "(at ?a ?b)"
+        ],
+        "effects": [
+          "(not (at ?a ?b))",
+          "(at ?a ?c)",
+          "(clear_curb ?b)",
+          "(not (clear_curb ?c))"
+        ]
+      },
+      {
+        "action_name": "move_curb_to_behind",
+        "parameters": {
+          "?a": "car",
+          "?b": "curb",
+          "?c": "car"
+        },
+        "preconditions": [
+          "(clear ?a)",
+          "(clear ?c)",
+          "(at ?a ?b)",
+          "(at ?c ?b)"
+        ],
+        "effects": [
+          "(not (at ?a ?b))",
+          "(behind ?a ?c)",
+          "(clear_curb ?b)",
+          "(not (clear ?c))"
+        ]
+      },
+      {
+        "action_name": "move_behind_to_curb",
+        "parameters": {
+          "?a": "car",
+          "?b": "car",
+          "?c": "curb"
+        },
+        "preconditions": [
+          "(clear ?a)",
+          "(clear_curb ?c)",
+          "(behind ?a ?b)"
+        ],
+        "effects": [
+          "(not (behind ?a ?b))",
+          "(at ?a ?c)",
+          "(clear ?b)",
+          "(not (clear_curb ?c))"
+        ]
+      },
+      {
+        "action_name": "move_behind_to_behind",
+        "parameters": {
+          "?a": "car",
+          "?b": "car",
+          "?c": "car"
+        },
+        "preconditions": [
+          "(clear ?a)",
+          "(clear ?c)",
+          "(behind ?a ?b)",
+          "(at ?c ?b)"
+        ],
+        "effects": [
+          "(not (behind ?a ?b))",
+          "(behind ?a ?c)",
+          "(clear ?b)",
+          "(not (clear ?c))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "parking_problem",
+    "domain_name": "parking_lot",
+    "objects": {
+      "car1": "car",
+      "car2": "car",
+      "curb1": "curb",
+      "curb2": "curb"
+    },
+    "initial_state": [
+      "(at car1 curb1)",
+      "(at car2 curb2)",
+      "(clear car1)",
+      "(clear car2)",
+      "(clear_curb curb1)",
+      "(clear_curb curb2)"
+    ],
+    "goal_state": [
+      "(at car1 curb2)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

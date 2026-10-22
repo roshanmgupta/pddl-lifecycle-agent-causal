@@ -1,0 +1,119 @@
+(define (problem instance-2)
+  (:domain visitall_scaled)
+
+  (:objects
+    r1 - robot
+    x0-y0 - loc
+    x0-y1 - loc
+    x0-y2 - loc
+    x0-y3 - loc
+    x0-y4 - loc
+    x1-y0 - loc
+    x1-y1 - loc
+    x1-y2 - loc
+    x1-y3 - loc
+    x1-y4 - loc
+    x2-y0 - loc
+    x2-y1 - loc
+    x2-y2 - loc
+    x2-y3 - loc
+    x2-y4 - loc
+    x3-y0 - loc
+    x3-y1 - loc
+    x3-y2 - loc
+    x3-y3 - loc
+    x3-y4 - loc
+    x4-y0 - loc
+    x4-y1 - loc
+    x4-y2 - loc
+    x4-y3 - loc
+    x4-y4 - loc
+  )
+
+  (:init
+    (at r1 x3-y1)
+    (visited x3-y1)
+    (connected x0-y0 x1-y0)
+    (connected x0-y0 x0-y1)
+    (connected x0-y1 x1-y1)
+    (connected x0-y1 x0-y0)
+    (connected x0-y1 x0-y2)
+    (connected x0-y2 x1-y2)
+    (connected x0-y2 x0-y1)
+    (connected x0-y2 x0-y3)
+    (connected x0-y3 x1-y3)
+    (connected x0-y3 x0-y2)
+    (connected x0-y3 x0-y4)
+    (connected x0-y4 x1-y4)
+    (connected x0-y4 x0-y3)
+    (connected x1-y0 x0-y0)
+    (connected x1-y0 x2-y0)
+    (connected x1-y0 x1-y1)
+    (connected x1-y1 x0-y1)
+    (connected x1-y1 x2-y1)
+    (connected x1-y1 x1-y0)
+    (connected x1-y1 x1-y2)
+    (connected x1-y2 x0-y2)
+    (connected x1-y2 x2-y2)
+    (connected x1-y2 x1-y1)
+    (connected x1-y2 x1-y3)
+    (connected x1-y3 x0-y3)
+    (connected x1-y3 x2-y3)
+    (connected x1-y3 x1-y2)
+    (connected x1-y3 x1-y4)
+    (connected x1-y4 x0-y4)
+    (connected x1-y4 x2-y4)
+    (connected x1-y4 x1-y3)
+    (connected x2-y0 x1-y0)
+    (connected x2-y0 x3-y0)
+    (connected x2-y0 x2-y1)
+    (connected x2-y1 x1-y1)
+    (connected x2-y1 x3-y1)
+    (connected x2-y1 x2-y0)
+    (connected x2-y1 x2-y2)
+    (connected x2-y2 x1-y2)
+    (connected x2-y2 x3-y2)
+    (connected x2-y2 x2-y1)
+    (connected x2-y2 x2-y3)
+    (connected x2-y3 x1-y3)
+    (connected x2-y3 x3-y3)
+    (connected x2-y3 x2-y2)
+    (connected x2-y3 x2-y4)
+    (connected x2-y4 x1-y4)
+    (connected x2-y4 x3-y4)
+    (connected x2-y4 x2-y3)
+    (connected x3-y0 x2-y0)
+    (connected x3-y0 x4-y0)
+    (connected x3-y0 x3-y1)
+    (connected x3-y1 x2-y1)
+    (connected x3-y1 x4-y1)
+    (connected x3-y1 x3-y0)
+    (connected x3-y1 x3-y2)
+    (connected x3-y2 x2-y2)
+    (connected x3-y2 x4-y2)
+    (connected x3-y2 x3-y1)
+    (connected x3-y2 x3-y3)
+    (connected x3-y3 x2-y3)
+    (connected x3-y3 x4-y3)
+    (connected x3-y3 x3-y2)
+    (connected x3-y3 x3-y4)
+    (connected x3-y4 x2-y4)
+    (connected x3-y4 x4-y4)
+    (connected x3-y4 x3-y3)
+    (connected x4-y0 x3-y0)
+    (connected x4-y0 x4-y1)
+    (connected x4-y1 x3-y1)
+    (connected x4-y1 x4-y0)
+    (connected x4-y1 x4-y2)
+    (connected x4-y2 x3-y2)
+    (connected x4-y2 x4-y1)
+    (connected x4-y2 x4-y3)
+    (connected x4-y3 x3-y3)
+    (connected x4-y3 x4-y2)
+    (connected x4-y3 x4-y4)
+    (connected x4-y4 x3-y4)
+    (connected x4-y4 x4-y3)
+  )
+
+  (:goal (and (visited x0-y0) (visited x0-y1) (visited x0-y2) (visited x0-y3) (visited x0-y4) (visited x1-y0) (visited x1-y1) (visited x1-y2) (visited x1-y3) (visited x1-y4) (visited x2-y0) (visited x2-y1) (visited x2-y2) (visited x2-y3) (visited x2-y4) (visited x3-y0) (visited x3-y1) (visited x3-y2) (visited x3-y3) (visited x3-y4) (visited x4-y0) (visited x4-y1) (visited x4-y2) (visited x4-y3) (visited x4-y4)))
+)

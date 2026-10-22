@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-10-22T22:36:21.871051",
+  "domain_name": "rovers",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 10,
+    "search_time_seconds": 0.000219,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(navigate rover0 waypoint0 waypoint1)",
+      "(sample-rock rover0 waypoint1 rover0store)",
+      "(communicate-rock-data rover0 waypoint1 general waypoint1 waypoint0)",
+      "(navigate rover0 waypoint1 waypoint0)",
+      "(navigate rover0 waypoint0 waypoint2)",
+      "(calibrate rover0 camera0 objective0 waypoint2)",
+      "(sample-soil rover0 waypoint2 rover0store)",
+      "(communicate-soil-data rover0 waypoint2 general waypoint2 waypoint0)",
+      "(take-image rover0 waypoint2 objective0 camera0 colour)",
+      "(communicate-image-data rover0 waypoint2 general objective0 camera0 colour waypoint0)"
+    ]
+  }
+}

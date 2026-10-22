@@ -1,0 +1,190 @@
+{
+  "domain_name": "goldminer",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "goldminer",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "loc": "object",
+      "robot": "object",
+      "item": "object"
+    },
+    "predicates": [
+      "(robot-at ?r - robot ?l - loc)",
+      "(connected ?from - loc ?to - loc)",
+      "(clear ?l - loc)",
+      "(holding-laser ?r - robot)",
+      "(holding-bomb ?r - robot)",
+      "(holding-gold ?r - robot)",
+      "(arm-empty ?r - robot)",
+      "(laser-at ?l - loc)",
+      "(bomb-at ?l - loc)",
+      "(gold-at ?l - loc)",
+      "(soft-rock-at ?l - loc)",
+      "(hard-rock-at ?l - loc)"
+    ],
+    "actions": [
+      {
+        "action_name": "move",
+        "parameters": {
+          "?r": "robot",
+          "?from": "loc",
+          "?to": "loc"
+        },
+        "preconditions": [
+          "(robot-at ?r ?from)",
+          "(connected ?from ?to)",
+          "(clear ?to)"
+        ],
+        "effects": [
+          "(not (robot-at ?r ?from))",
+          "(robot-at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "pick-laser",
+        "parameters": {
+          "?r": "robot",
+          "?l": "loc"
+        },
+        "preconditions": [
+          "(robot-at ?r ?l)",
+          "(laser-at ?l)",
+          "(arm-empty ?r)"
+        ],
+        "effects": [
+          "(not (laser-at ?l))",
+          "(not (arm-empty ?r))",
+          "(holding-laser ?r)"
+        ]
+      },
+      {
+        "action_name": "pick-bomb",
+        "parameters": {
+          "?r": "robot",
+          "?l": "loc"
+        },
+        "preconditions": [
+          "(robot-at ?r ?l)",
+          "(bomb-at ?l)",
+          "(arm-empty ?r)"
+        ],
+        "effects": [
+          "(not (bomb-at ?l))",
+          "(not (arm-empty ?r))",
+          "(holding-bomb ?r)"
+        ]
+      },
+      {
+        "action_name": "put-laser",
+        "parameters": {
+          "?r": "robot",
+          "?l": "loc"
+        },
+        "preconditions": [
+          "(robot-at ?r ?l)",
+          "(holding-laser ?r)"
+        ],
+        "effects": [
+          "(not (holding-laser ?r))",
+          "(arm-empty ?r)",
+          "(laser-at ?l)"
+        ]
+      },
+      {
+        "action_name": "detonate-bomb",
+        "parameters": {
+          "?r": "robot",
+          "?a": "loc",
+          "?b": "loc"
+        },
+        "preconditions": [
+          "(robot-at ?r ?a)",
+          "(holding-bomb ?r)",
+          "(connected ?a ?b)",
+          "(soft-rock-at ?b)"
+        ],
+        "effects": [
+          "(not (holding-bomb ?r))",
+          "(arm-empty ?r)",
+          "(clear ?b)",
+          "(not (soft-rock-at ?b))"
+        ]
+      },
+      {
+        "action_name": "fire-laser",
+        "parameters": {
+          "?r": "robot",
+          "?a": "loc",
+          "?b": "loc"
+        },
+        "preconditions": [
+          "(robot-at ?r ?a)",
+          "(holding-laser ?r)",
+          "(connected ?a ?b)"
+        ],
+        "effects": [
+          "(clear ?b)",
+          "(not (soft-rock-at ?b))",
+          "(not (gold-at ?b))",
+          "(not (hard-rock-at ?b))"
+        ]
+      },
+      {
+        "action_name": "pick-gold",
+        "parameters": {
+          "?r": "robot",
+          "?l": "loc"
+        },
+        "preconditions": [
+          "(robot-at ?r ?l)",
+          "(arm-empty ?r)",
+          "(gold-at ?l)"
+        ],
+        "effects": [
+          "(not (arm-empty ?r))",
+          "(holding-gold ?r)",
+          "(not (gold-at ?l))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "goldminer",
+    "objects": {
+      "r1": "robot",
+      "f0-0f": "loc",
+      "f0-1f": "loc",
+      "f1-0f": "loc",
+      "f1-1f": "loc"
+    },
+    "initial_state": [
+      "(arm-empty r1)",
+      "(connected f0-0f f0-1f)",
+      "(connected f1-0f f1-1f)",
+      "(connected f0-0f f1-0f)",
+      "(connected f0-1f f1-1f)",
+      "(connected f0-1f f0-0f)",
+      "(connected f1-1f f1-0f)",
+      "(connected f1-0f f0-0f)",
+      "(connected f1-1f f0-1f)",
+      "(robot-at r1 f0-0f)",
+      "(clear f0-0f)",
+      "(soft-rock-at f0-1f)",
+      "(bomb-at f1-0f)",
+      "(laser-at f1-0f)",
+      "(clear f1-0f)",
+      "(gold-at f1-1f)",
+      "(soft-rock-at f1-1f)"
+    ],
+    "goal_state": [
+      "(holding-gold r1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

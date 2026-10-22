@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-10-15T23:08:52.512426",
+  "domain_name": "spanner",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 2,
+    "search_time_seconds": 8e-05,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(walk garden gate bob)",
+      "(tighten_nut gate spanner1 bob nut1)"
+    ]
+  }
+}

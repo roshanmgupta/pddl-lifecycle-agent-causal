@@ -1,0 +1,176 @@
+{
+  "domain_name": "planetary_exploration",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "planetary_exploration",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "equipment": "object",
+      "soil_analysis_tool": "equipment",
+      "rock_sampling_tool": "equipment",
+      "camera": "equipment",
+      "rover": "object",
+      "waypoint": "object",
+      "lander": "object",
+      "image_type": "object"
+    },
+    "predicates": [
+      "(at ?r - rover ?w - waypoint)",
+      "(carrying ?r - rover ?e - equipment)",
+      "(has_line_of_sight ?w1 - waypoint ?w2 - waypoint)",
+      "(has_line_of_sight_to_lander ?w - waypoint ?l - lander)",
+      "(sample_collected ?r - rover ?w - waypoint)",
+      "(camera_calibrated ?c - camera)",
+      "(image_taken ?r - rover ?w - waypoint ?type - image_type)",
+      "(data_transmitted ?r - rover ?l - lander)"
+    ],
+    "actions": [
+      {
+        "action_name": "navigate",
+        "parameters": {
+          "?r": "rover",
+          "?from": "waypoint",
+          "?to": "waypoint"
+        },
+        "preconditions": [
+          "(at ?r ?from)",
+          "(has_line_of_sight ?from ?to)"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "collect_soil_sample",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint",
+          "?tool": "soil_analysis_tool"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(carrying ?r ?tool)"
+        ],
+        "effects": [
+          "(sample_collected ?r ?w)"
+        ]
+      },
+      {
+        "action_name": "collect_rock_sample",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint",
+          "?tool": "rock_sampling_tool"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(carrying ?r ?tool)"
+        ],
+        "effects": [
+          "(sample_collected ?r ?w)"
+        ]
+      },
+      {
+        "action_name": "calibrate_camera",
+        "parameters": {
+          "?r": "rover",
+          "?c": "camera"
+        },
+        "preconditions": [
+          "(carrying ?r ?c)"
+        ],
+        "effects": [
+          "(camera_calibrated ?c)"
+        ]
+      },
+      {
+        "action_name": "take_panoramic_image",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint",
+          "?c": "camera",
+          "?type": "image_type"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(carrying ?r ?c)",
+          "(camera_calibrated ?c)"
+        ],
+        "effects": [
+          "(image_taken ?r ?w ?type)"
+        ]
+      },
+      {
+        "action_name": "take_high_resolution_image",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint",
+          "?c": "camera",
+          "?type": "image_type"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(carrying ?r ?c)",
+          "(camera_calibrated ?c)"
+        ],
+        "effects": [
+          "(image_taken ?r ?w ?type)"
+        ]
+      },
+      {
+        "action_name": "transmit_data",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint",
+          "?l": "lander"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(has_line_of_sight_to_lander ?w ?l)",
+          "(sample_collected ?r ?w)"
+        ],
+        "effects": [
+          "(data_transmitted ?r ?l)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "mars_exploration_mission",
+    "domain_name": "planetary_exploration",
+    "objects": {
+      "r1": "rover",
+      "w1": "waypoint",
+      "w2": "waypoint",
+      "w3": "waypoint",
+      "l1": "lander",
+      "soil_tool1": "soil_analysis_tool",
+      "rock_tool1": "rock_sampling_tool",
+      "camera1": "camera",
+      "panoramic": "image_type",
+      "high_resolution": "image_type"
+    },
+    "initial_state": [
+      "(at r1 w1)",
+      "(carrying r1 soil_tool1)",
+      "(carrying r1 rock_tool1)",
+      "(carrying r1 camera1)",
+      "(has_line_of_sight w1 w2)",
+      "(has_line_of_sight w2 w3)",
+      "(has_line_of_sight_to_lander w3 l1)"
+    ],
+    "goal_state": [
+      "(sample_collected r1 w2)",
+      "(sample_collected r1 w3)",
+      "(image_taken r1 w2 panoramic)",
+      "(image_taken r1 w3 high_resolution)",
+      "(data_transmitted r1 l1)"
+    ]
+  },
+  "iteration_count": 2,
+  "is_valid": true
+}

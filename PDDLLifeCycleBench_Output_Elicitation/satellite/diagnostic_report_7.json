@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-10-20T13:46:58.144931",
+  "domain_name": "satellite",
+  "run_index": 7,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 1,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking turn-satellite\n...action passes type checking.\nType-checking switch-on-instrument\nObject with unknown type: d\n\nErrors: 0, warnings: 1\n\nError: Error in type-checking!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 1,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "switch-on-instrument",
+      "raw_log": "Type-checking switch-on-instrument Object with unknown type: d",
+      "suggested_repair_hint": "Declare a new dedicated predicate for the calibration state of instruments, such as '(calibrated ?i - instrument)'. Update the 'switch-on-instrument' action to assert this new predicate and ensure that it does not conflict with other actions."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 5,
+    "search_time_seconds": 0.000183,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(switch-on-instrument instrument0 satellite0)",
+      "(turn-satellite satellite0 star2 groundstation1)",
+      "(calibrate-instrument instrument0 satellite0 groundstation1)",
+      "(turn-satellite satellite0 groundstation1 star2)",
+      "(take-image satellite0 instrument0 star2 image0)"
+    ]
+  }
+}

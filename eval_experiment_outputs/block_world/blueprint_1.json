@@ -1,0 +1,94 @@
+{
+  "domain_name": "block_world",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "block_world",
+    "requirements": [
+      "pick_up",
+      "put_down"
+    ],
+    "types": {
+      "block": "location",
+      "location": "object",
+      "robot": "agent",
+      "table": "location"
+    },
+    "predicates": [
+      "(at ?r - robot ?l - location)",
+      "(on ?x - block ?y - location)",
+      "(clear ?l - location)",
+      "(holding ?r - robot ?o - block)",
+      "(handempty ?r - robot)"
+    ],
+    "actions": [
+      {
+        "action_name": "pick_up",
+        "parameters": {
+          "?l": "location",
+          "?o": "block",
+          "?r": "robot"
+        },
+        "preconditions": [
+          "(at ?r ?l)",
+          "(on ?o ?l)",
+          "(clear ?o)",
+          "(handempty ?r)"
+        ],
+        "effects": [
+          "(holding ?r ?o)",
+          "(not (on ?o ?l))",
+          "(not (clear ?o))",
+          "(not (handempty ?r))",
+          "(clear ?l)"
+        ]
+      },
+      {
+        "action_name": "put_down",
+        "parameters": {
+          "?l": "location",
+          "?o": "block",
+          "?r": "robot"
+        },
+        "preconditions": [
+          "(holding ?r ?o)",
+          "(clear ?l)"
+        ],
+        "effects": [
+          "(not (holding ?r ?o))",
+          "(on ?o ?l)",
+          "(not (clear ?l))",
+          "(handempty ?r)",
+          "(clear ?o)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "block_stacking",
+    "domain_name": "block_world",
+    "objects": {
+      "b1": "block",
+      "b2": "block",
+      "b3": "block",
+      "b4": "block",
+      "b5": "block",
+      "robot": "robot",
+      "table": "table"
+    },
+    "initial_state": [
+      "(on b3 b2)",
+      "(on b2 b5)",
+      "(on b5 b1)",
+      "(on b1 b4)",
+      "(on b4 table)",
+      "(clear b3)",
+      "(at robot table)",
+      "(handempty robot)"
+    ],
+    "goal_state": [
+      "(on b4 b3)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

@@ -1,0 +1,110 @@
+{
+  "timestamp": "2026-10-19T03:16:45.029483",
+  "domain_name": "barman",
+  "run_index": 9,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 4,
+  "initial_verification_errors": [
+    "VAL Error: VAL Parser Crash (exit code 3221225477): Syntax violation detected. Check for undeclared variables or inline type annotations in action expressions."
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 11,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "leave",
+      "suspiciousness_score": 0.9,
+      "raw_log": "VAL Parser Crash (exit code 3221225477): Syntax violation detected. Check for undeclared variables or inline type annotations in action expressions.",
+      "suggested_repair_hint": "The 'leave' action has a type mismatch in its parameters. The parameter '?h' is declared as type 'hand' but is used in a way that conflicts with its type. Ensure all parameters in the action's preconditions and effects match their declared types exactly. Specifically, verify that '?h' is consistently used as a 'hand' type throughout the action's definition."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "leave",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Mutual dependency cycle detected: pour-shot-to-used-shaker -> pour-shot-to-clean-shaker -> pour-shot-to-used-shaker",
+      "suggested_repair_hint": "The 'leave' action is part of a deadlock cycle in the causal graph. To resolve this, consider adding a precondition to 'leave' that ensures it can only be executed when no other actions that depend on its effects are pending. This might involve adding a condition that checks for the absence of certain predicates related to the containers being manipulated by other actions."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "fill-shot",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Type problem with proposition (holding h1 s) - parameter 1 is incorrectly typed\nConditions fail type-checking.",
+      "suggested_repair_hint": "The parameter '?h1' in action 'fill-shot' is incorrectly typed as 'object'. It should be typed as 'hand' to match the predicate '(holding ?h - hand ?c - container)' declaration. Update the parameter type in the action's parameters list."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "grasp",
+      "suspiciousness_score": 0.4,
+      "raw_log": "Predicate 'holding' is deleted by ['leave'] but has NO producer action in domain!",
+      "suggested_repair_hint": "The action 'grasp' produces the 'holding' predicate but doesn't properly align with 'leave' which deletes it. Ensure state transitions are complete by having 'grasp' properly establish all necessary preconditions for 'leave' to work."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "leave",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Mutual dependency cycles detected in causal graph",
+      "suggested_repair_hint": "The action 'leave' has a precondition '(not (state_deadlock_mutex_lock))' which creates deadlock potential. Consider removing this precondition or ensuring the mutex lock is properly managed across all actions that might interact with it."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pour-shot-to-clean-shaker",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (shaker-level d l) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "The parameter '?l' in action 'pour-shot-to-clean-shaker' is declared as type 'object' but should be 'level' to match the predicate 'shaker-level' declaration. Update the parameter type in the action's parameters from 'object' to 'level'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pour-shot-to-used-shaker",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Type problem with proposition (shaker-level d l) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "The parameter '?l' in action 'pour-shot-to-used-shaker' is declared as type 'object' but should be 'level' to match the predicate 'shaker-level' declaration. Update the parameter type in the action's parameters from 'object' to 'level'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pour-shaker-to-shot",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Type problem with proposition (shaker-level s l) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "The parameter '?l' in action 'pour-shaker-to-shot' is declared as type 'object' but should be 'level' to match the predicate 'shaker-level' declaration. Update the parameter type in the action's parameters from 'object' to 'level'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "empty-shaker",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Type problem with proposition (shaker-level s l) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "The parameter '?l' in action 'empty-shaker' is declared as type 'object' but should be 'level' to match the predicate 'shaker-level' declaration. Update the parameter type in the action's parameters from 'object' to 'level'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "shake",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (contains s d1) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "The 'shake' action has a type mismatch in the '(contains ?s ?d1)' predicate. The second parameter should be of type 'ingredient' to match the domain's beverage hierarchy. Update the parameter types in the 'shake' action to ensure consistency with the predicate declarations."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "leave",
+      "suspiciousness_score": 0.4,
+      "raw_log": "Predicate 'holding' is deleted by ['leave'] but has NO producer action in domain!",
+      "suggested_repair_hint": "The 'leave' action deletes the 'holding' predicate but there's no clear producer action. Consider adding a precondition to ensure 'holding' is properly established before 'leave' can be executed, or review the action sequence to ensure proper state transitions."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 0,
+    "search_time_seconds": 5.7e-05,
+    "val_plan_valid": true,
+    "plan_steps": []
+  }
+}

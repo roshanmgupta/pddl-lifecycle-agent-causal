@@ -1,0 +1,4 @@
+1: (pick-up robot0 key0 pos1-0)
+2: (unlock robot0 pos1-0 pos1-1 key0 shape0)
+3: (move robot0 pos1-0 pos1-1)
+4: (put-down robot0 key0 pos1-1)

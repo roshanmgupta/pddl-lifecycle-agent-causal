@@ -1,0 +1,193 @@
+{
+  "domain_name": "depot",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "depot",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null,
+      "place": "object",
+      "depot": "place",
+      "distributor": "place",
+      "locatable": "object",
+      "truck": "locatable",
+      "hoist": "locatable",
+      "surface": "locatable",
+      "pallet": "surface",
+      "crate": "surface"
+    },
+    "constants": {},
+    "predicates": [
+      "(at ?x - object ?loc - place)",
+      "(clear ?x - surface)",
+      "(available ?h - hoist)",
+      "(lifting ?h - hoist ?c - crate)",
+      "(in ?c - crate ?t - truck)",
+      "(on ?c1 - crate ?c2 - surface)"
+    ],
+    "actions": [
+      {
+        "action_name": "drive_truck",
+        "parameters": {
+          "?t": "truck",
+          "?from": "place",
+          "?to": "place"
+        },
+        "preconditions": [
+          "(at ?t ?from)"
+        ],
+        "effects": [
+          "(at ?t ?to)",
+          "(not (at ?t ?from))"
+        ]
+      },
+      {
+        "action_name": "lift_hoist",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?s": "surface",
+          "?loc": "place"
+        },
+        "preconditions": [
+          "(at ?h ?loc)",
+          "(available ?h)",
+          "(at ?c ?loc)",
+          "(on ?c ?s)",
+          "(clear ?c)"
+        ],
+        "effects": [
+          "(lifting ?h ?c)",
+          "(not (at ?c ?loc))",
+          "(not (clear ?c))",
+          "(not (available ?h))",
+          "(not (on ?c ?s))",
+          "(clear ?s)"
+        ]
+      },
+      {
+        "action_name": "drop_crate",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?s": "surface",
+          "?loc": "place"
+        },
+        "preconditions": [
+          "(at ?h ?loc)",
+          "(at ?s ?loc)",
+          "(clear ?s)",
+          "(lifting ?h ?c)"
+        ],
+        "effects": [
+          "(available ?h)",
+          "(at ?c ?loc)",
+          "(clear ?c)",
+          "(on ?c ?s)",
+          "(not (lifting ?h ?c))",
+          "(not (clear ?s))"
+        ]
+      },
+      {
+        "action_name": "load_crate",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?loc": "place"
+        },
+        "preconditions": [
+          "(at ?h ?loc)",
+          "(at ?t ?loc)",
+          "(lifting ?h ?c)"
+        ],
+        "effects": [
+          "(in ?c ?t)",
+          "(available ?h)",
+          "(not (lifting ?h ?c))"
+        ]
+      },
+      {
+        "action_name": "unload_crate",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?loc": "place"
+        },
+        "preconditions": [
+          "(at ?h ?loc)",
+          "(at ?t ?loc)",
+          "(available ?h)",
+          "(in ?c ?t)"
+        ],
+        "effects": [
+          "(lifting ?h ?c)",
+          "(not (in ?c ?t))",
+          "(not (available ?h))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1.pddl",
+    "domain_name": "depot",
+    "objects": {
+      "depot0": "depot",
+      "depot1": "depot",
+      "depot2": "depot",
+      "distributor0": "distributor",
+      "truck0": "truck",
+      "truck1": "truck",
+      "truck2": "truck",
+      "pallet0": "pallet",
+      "pallet1": "pallet",
+      "pallet2": "pallet",
+      "pallet3": "pallet",
+      "crate0": "crate",
+      "crate1": "crate",
+      "crate2": "crate",
+      "hoist0": "hoist",
+      "hoist1": "hoist",
+      "hoist2": "hoist",
+      "hoist3": "hoist"
+    },
+    "initial_state": [
+      "(at pallet0 depot0)",
+      "(clear pallet0)",
+      "(at pallet1 depot1)",
+      "(clear crate2)",
+      "(at pallet2 depot2)",
+      "(clear crate1)",
+      "(at pallet3 distributor0)",
+      "(clear pallet3)",
+      "(at truck0 depot2)",
+      "(at truck1 depot2)",
+      "(at truck2 depot0)",
+      "(at hoist0 depot0)",
+      "(available hoist0)",
+      "(at hoist1 depot1)",
+      "(available hoist1)",
+      "(at hoist2 depot2)",
+      "(available hoist2)",
+      "(at hoist3 distributor0)",
+      "(available hoist3)",
+      "(at crate0 depot1)",
+      "(on crate0 pallet1)",
+      "(at crate1 depot2)",
+      "(on crate1 pallet2)",
+      "(at crate2 depot1)",
+      "(on crate2 crate0)"
+    ],
+    "goal_state": [
+      "(on crate0 crate1)",
+      "(on crate1 pallet3)",
+      "(on crate2 pallet1)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

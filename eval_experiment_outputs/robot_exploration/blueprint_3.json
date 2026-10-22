@@ -1,0 +1,170 @@
+{
+  "domain_name": "robot_exploration",
+  "run_index": 3,
+  "domain_blueprint": {
+    "domain_name": "robot_exploration",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot": "object",
+      "room": "object",
+      "key": "object",
+      "door": "object",
+      "payload": "object"
+    },
+    "predicates": [
+      "(at ?r - robot ?rm - room)",
+      "(connected ?rm1 - room ?rm2 - room)",
+      "(locked ?d - door)",
+      "(has_key ?r - robot ?k - key)",
+      "(key_shape ?k - key ?shape - string)",
+      "(key_fits ?k - key ?d - door)",
+      "(free_arm ?r - robot)",
+      "(carrying ?r - robot ?p - payload)",
+      "(key_in_room ?k - key ?rm - room)",
+      "(payload_in_room ?p - payload ?rm - room)"
+    ],
+    "actions": [
+      {
+        "action_name": "move",
+        "parameters": {
+          "?r": "robot",
+          "?from": "room",
+          "?to": "room",
+          "?d": "door"
+        },
+        "preconditions": [
+          "(at ?r ?from)",
+          "(connected ?from ?to)",
+          "(not (locked ?d))"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "pickup_key",
+        "parameters": {
+          "?r": "robot",
+          "?k": "key",
+          "?rm": "room"
+        },
+        "preconditions": [
+          "(at ?r ?rm)",
+          "(key_in_room ?k ?rm)",
+          "(free_arm ?r)"
+        ],
+        "effects": [
+          "(has_key ?r ?k)",
+          "(not (key_in_room ?k ?rm))",
+          "(not (free_arm ?r))"
+        ]
+      },
+      {
+        "action_name": "unlock_door",
+        "parameters": {
+          "?r": "robot",
+          "?k": "key",
+          "?d": "door",
+          "?rm1": "room",
+          "?rm2": "room"
+        },
+        "preconditions": [
+          "(has_key ?r ?k)",
+          "(key_fits ?k ?d)",
+          "(locked ?d)",
+          "(connected ?rm1 ?rm2)",
+          "(at ?r ?rm1)"
+        ],
+        "effects": [
+          "(not (locked ?d))"
+        ]
+      },
+      {
+        "action_name": "deposit_key",
+        "parameters": {
+          "?r": "robot",
+          "?k": "key",
+          "?rm": "room"
+        },
+        "preconditions": [
+          "(has_key ?r ?k)",
+          "(at ?r ?rm)"
+        ],
+        "effects": [
+          "(not (has_key ?r ?k))",
+          "(key_in_room ?k ?rm)",
+          "(free_arm ?r)"
+        ]
+      },
+      {
+        "action_name": "pickup_payload",
+        "parameters": {
+          "?r": "robot",
+          "?p": "payload",
+          "?rm": "room"
+        },
+        "preconditions": [
+          "(at ?r ?rm)",
+          "(payload_in_room ?p ?rm)",
+          "(free_arm ?r)"
+        ],
+        "effects": [
+          "(carrying ?r ?p)",
+          "(not (payload_in_room ?p ?rm))",
+          "(not (free_arm ?r))"
+        ]
+      },
+      {
+        "action_name": "deposit_payload",
+        "parameters": {
+          "?r": "robot",
+          "?p": "payload",
+          "?rm": "room"
+        },
+        "preconditions": [
+          "(carrying ?r ?p)",
+          "(at ?r ?rm)"
+        ],
+        "effects": [
+          "(not (carrying ?r ?p))",
+          "(payload_in_room ?p ?rm)",
+          "(free_arm ?r)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "robot_exploration_problem",
+    "domain_name": "robot_exploration",
+    "objects": {
+      "r1": "robot",
+      "rm1": "room",
+      "rm2": "room",
+      "rm3": "room",
+      "k1": "key",
+      "d1": "door",
+      "p1": "payload",
+      "square": "string"
+    },
+    "initial_state": [
+      "(at r1 rm1)",
+      "(connected rm1 rm2)",
+      "(connected rm2 rm3)",
+      "(locked d1)",
+      "(key_in_room k1 rm1)",
+      "(key_shape k1 square)",
+      "(key_fits k1 d1)",
+      "(free_arm r1)",
+      "(payload_in_room p1 rm1)"
+    ],
+    "goal_state": [
+      "(payload_in_room p1 rm3)"
+    ]
+  },
+  "iteration_count": 5,
+  "is_valid": true
+}

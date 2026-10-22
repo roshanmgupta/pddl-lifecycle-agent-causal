@@ -1,0 +1,278 @@
+{
+  "domain_name": "rover_operations",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "rover_operations",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null,
+      "rover": "object",
+      "waypoint": "object",
+      "store": "object",
+      "camera": "object",
+      "mode": "object",
+      "lander": "object",
+      "objective": "object"
+    },
+    "predicates": [
+      "(can_traverse ?r - rover ?from - waypoint ?to - waypoint)",
+      "(available ?r - rover)",
+      "(at ?r - rover ?w - waypoint)",
+      "(visible ?w1 - waypoint ?w2 - waypoint)",
+      "(at_soil_sample ?w - waypoint)",
+      "(equipped_for_soil_analysis ?r - rover)",
+      "(store_of ?s - store ?r - rover)",
+      "(empty ?s - store)",
+      "(full ?s - store)",
+      "(at_rock_sample ?w - waypoint)",
+      "(equipped_for_rock_analysis ?r - rover)",
+      "(equipped_for_imaging ?r - rover)",
+      "(calibration_target ?c - camera ?o - objective)",
+      "(on_board ?c - camera ?r - rover)",
+      "(calibrated ?c - camera ?r - rover)",
+      "(supports ?c - camera ?m - mode)",
+      "(has_soil_analysis ?r - rover ?w - waypoint)",
+      "(has_rock_analysis ?r - rover ?w - waypoint)",
+      "(has_image ?r - rover ?o - objective ?m - mode)",
+      "(at_lander ?l - lander ?w - waypoint)",
+      "(channel_free ?l - lander)",
+      "(communicated_soil_data ?w - waypoint)",
+      "(communicated_rock_data ?w - waypoint)",
+      "(communicated_image_data ?o - objective ?m - mode)"
+    ],
+    "actions": [
+      {
+        "action_name": "navigate",
+        "parameters": {
+          "?r": "rover",
+          "?from": "waypoint",
+          "?to": "waypoint"
+        },
+        "preconditions": [
+          "(can_traverse ?r ?from ?to)",
+          "(available ?r)",
+          "(at ?r ?from)",
+          "(visible ?from ?to)"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "sample_soil",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint",
+          "?s": "store"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(at_soil_sample ?w)",
+          "(equipped_for_soil_analysis ?r)",
+          "(store_of ?s ?r)",
+          "(empty ?s)"
+        ],
+        "effects": [
+          "(full ?s)",
+          "(has_soil_analysis ?r ?w)",
+          "(not (empty ?s))",
+          "(not (at_soil_sample ?w))"
+        ]
+      },
+      {
+        "action_name": "sample_rock",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint",
+          "?s": "store"
+        },
+        "preconditions": [
+          "(at ?r ?w)",
+          "(at_rock_sample ?w)",
+          "(equipped_for_rock_analysis ?r)",
+          "(store_of ?s ?r)",
+          "(empty ?s)"
+        ],
+        "effects": [
+          "(full ?s)",
+          "(has_rock_analysis ?r ?w)",
+          "(not (empty ?s))",
+          "(not (at_rock_sample ?w))"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?r": "rover",
+          "?s": "store"
+        },
+        "preconditions": [
+          "(store_of ?s ?r)",
+          "(full ?s)"
+        ],
+        "effects": [
+          "(empty ?s)",
+          "(not (full ?s))"
+        ]
+      },
+      {
+        "action_name": "calibrate",
+        "parameters": {
+          "?r": "rover",
+          "?c": "camera",
+          "?o": "objective",
+          "?w": "waypoint"
+        },
+        "preconditions": [
+          "(equipped_for_imaging ?r)",
+          "(calibration_target ?c ?o)",
+          "(at ?r ?w)",
+          "(on_board ?c ?r)"
+        ],
+        "effects": [
+          "(calibrated ?c ?r)"
+        ]
+      },
+      {
+        "action_name": "take_image",
+        "parameters": {
+          "?r": "rover",
+          "?w": "waypoint",
+          "?o": "objective",
+          "?c": "camera",
+          "?m": "mode"
+        },
+        "preconditions": [
+          "(calibrated ?c ?r)",
+          "(on_board ?c ?r)",
+          "(equipped_for_imaging ?r)",
+          "(supports ?c ?m)",
+          "(at ?r ?w)"
+        ],
+        "effects": [
+          "(has_image ?r ?o ?m)",
+          "(not (calibrated ?c ?r))"
+        ]
+      },
+      {
+        "action_name": "communicate_soil_data",
+        "parameters": {
+          "?r": "rover",
+          "?w1": "waypoint",
+          "?l": "lander",
+          "?w2": "waypoint",
+          "?w3": "waypoint"
+        },
+        "preconditions": [
+          "(at ?r ?w1)",
+          "(at_lander ?l ?w2)",
+          "(has_soil_analysis ?r ?w3)",
+          "(visible ?w1 ?w2)",
+          "(available ?r)",
+          "(channel_free ?l)"
+        ],
+        "effects": [
+          "(channel_free ?l)",
+          "(communicated_soil_data ?w3)",
+          "(available ?r)",
+          "(not (available ?r))",
+          "(not (channel_free ?l))"
+        ]
+      },
+      {
+        "action_name": "communicate_rock_data",
+        "parameters": {
+          "?r": "rover",
+          "?w1": "waypoint",
+          "?l": "lander",
+          "?w2": "waypoint",
+          "?w3": "waypoint"
+        },
+        "preconditions": [
+          "(at ?r ?w1)",
+          "(at_lander ?l ?w2)",
+          "(has_rock_analysis ?r ?w3)",
+          "(visible ?w1 ?w2)",
+          "(available ?r)",
+          "(channel_free ?l)"
+        ],
+        "effects": [
+          "(channel_free ?l)",
+          "(communicated_rock_data ?w3)",
+          "(available ?r)",
+          "(not (available ?r))",
+          "(not (channel_free ?l))"
+        ]
+      },
+      {
+        "action_name": "communicate_image_data",
+        "parameters": {
+          "?r": "rover",
+          "?w1": "waypoint",
+          "?l": "lander",
+          "?w2": "waypoint",
+          "?o": "objective",
+          "?m": "mode"
+        },
+        "preconditions": [
+          "(at ?r ?w1)",
+          "(at_lander ?l ?w2)",
+          "(has_image ?r ?o ?m)",
+          "(visible ?w1 ?w2)",
+          "(available ?r)",
+          "(channel_free ?l)"
+        ],
+        "effects": [
+          "(channel_free ?l)",
+          "(communicated_image_data ?o ?m)",
+          "(available ?r)",
+          "(not (available ?r))",
+          "(not (channel_free ?l))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "rover_mission_1",
+    "domain_name": "rover_operations",
+    "objects": {
+      "r1": "rover",
+      "w1": "waypoint",
+      "w2": "waypoint",
+      "w3": "waypoint",
+      "s1": "store",
+      "cam1": "camera",
+      "m1": "mode",
+      "l1": "lander",
+      "o1": "objective"
+    },
+    "initial_state": [
+      "(can_traverse r1 w1 w2)",
+      "(can_traverse r1 w2 w3)",
+      "(available r1)",
+      "(at r1 w1)",
+      "(visible w1 w2)",
+      "(visible w2 w3)",
+      "(at_soil_sample w2)",
+      "(equipped_for_soil_analysis r1)",
+      "(store_of s1 r1)",
+      "(empty s1)",
+      "(equipped_for_imaging r1)",
+      "(calibration_target cam1 o1)",
+      "(on_board cam1 r1)",
+      "(supports cam1 m1)",
+      "(at_lander l1 w3)",
+      "(channel_free l1)"
+    ],
+    "goal_state": [
+      "(communicated_soil_data w2)",
+      "(communicated_image_data o1 m1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

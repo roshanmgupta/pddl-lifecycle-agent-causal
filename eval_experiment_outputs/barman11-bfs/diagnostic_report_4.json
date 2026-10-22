@@ -1,0 +1,75 @@
+{
+  "timestamp": "2026-10-16T02:26:09.166030",
+  "domain_name": "barman11-bfs",
+  "run_index": 4,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 1,
+  "initial_verification_errors": [
+    "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds."
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 3,
+  "diagnostic_reports": [
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "GENERAL_AST_REPAIR",
+      "faulty_element": "General / Unsolvable State Space",
+      "suspiciousness_score": 0.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The planner failed to find a solution within the time limit, indicating potential issues with the action preconditions or the initial state setup. Review the action preconditions for overly restrictive conditions, especially in the 'shake' and 'pour-beverage' actions, and ensure the initial state allows for a valid sequence of actions to reach the goal."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "shake",
+      "suspiciousness_score": 0.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'shake' action requires both ingredients to be in the shaker before shaking, which might be too restrictive. Consider relaxing the preconditions to allow for more flexible sequencing of actions, such as allowing the shaker to contain one ingredient before adding the second."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "pour-beverage",
+      "suspiciousness_score": 0.0,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-beverage' action requires the shot to be clean and empty, which might not always be necessary. Consider relaxing these preconditions to allow pouring into a used shot if it's empty, to provide more flexibility in the action sequence."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 28,
+    "search_time_seconds": 1.958009,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(grasp left shot1)",
+      "(fill shot1 ingredient1 dispenser1 left right)",
+      "(leave left shot1)",
+      "(grasp right shot1)",
+      "(pour-clean-shaker shot1 ingredient1 shaker1 right l0 l1)",
+      "(clean-shot shot1 ingredient1 right left)",
+      "(fill shot1 ingredient2 dispenser2 right left)",
+      "(grasp left shaker1)",
+      "(leave right shot1)",
+      "(shake cocktail1 shaker1 left right ingredient3 ingredient1)",
+      "(pour-beverage cocktail1 shaker1 left shot2 l1 l2)",
+      "(empty-shaker left shaker1 cocktail1 l2 l0)",
+      "(clean-shaker left shaker1 right)",
+      "(grasp right shot1)",
+      "(pour-clean-shaker shot1 ingredient2 shaker1 right l0 l1)",
+      "(leave left shaker1)",
+      "(refill shot1 ingredient2 dispenser2 right left)",
+      "(grasp left shaker1)",
+      "(leave right shot1)",
+      "(shake cocktail2 shaker1 left right ingredient2 ingredient3)",
+      "(pour-beverage cocktail2 shaker1 left shot3 l1 l2)",
+      "(empty-shaker left shaker1 cocktail2 l2 l0)",
+      "(clean-shaker left shaker1 right)",
+      "(grasp right shot1)",
+      "(pour-clean-shaker shot1 ingredient2 shaker1 right l0 l1)",
+      "(leave right shot1)",
+      "(shake cocktail3 shaker1 left right ingredient1 ingredient2)",
+      "(pour-beverage cocktail3 shaker1 left shot1 l1 l2)"
+    ]
+  }
+}

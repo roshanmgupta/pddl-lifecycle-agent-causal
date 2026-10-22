@@ -1,0 +1,94 @@
+{
+  "domain_name": "satellite_imaging",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "satellite_imaging",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "satellite": "object",
+      "instrument": "object",
+      "mode": "object",
+      "target": "object"
+    },
+    "predicates": [
+      "(powered_on ?i - instrument)",
+      "(calibrated ?i - instrument ?t - target)",
+      "(aimed_at ?s - satellite ?t - target)",
+      "(image_captured ?s - satellite ?t - target ?m - mode)"
+    ],
+    "actions": [
+      {
+        "action_name": "turn_satellite",
+        "parameters": {
+          "?s": "satellite",
+          "?from": "target",
+          "?to": "target"
+        },
+        "preconditions": [
+          "(aimed_at ?s ?from)"
+        ],
+        "effects": [
+          "(not (aimed_at ?s ?from))",
+          "(aimed_at ?s ?to)"
+        ]
+      },
+      {
+        "action_name": "calibrate_instrument",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite",
+          "?t": "target"
+        },
+        "preconditions": [
+          "(powered_on ?i)",
+          "(aimed_at ?s ?t)"
+        ],
+        "effects": [
+          "(calibrated ?i ?t)"
+        ]
+      },
+      {
+        "action_name": "capture_image",
+        "parameters": {
+          "?s": "satellite",
+          "?t": "target",
+          "?m": "mode",
+          "?i": "instrument"
+        },
+        "preconditions": [
+          "(aimed_at ?s ?t)",
+          "(calibrated ?i ?t)",
+          "(powered_on ?i)"
+        ],
+        "effects": [
+          "(image_captured ?s ?t ?m)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "satellite_imaging_problem",
+    "domain_name": "satellite_imaging",
+    "objects": {
+      "sat1": "satellite",
+      "cam1": "instrument",
+      "ir_mode": "mode",
+      "spec_mode": "mode",
+      "cal_target1": "target",
+      "cal_target2": "target"
+    },
+    "initial_state": [
+      "(powered_on cam1)",
+      "(aimed_at sat1 cal_target1)"
+    ],
+    "goal_state": [
+      "(image_captured sat1 cal_target1 ir_mode)",
+      "(image_captured sat1 cal_target2 spec_mode)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-10-14T01:13:45.031877",
+  "domain_name": "blocksworld",
+  "run_index": 17,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 4,
+    "search_time_seconds": 8.7e-05,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(unstack b c)",
+      "(put-down b)",
+      "(pick-up c)",
+      "(stack c b)"
+    ]
+  }
+}

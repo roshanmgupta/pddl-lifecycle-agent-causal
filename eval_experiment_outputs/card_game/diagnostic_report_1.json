@@ -1,0 +1,98 @@
+{
+  "timestamp": "2026-10-14T02:06:28.799694",
+  "domain_name": "card_game",
+  "run_index": 1,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 9,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking move_card\n...action passes type checking.\nType-checking move_card_to_column\nType problem with proposition (successor c d) - parameter 1 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [
+    "VAL Error: Type-checking move_card\n...action passes type checking.\nType-checking move_card_to_column\nType problem with proposition (successor d c) - parameter 2 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "diagnostic_issues_count": 10,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "move_card_to_column",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (successor c d) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the types of parameters in the 'successor' predicate match the declared types in the domain. Specifically, verify that the first parameter of 'successor' is of type 'value' and the second parameter is also of type 'value'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "move_card_to_column",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (column_space c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The parameter '?c' in the 'move_card_to_column' action is incorrectly typed. It should be of type 'space' instead of 'value'. Update the parameter type in the action schema to match the predicate declaration."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "move_card_to_column",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (successor c d) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the types of parameters in the 'successor' predicate match the declared types in the domain. Specifically, verify that '?c' and '?d' are of type 'value' in the 'move_card_to_column' action."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "move_card_to_column",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (successor d c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the types of parameters in the 'successor' predicate match the declared types in the domain. Specifically, verify that '?d' and '?c' are of type 'value' in the 'move_card_to_column' action."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "move_card_to_column",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (column_space c) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The parameter '?c' in the action 'move_card_to_column' should be of type 'space' instead of 'value'. Update the parameter type in the action schema to match the predicate declaration."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "move_card_to_column",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (successor d c) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the parameters in the 'successor' predicate within the 'move_card_to_column' action match the declared types. Specifically, verify that the second parameter of 'successor' is of type 'value' and aligns with the expected type hierarchy."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "move_card_to_column",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (successor c d) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "The predicate '(successor ?c ?d)' in the 'move_card_to_column' action has a type mismatch. Ensure that the first parameter of 'successor' is of type 'value' and the second parameter is also of type 'value'. Update the action's parameters to match the predicate's type signature."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "move_card_to_column",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (successor d c) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the parameters in the 'successor' predicate within the 'move_card_to_column' action match the declared types. Specifically, verify that the second parameter of 'successor' is of type 'value'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "move_card_to_column",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (successor c d) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the parameters in the 'successor' predicate within the 'move_card_to_column' action match the declared types. Specifically, verify that '?c' and '?d' are correctly typed as 'value'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "move_card_to_column",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (successor d c) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the types of parameters in the 'successor' predicate match the declared types in the domain. Specifically, verify that the second parameter of 'successor' is of type 'value'."
+    }
+  ],
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: move_card_to_column (Suspiciousness: 1.0)\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (successor d c) - parameter 2 is incorrectly typed\n  - [SUGGESTION FOR REPAIR]: Ensure that the types of parameters in the 'successor' predicate match the declared types in the domain. Specifically, verify that the second parameter of 'successor' is of type 'value'.",
+  "plan_summary": null
+}

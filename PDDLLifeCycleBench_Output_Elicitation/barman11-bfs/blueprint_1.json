@@ -1,0 +1,352 @@
+{
+  "domain_name": "barman11-bfs",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "barman11-bfs",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "hand": "object",
+      "level": "object",
+      "beverage": "object",
+      "dispenser": "object",
+      "container": "object",
+      "ingredient": "beverage",
+      "cocktail": "beverage",
+      "shot": "container",
+      "shaker": "container"
+    },
+    "constants": {},
+    "predicates": [
+      "(on-table ?b - container)",
+      "(holding ?h - hand ?b - container)",
+      "(empty ?h - hand)",
+      "(clean ?b - container)",
+      "(contains ?s - shot ?c - cocktail)",
+      "(contains-cocktail ?s - shot ?c - cocktail)",
+      "(dispenses ?d - dispenser ?i - ingredient)",
+      "(next-to ?l1 - level ?l2 - level)",
+      "(shaken ?s - shaker)",
+      "(empty-shot ?s - shot)"
+    ],
+    "actions": [
+      {
+        "action_name": "grasp-container",
+        "parameters": {
+          "?a": "hand",
+          "?b": "container"
+        },
+        "preconditions": [
+          "(on-table ?b)",
+          "(empty ?a)"
+        ],
+        "effects": [
+          "(holding ?a ?b)",
+          "(not (on-table ?b))",
+          "(not (empty ?a))"
+        ]
+      },
+      {
+        "action_name": "leave-container",
+        "parameters": {
+          "?a": "hand",
+          "?b": "container"
+        },
+        "preconditions": [
+          "(holding ?a ?b)"
+        ],
+        "effects": [
+          "(empty ?a)",
+          "(on-table ?b)",
+          "(not (holding ?a ?b))"
+        ]
+      },
+      {
+        "action_name": "fill-shot",
+        "parameters": {
+          "?a": "shot",
+          "?b": "ingredient",
+          "?e": "dispenser",
+          "?c": "hand",
+          "?d": "hand"
+        },
+        "preconditions": [
+          "(holding ?c ?a)",
+          "(empty ?d)",
+          "(dispenses ?e ?b)",
+          "(empty-shot ?a)",
+          "(clean ?a)"
+        ],
+        "effects": [
+          "(contains-cocktail ?a ?b)",
+          "(not (empty ?a))",
+          "(not (clean ?a))"
+        ]
+      },
+      {
+        "action_name": "refill-shot",
+        "parameters": {
+          "?a": "shot",
+          "?b": "ingredient",
+          "?e": "dispenser",
+          "?c": "hand",
+          "?d": "hand"
+        },
+        "preconditions": [
+          "(holding ?c ?a)",
+          "(empty ?d)",
+          "(dispenses ?e ?b)",
+          "(empty ?a)",
+          "(used ?a ?b)"
+        ],
+        "effects": [
+          "(contains-cocktail ?a ?b)",
+          "(not (empty ?a))"
+        ]
+      },
+      {
+        "action_name": "empty-shot",
+        "parameters": {
+          "?a": "hand",
+          "?b": "shot",
+          "?c": "beverage"
+        },
+        "preconditions": [
+          "(holding ?a ?b)",
+          "(contains ?b ?c)"
+        ],
+        "effects": [
+          "(empty ?b)",
+          "(not (contains ?b ?c))"
+        ]
+      },
+      {
+        "action_name": "clean-shot",
+        "parameters": {
+          "?a": "shot",
+          "?b": "beverage",
+          "?c": "hand",
+          "?d": "hand"
+        },
+        "preconditions": [
+          "(holding ?c ?a)",
+          "(empty ?d)",
+          "(used ?a ?b)",
+          "(not (empty ?a))"
+        ],
+        "effects": [
+          "(clean ?a)",
+          "(not (used ?a ?b))"
+        ]
+      },
+      {
+        "action_name": "pour-into-clean-shaker",
+        "parameters": {
+          "?a": "shot",
+          "?b": "ingredient",
+          "?c": "shaker",
+          "?d": "hand",
+          "?e": "level",
+          "?f": "level"
+        },
+        "preconditions": [
+          "(holding ?d ?a)",
+          "(contains ?a ?b)",
+          "(empty ?c)",
+          "(clean ?c)",
+          "(at-level ?c ?e)",
+          "(next-to ?e ?f)"
+        ],
+        "effects": [
+          "(empty ?a)",
+          "(contains ?c ?b)",
+          "(not (empty ?c))",
+          "(not (clean ?c))",
+          "(at-level ?c ?f)"
+        ]
+      },
+      {
+        "action_name": "pour-into-used-shaker",
+        "parameters": {
+          "?a": "shot",
+          "?b": "ingredient",
+          "?c": "shaker",
+          "?d": "hand",
+          "?e": "level",
+          "?f": "level"
+        },
+        "preconditions": [
+          "(holding ?d ?a)",
+          "(contains ?a ?b)",
+          "(not (clean ?c))",
+          "(at-level ?c ?e)",
+          "(next-to ?e ?f)"
+        ],
+        "effects": [
+          "(contains ?c ?b)",
+          "(empty ?a)",
+          "(at-level ?c ?f)"
+        ]
+      },
+      {
+        "action_name": "empty-shaker",
+        "parameters": {
+          "?a": "hand",
+          "?b": "shaker",
+          "?c": "cocktail",
+          "?d": "level",
+          "?e": "level"
+        },
+        "preconditions": [
+          "(holding ?a ?b)",
+          "(contains ?b ?c)",
+          "(shaken ?b)",
+          "(at-level ?b ?d)",
+          "(at-empty-level ?b ?e)"
+        ],
+        "effects": [
+          "(at-level ?b ?e)",
+          "(empty ?b)",
+          "(not (contains ?b ?c))",
+          "(not (shaken ?b))",
+          "(not (at-level ?b ?d))"
+        ]
+      },
+      {
+        "action_name": "clean-shaker",
+        "parameters": {
+          "?a": "shaker",
+          "?b": "hand"
+        },
+        "preconditions": [
+          "(holding ?a ?b)",
+          "(empty ?b)",
+          "(empty ?a)"
+        ],
+        "effects": [
+          "(clean ?a)"
+        ]
+      },
+      {
+        "action_name": "shake-cocktail",
+        "parameters": {
+          "?a": "cocktail",
+          "?b": "shaker",
+          "?c": "hand",
+          "?d": "hand",
+          "?e": "ingredient",
+          "?f": "ingredient"
+        },
+        "preconditions": [
+          "(holding ?c ?b)",
+          "(empty ?d)",
+          "(contains ?b ?e)",
+          "(contains ?b ?f)",
+          "(part-of ?e ?a)",
+          "(part-of ?f ?a)",
+          "(not (shaken ?b))"
+        ],
+        "effects": [
+          "(shaken ?b)",
+          "(contains ?b ?a)",
+          "(not (not (shaken ?b)))",
+          "(not (contains ?b ?e))",
+          "(not (contains ?b ?f))"
+        ]
+      },
+      {
+        "action_name": "pour-beverage",
+        "parameters": {
+          "?a": "beverage",
+          "?b": "shaker",
+          "?c": "hand",
+          "?d": "shot",
+          "?e": "level",
+          "?f": "level"
+        },
+        "preconditions": [
+          "(holding ?c ?b)",
+          "(shaken ?b)",
+          "(empty ?d)",
+          "(clean ?d)",
+          "(contains ?b ?a)",
+          "(at-level ?b ?e)",
+          "(next-to ?e ?f)"
+        ],
+        "effects": [
+          "(contains ?d ?a)",
+          "(at-level ?b ?f)",
+          "(not (clean ?d))",
+          "(not (empty ?d))",
+          "(not (at-level ?b ?e))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1.pddl",
+    "domain_name": "barman11-bfs",
+    "objects": {
+      "shaker1": "shaker",
+      "left": "hand",
+      "right": "hand",
+      "shot1": "shot",
+      "shot2": "shot",
+      "shot3": "shot",
+      "shot4": "shot",
+      "ingredient1": "ingredient",
+      "ingredient2": "ingredient",
+      "ingredient3": "ingredient",
+      "cocktail1": "cocktail",
+      "cocktail2": "cocktail",
+      "cocktail3": "cocktail",
+      "dispenser1": "dispenser",
+      "dispenser2": "dispenser",
+      "dispenser3": "dispenser",
+      "l0": "level",
+      "l1": "level",
+      "l2": "level"
+    },
+    "initial_state": [
+      "(on-table shaker1)",
+      "(on-table shot1)",
+      "(on-table shot2)",
+      "(on-table shot3)",
+      "(on-table shot4)",
+      "(dispenses dispenser1 ingredient1)",
+      "(dispenses dispenser2 ingredient2)",
+      "(dispenses dispenser3 ingredient3)",
+      "(clean shaker1)",
+      "(clean shot1)",
+      "(clean shot2)",
+      "(clean shot3)",
+      "(clean shot4)",
+      "(empty shaker1)",
+      "(empty shot1)",
+      "(empty shot2)",
+      "(empty shot3)",
+      "(empty shot4)",
+      "(empty left)",
+      "(empty right)",
+      "(at-empty-level shaker1 l0)",
+      "(at-level shaker1 l0)",
+      "(next-to l0 l1)",
+      "(next-to l1 l2)",
+      "(part-of cocktail1 ingredient3)",
+      "(part-of cocktail1 ingredient1)",
+      "(part-of cocktail2 ingredient2)",
+      "(part-of cocktail2 ingredient3)",
+      "(part-of cocktail3 ingredient1)",
+      "(part-of cocktail3 ingredient2)"
+    ],
+    "goal_state": [
+      "(contains shot1 cocktail3)",
+      "(contains shot2 cocktail1)",
+      "(contains shot3 cocktail2)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

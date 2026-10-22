@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-10-13T01:44:39.340545",
+  "domain_name": "robotic_painting",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 1,
+  "initial_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'PDDL_file\\temp_domain_2.pddl' 'PDDL_file\\temp_problem_2.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing domain\n\t->Parsing axiom/action entry #3\n\t->Parsing action #3\n\t->Parsing action 'change_color'\n\t->Parsing precondition\n\t->Parsing condition\n\t->Parsing literal\nUndefined variable\nGot: ?old_color\ntranslate exit code: 31\n\nDriver aborting after translate\n\n"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 3,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "change_color",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Undefined variable\nGot: ?old_color\ntranslate exit code: 31",
+      "suggested_repair_hint": "The variable '?old_color' in the 'change_color' action is not declared in the action's parameters. Add '?old_color - color' to the parameters list of the 'change_color' action to resolve the undefined variable error."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "move",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "The 'move' action's precondition requires the destination tile to be unpainted, which may prevent the robot from reaching all tiles. Consider relaxing this precondition or adding actions to allow movement over painted tiles after they dry."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": "initial_state",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "The initial state does not include adjacency relations for all tiles in both directions (e.g., '(adjacent t2 t1)'). Add bidirectional adjacency relations to ensure the robot can navigate the grid in all required directions."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 10,
+    "search_time_seconds": 0.000345,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(paint r1 t1 black)",
+      "(move r1 t1 t2)",
+      "(change_color r1 ps1 white black)",
+      "(paint r1 t2 white)",
+      "(move r1 t2 t3)",
+      "(change_color r1 ps1 black white)",
+      "(paint r1 t3 black)",
+      "(change_color r1 ps1 white black)",
+      "(move r1 t3 t4)",
+      "(paint r1 t4 white)"
+    ]
+  }
+}

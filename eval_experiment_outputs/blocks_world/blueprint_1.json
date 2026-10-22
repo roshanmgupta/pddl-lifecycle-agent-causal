@@ -1,0 +1,118 @@
+{
+  "domain_name": "blocks_world",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "blocks_world",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "block": "object",
+      "table": "object"
+    },
+    "predicates": [
+      "(on ?x - block ?y - block)",
+      "(ontable ?x - block)",
+      "(clear ?x - block)",
+      "(holding ?x - block)",
+      "(arm-empty)"
+    ],
+    "actions": [
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?x": "block",
+          "?y": "block"
+        },
+        "preconditions": [
+          "(holding ?x)",
+          "(clear ?y)"
+        ],
+        "effects": [
+          "(not (holding ?x))",
+          "(arm-empty)",
+          "(not (clear ?y))",
+          "(on ?x ?y)",
+          "(clear ?x)"
+        ]
+      },
+      {
+        "action_name": "unstack",
+        "parameters": {
+          "?x": "block",
+          "?y": "block"
+        },
+        "preconditions": [
+          "(on ?x ?y)",
+          "(clear ?x)",
+          "(arm-empty)"
+        ],
+        "effects": [
+          "(holding ?x)",
+          "(clear ?y)",
+          "(not (on ?x ?y))",
+          "(not (clear ?x))",
+          "(not (arm-empty))"
+        ]
+      },
+      {
+        "action_name": "pickup",
+        "parameters": {
+          "?x": "block"
+        },
+        "preconditions": [
+          "(ontable ?x)",
+          "(clear ?x)",
+          "(arm-empty)"
+        ],
+        "effects": [
+          "(holding ?x)",
+          "(not (ontable ?x))",
+          "(not (clear ?x))",
+          "(not (arm-empty))"
+        ]
+      },
+      {
+        "action_name": "putdown",
+        "parameters": {
+          "?x": "block"
+        },
+        "preconditions": [
+          "(holding ?x)"
+        ],
+        "effects": [
+          "(not (holding ?x))",
+          "(arm-empty)",
+          "(ontable ?x)",
+          "(clear ?x)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "blocks_problem_1",
+    "domain_name": "blocks_world",
+    "objects": {
+      "a": "block",
+      "b": "block",
+      "c": "block",
+      "t1": "table"
+    },
+    "initial_state": [
+      "(ontable a)",
+      "(ontable b)",
+      "(ontable c)",
+      "(clear a)",
+      "(clear b)",
+      "(clear c)",
+      "(arm-empty)"
+    ],
+    "goal_state": [
+      "(on a b)",
+      "(on b c)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

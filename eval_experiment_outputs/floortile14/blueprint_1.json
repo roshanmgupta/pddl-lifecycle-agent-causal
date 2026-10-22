@@ -1,0 +1,265 @@
+{
+  "domain_name": "floortile14",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "floortile14",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot": "object",
+      "tile": "object",
+      "color": "object"
+    },
+    "predicates": [
+      "(has ?r - robot ?c - color)",
+      "(available ?c - color)",
+      "(at ?r - robot ?t - tile)",
+      "(clear ?t - tile)",
+      "(painted ?t - tile ?c - color)",
+      "(up ?t1 - tile ?t2 - tile)",
+      "(down ?t1 - tile ?t2 - tile)",
+      "(right ?t1 - tile ?t2 - tile)",
+      "(left ?t1 - tile ?t2 - tile)"
+    ],
+    "actions": [
+      {
+        "action_name": "change_color",
+        "parameters": {
+          "?a": "robot",
+          "?b": "color",
+          "?c": "color"
+        },
+        "preconditions": [
+          "(has ?a ?b)",
+          "(available ?c)"
+        ],
+        "effects": [
+          "(not (has ?a ?b))",
+          "(has ?a ?c)"
+        ]
+      },
+      {
+        "action_name": "paint_up",
+        "parameters": {
+          "?a": "robot",
+          "?b": "tile",
+          "?c": "tile",
+          "?d": "color"
+        },
+        "preconditions": [
+          "(has ?a ?d)",
+          "(at ?a ?c)",
+          "(up ?b ?c)",
+          "(clear ?b)"
+        ],
+        "effects": [
+          "(painted ?b ?d)",
+          "(not (clear ?b))"
+        ]
+      },
+      {
+        "action_name": "paint_down",
+        "parameters": {
+          "?a": "robot",
+          "?b": "tile",
+          "?c": "tile",
+          "?d": "color"
+        },
+        "preconditions": [
+          "(has ?a ?d)",
+          "(at ?a ?c)",
+          "(down ?b ?c)",
+          "(clear ?b)"
+        ],
+        "effects": [
+          "(painted ?b ?d)",
+          "(not (clear ?b))"
+        ]
+      },
+      {
+        "action_name": "move_up",
+        "parameters": {
+          "?a": "robot",
+          "?b": "tile",
+          "?c": "tile"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(up ?c ?b)",
+          "(clear ?c)"
+        ],
+        "effects": [
+          "(not (at ?a ?b))",
+          "(at ?a ?c)",
+          "(clear ?b)",
+          "(not (clear ?c))"
+        ]
+      },
+      {
+        "action_name": "move_down",
+        "parameters": {
+          "?a": "robot",
+          "?b": "tile",
+          "?c": "tile"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(down ?c ?b)",
+          "(clear ?c)"
+        ],
+        "effects": [
+          "(not (at ?a ?b))",
+          "(at ?a ?c)",
+          "(clear ?b)",
+          "(not (clear ?c))"
+        ]
+      },
+      {
+        "action_name": "move_right",
+        "parameters": {
+          "?a": "robot",
+          "?b": "tile",
+          "?c": "tile"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(right ?c ?b)",
+          "(clear ?c)"
+        ],
+        "effects": [
+          "(not (at ?a ?b))",
+          "(at ?a ?c)",
+          "(clear ?b)",
+          "(not (clear ?c))"
+        ]
+      },
+      {
+        "action_name": "move_left",
+        "parameters": {
+          "?a": "robot",
+          "?b": "tile",
+          "?c": "tile"
+        },
+        "preconditions": [
+          "(at ?a ?b)",
+          "(left ?c ?b)",
+          "(clear ?c)"
+        ],
+        "effects": [
+          "(not (at ?a ?b))",
+          "(at ?a ?c)",
+          "(clear ?b)",
+          "(not (clear ?c))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "floortile14",
+    "objects": {
+      "tile_0-1": "tile",
+      "tile_0-2": "tile",
+      "tile_0-3": "tile",
+      "tile_1-1": "tile",
+      "tile_1-2": "tile",
+      "tile_1-3": "tile",
+      "tile_2-1": "tile",
+      "tile_2-2": "tile",
+      "tile_2-3": "tile",
+      "tile_3-1": "tile",
+      "tile_3-2": "tile",
+      "tile_3-3": "tile",
+      "tile_4-1": "tile",
+      "tile_4-2": "tile",
+      "tile_4-3": "tile",
+      "robot1": "robot",
+      "robot2": "robot",
+      "white": "color",
+      "black": "color"
+    },
+    "initial_state": [
+      "(at robot1 tile_0-1)",
+      "(has robot1 white)",
+      "(at robot2 tile_2-2)",
+      "(has robot2 black)",
+      "(available white)",
+      "(available black)",
+      "(clear tile_0-2)",
+      "(clear tile_0-3)",
+      "(clear tile_1-1)",
+      "(clear tile_1-2)",
+      "(clear tile_1-3)",
+      "(clear tile_2-1)",
+      "(clear tile_2-3)",
+      "(clear tile_3-1)",
+      "(clear tile_3-2)",
+      "(clear tile_3-3)",
+      "(clear tile_4-1)",
+      "(clear tile_4-2)",
+      "(clear tile_4-3)",
+      "(up tile_1-1 tile_0-1)",
+      "(up tile_1-2 tile_0-2)",
+      "(up tile_1-3 tile_0-3)",
+      "(up tile_2-1 tile_1-1)",
+      "(up tile_2-2 tile_1-2)",
+      "(up tile_2-3 tile_1-3)",
+      "(up tile_3-1 tile_2-1)",
+      "(up tile_3-2 tile_2-2)",
+      "(up tile_3-3 tile_2-3)",
+      "(up tile_4-1 tile_3-1)",
+      "(up tile_4-2 tile_3-2)",
+      "(up tile_4-3 tile_3-3)",
+      "(down tile_0-1 tile_1-1)",
+      "(down tile_0-2 tile_1-2)",
+      "(down tile_0-3 tile_1-3)",
+      "(down tile_1-1 tile_2-1)",
+      "(down tile_1-2 tile_2-2)",
+      "(down tile_1-3 tile_2-3)",
+      "(down tile_2-1 tile_3-1)",
+      "(down tile_2-2 tile_3-2)",
+      "(down tile_2-3 tile_3-3)",
+      "(down tile_3-1 tile_4-1)",
+      "(down tile_3-2 tile_4-2)",
+      "(down tile_3-3 tile_4-3)",
+      "(right tile_0-2 tile_0-1)",
+      "(right tile_0-3 tile_0-2)",
+      "(right tile_1-2 tile_1-1)",
+      "(right tile_1-3 tile_1-2)",
+      "(right tile_2-2 tile_2-1)",
+      "(right tile_2-3 tile_2-2)",
+      "(right tile_3-2 tile_3-1)",
+      "(right tile_3-3 tile_3-2)",
+      "(right tile_4-2 tile_4-1)",
+      "(right tile_4-3 tile_4-2)",
+      "(left tile_0-1 tile_0-2)",
+      "(left tile_0-2 tile_0-3)",
+      "(left tile_1-1 tile_1-2)",
+      "(left tile_1-2 tile_1-3)",
+      "(left tile_2-1 tile_2-2)",
+      "(left tile_2-2 tile_2-3)",
+      "(left tile_3-1 tile_3-2)",
+      "(left tile_3-2 tile_3-3)",
+      "(left tile_4-1 tile_4-2)",
+      "(left tile_4-2 tile_4-3)"
+    ],
+    "goal_state": [
+      "(painted tile_1-1 white)",
+      "(painted tile_1-2 black)",
+      "(painted tile_1-3 white)",
+      "(painted tile_2-1 black)",
+      "(painted tile_2-2 white)",
+      "(painted tile_2-3 black)",
+      "(painted tile_3-1 white)",
+      "(painted tile_3-2 black)",
+      "(painted tile_3-3 white)",
+      "(painted tile_4-1 black)",
+      "(painted tile_4-2 white)",
+      "(painted tile_4-3 black)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

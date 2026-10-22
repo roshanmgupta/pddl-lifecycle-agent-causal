@@ -1,0 +1,71 @@
+{
+  "domain_name": "freight_logistics",
+  "run_index": 7,
+  "domain_blueprint": {
+    "domain_name": "freight_logistics",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "truck": "object",
+      "depot": "object",
+      "cargo": "object",
+      "pallet": "object",
+      "hoist": "object"
+    },
+    "constants": {},
+    "predicates": [
+      "(at ?t - truck ?d - depot)",
+      "(carrying ?t - truck ?c - cargo)",
+      "(urgent ?c - cargo)",
+      "(on ?c - cargo ?p - pallet)",
+      "(on ?c1 - cargo ?c2 - cargo)",
+      "(in ?c - cargo ?t - truck)",
+      "(lifting ?h - hoist ?c - cargo)",
+      "(available ?h - hoist)",
+      "(clear ?p - pallet)",
+      "(stacked ?c1 - cargo ?c2 - cargo)"
+    ],
+    "actions": [
+      {
+        "action_name": "express-transit",
+        "parameters": {
+          "?t": "truck",
+          "?src": "depot",
+          "?dst": "depot",
+          "?c": "cargo"
+        },
+        "preconditions": [
+          "(at ?t ?src)",
+          "(carrying ?t ?c)",
+          "(urgent ?c)"
+        ],
+        "effects": [
+          "(not (at ?t ?src))",
+          "(at ?t ?dst)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "express_delivery",
+    "domain_name": "freight_logistics",
+    "objects": {
+      "t1": "truck",
+      "d1": "depot",
+      "d2": "depot",
+      "c1": "cargo"
+    },
+    "initial_state": [
+      "(at t1 d1)",
+      "(carrying t1 c1)",
+      "(urgent c1)"
+    ],
+    "goal_state": [
+      "(at t1 d2)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

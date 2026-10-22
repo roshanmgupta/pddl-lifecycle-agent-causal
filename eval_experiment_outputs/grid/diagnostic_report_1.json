@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-10-14T02:15:54.714919",
+  "domain_name": "grid",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 4,
+    "search_time_seconds": 0.000163,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(pick-up robot0 key0 pos1-0)",
+      "(unlock robot0 pos1-0 pos1-1 key0 shape0)",
+      "(move robot0 pos1-0 pos1-1)",
+      "(put-down robot0 key0 pos1-1)"
+    ]
+  }
+}

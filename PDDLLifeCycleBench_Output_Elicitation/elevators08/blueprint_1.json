@@ -1,0 +1,217 @@
+{
+  "domain_name": "elevators08",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "elevators08",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "object": null,
+      "elevator": "object",
+      "slow-elevator": "elevator",
+      "fast-elevator": "elevator",
+      "passenger": "object",
+      "count": "object"
+    },
+    "constants": {},
+    "predicates": [
+      "(at ?e - elevator ?c - count)",
+      "(has ?e - elevator ?n - count)",
+      "(can-hold ?e - elevator ?n - count)",
+      "(reachable ?e - elevator ?c - count)",
+      "(next-to ?c1 - count ?c2 - count)",
+      "(above ?c1 - count ?c2 - count)",
+      "(boarded ?p - passenger ?e - elevator)",
+      "(passengers ?e - elevator ?n - count)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_slow_elevator",
+        "parameters": {
+          "?e": "slow-elevator",
+          "?from": "count",
+          "?to": "count"
+        },
+        "preconditions": [
+          "(at ?e ?from)",
+          "(above ?from ?to)",
+          "(reachable ?e ?to)"
+        ],
+        "effects": [
+          "(at ?e ?to)",
+          "(not (at ?e ?from))"
+        ]
+      },
+      {
+        "action_name": "move_fast_elevator",
+        "parameters": {
+          "?e": "fast-elevator",
+          "?from": "count",
+          "?to": "count"
+        },
+        "preconditions": [
+          "(at ?e ?from)",
+          "(above ?from ?to)",
+          "(reachable ?e ?to)"
+        ],
+        "effects": [
+          "(at ?e ?to)",
+          "(not (at ?e ?from))"
+        ]
+      },
+      {
+        "action_name": "board_passenger",
+        "parameters": {
+          "?p": "passenger",
+          "?e": "elevator",
+          "?c": "count",
+          "?d": "count",
+          "?e_count": "count"
+        },
+        "preconditions": [
+          "(at ?e ?c)",
+          "(at ?p ?c)",
+          "(passengers ?e ?d)",
+          "(next-to ?d ?e_count)",
+          "(can-hold ?e ?e_count)"
+        ],
+        "effects": [
+          "(boarded ?p ?e)",
+          "(passengers ?e ?e_count)",
+          "(not (at ?p ?c))",
+          "(not (passengers ?e ?d))"
+        ]
+      },
+      {
+        "action_name": "leave_elevator",
+        "parameters": {
+          "?p": "passenger",
+          "?e": "elevator",
+          "?c": "count",
+          "?d": "count",
+          "?e_count": "count"
+        },
+        "preconditions": [
+          "(at ?e ?c)",
+          "(boarded ?p ?e)",
+          "(passengers ?e ?d)",
+          "(next-to ?e_count ?d)",
+          "(reachable ?e ?c)"
+        ],
+        "effects": [
+          "(at ?p ?c)",
+          "(passengers ?e ?e_count)",
+          "(not (boarded ?p ?e))",
+          "(not (passengers ?e ?d))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "elevators08",
+    "objects": {
+      "n0": "count",
+      "n1": "count",
+      "n2": "count",
+      "n3": "count",
+      "n4": "count",
+      "n5": "count",
+      "n6": "count",
+      "n7": "count",
+      "n8": "count",
+      "p0": "passenger",
+      "p1": "passenger",
+      "p2": "passenger",
+      "fast0": "fast-elevator",
+      "slow0-0": "slow-elevator",
+      "slow1-0": "slow-elevator"
+    },
+    "initial_state": [
+      "(next-to n0 n1)",
+      "(next-to n1 n2)",
+      "(next-to n2 n3)",
+      "(next-to n3 n4)",
+      "(next-to n4 n5)",
+      "(next-to n5 n6)",
+      "(next-to n6 n7)",
+      "(next-to n7 n8)",
+      "(above n0 n1)",
+      "(above n0 n2)",
+      "(above n0 n3)",
+      "(above n0 n4)",
+      "(above n0 n5)",
+      "(above n0 n6)",
+      "(above n0 n7)",
+      "(above n0 n8)",
+      "(above n1 n2)",
+      "(above n1 n3)",
+      "(above n1 n4)",
+      "(above n1 n5)",
+      "(above n1 n6)",
+      "(above n1 n7)",
+      "(above n1 n8)",
+      "(above n2 n3)",
+      "(above n2 n4)",
+      "(above n2 n5)",
+      "(above n2 n6)",
+      "(above n2 n7)",
+      "(above n2 n8)",
+      "(above n3 n4)",
+      "(above n3 n5)",
+      "(above n3 n6)",
+      "(above n3 n7)",
+      "(above n3 n8)",
+      "(above n4 n5)",
+      "(above n4 n6)",
+      "(above n4 n7)",
+      "(above n4 n8)",
+      "(above n5 n6)",
+      "(above n5 n7)",
+      "(above n5 n8)",
+      "(above n6 n7)",
+      "(above n6 n8)",
+      "(above n7 n8)",
+      "(at fast0 n0)",
+      "(passengers fast0 n0)",
+      "(can-hold fast0 n1)",
+      "(can-hold fast0 n2)",
+      "(can-hold fast0 n3)",
+      "(reachable fast0 n0)",
+      "(reachable fast0 n2)",
+      "(reachable fast0 n4)",
+      "(reachable fast0 n6)",
+      "(reachable fast0 n8)",
+      "(at slow0-0 n2)",
+      "(passengers slow0-0 n0)",
+      "(can-hold slow0-0 n1)",
+      "(can-hold slow0-0 n2)",
+      "(reachable slow0-0 n0)",
+      "(reachable slow0-0 n1)",
+      "(reachable slow0-0 n2)",
+      "(reachable slow0-0 n3)",
+      "(reachable slow0-0 n4)",
+      "(at slow1-0 n4)",
+      "(passengers slow1-0 n0)",
+      "(can-hold slow1-0 n1)",
+      "(can-hold slow1-0 n2)",
+      "(reachable slow1-0 n4)",
+      "(reachable slow1-0 n5)",
+      "(reachable slow1-0 n6)",
+      "(reachable slow1-0 n7)",
+      "(reachable slow1-0 n8)",
+      "(at p0 n8)",
+      "(at p1 n3)",
+      "(at p2 n2)"
+    ],
+    "goal_state": [
+      "(at p0 n4)",
+      "(at p1 n6)",
+      "(at p2 n1)"
+    ]
+  },
+  "iteration_count": 5,
+  "is_valid": false
+}

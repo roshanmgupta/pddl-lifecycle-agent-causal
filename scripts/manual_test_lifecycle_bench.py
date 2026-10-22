@@ -79,7 +79,8 @@ def run_manual_flaw_test(domain_name: str, flaw_name: str, max_iterations: int =
         print("  (No diagnostic issues reported or errors resolved)")
 
     # Save outputs for inspection
-    out_dir = PROJECT_ROOT / "Streamlit_output_file" / "manual_tests" / f"{domain_name}_{flaw_name}"
+    from config.paths import get_eval_output_dir
+    out_dir = get_eval_output_dir() / "manual_tests" / f"{domain_name}_{flaw_name}"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_dom_path = out_dir / "domain_repaired.pddl"
     out_prob_path = out_dir / "problem.pddl"

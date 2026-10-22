@@ -1,0 +1,130 @@
+{
+  "timestamp": "2026-10-14T01:02:18.272275",
+  "domain_name": "barman11-bfs",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 3,
+  "initial_verification_errors": [
+    "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds."
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 10,
+  "diagnostic_reports": [
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "shake",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'shake' action requires both ingredients to be in the shaker before shaking, but the preconditions do not ensure the shaker contains both ingredients simultaneously. Consider relaxing the preconditions to allow sequential addition of ingredients or ensure both ingredients are added before shaking."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour-from-shaker",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-from-shaker' action requires the shot to be clean and empty, but there's no action sequence that ensures this condition is met before pouring. Consider adding preconditions or intermediate actions to clean and empty the shot before pouring from the shaker."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "pour-into-used-shaker",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Planner Error: Could not find a plan. Execution Error: Fast Downward timed out after 30 seconds.",
+      "suggested_repair_hint": "The 'pour-into-used-shaker' action does not update the 'unshaken' status of the shaker after pouring, which might be necessary for subsequent actions. Consider aligning the effects to properly reflect the state changes after pouring into a used shaker."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "shake",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'shake' action requires both ingredients to be in the shaker before shaking, but the planner couldn't find a sequence to achieve this. Consider relaxing the preconditions to allow shaking with partial ingredients or adding intermediate actions to prepare the shaker contents."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour-from-shaker",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-from-shaker' action requires the shot to be clean and empty, but doesn't check if the shaker contains the correct cocktail. Add a precondition to verify the shaker contains the desired beverage before pouring."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "pour-into-used-shaker",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-into-used-shaker' action doesn't update the shaker's 'unshaken' status when adding a second ingredient. Align the effects to properly track the shaker's state when multiple ingredients are added."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "suspiciousness_score": 0.6,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The initial state might be too restrictive. Consider adding more initial hand assignments or container positions to provide more flexibility in the solution space."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_RELAXATION",
+      "faulty_element": "shake",
+      "suspiciousness_score": 0.9,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'shake' action requires both ingredients to be in the shaker before shaking, but the planner cannot find a sequence to achieve this. Consider relaxing the preconditions to allow shaking with one ingredient at a time or adding intermediate actions to prepare the shaker."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": "pour-from-shaker",
+      "suspiciousness_score": 0.8,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-from-shaker' action requires the shot to be clean and empty, but the planner may be unable to achieve this state. Consider adding preconditions to ensure the shot is properly prepared before pouring from the shaker."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "EFFECT_ALIGNMENT",
+      "faulty_element": "pour-into-used-shaker",
+      "suspiciousness_score": 0.7,
+      "raw_log": "Completely explored state space -- no solution!",
+      "suggested_repair_hint": "The 'pour-into-used-shaker' action may not properly update the state of the shaker after pouring. Ensure the effects correctly reflect the state changes, including the shaker's contents and shaken status."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 27,
+    "search_time_seconds": 0.046895,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(grasp right shot4)",
+      "(fill shot4 ingredient1 dispenser1 right left)",
+      "(pour-into-clean-shaker shot4 ingredient1 shaker1 right l0 l1)",
+      "(clean-shot shot4 ingredient1 right left)",
+      "(grasp left shaker1)",
+      "(leave right shot4)",
+      "(shake cocktail3 shaker1 left right ingredient1 ingredient1)",
+      "(pour-from-shaker cocktail3 shaker1 left shot1 l1 l2)",
+      "(empty-shaker left shaker1 cocktail3 l2 l0)",
+      "(clean-shaker left shaker1 right)",
+      "(leave left shaker1)",
+      "(grasp right shot4)",
+      "(fill shot4 ingredient2 dispenser2 right left)",
+      "(pour-into-clean-shaker shot4 ingredient2 shaker1 right l0 l1)",
+      "(clean-shot shot4 ingredient2 right left)",
+      "(fill shot4 ingredient3 dispenser3 right left)",
+      "(grasp left shaker1)",
+      "(leave right shot4)",
+      "(shake cocktail2 shaker1 left right ingredient2 ingredient1)",
+      "(pour-from-shaker cocktail2 shaker1 left shot3 l1 l2)",
+      "(empty-shaker left shaker1 cocktail2 l2 l0)",
+      "(clean-shaker left shaker1 right)",
+      "(grasp right shot4)",
+      "(pour-into-clean-shaker shot4 ingredient3 shaker1 right l0 l1)",
+      "(leave right shot4)",
+      "(shake cocktail1 shaker1 left right ingredient3 ingredient1)",
+      "(pour-from-shaker cocktail1 shaker1 left shot2 l1 l2)"
+    ]
+  }
+}

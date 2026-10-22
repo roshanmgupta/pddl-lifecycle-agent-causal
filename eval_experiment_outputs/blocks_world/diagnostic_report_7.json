@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-10-13T01:01:57.694956",
+  "domain_name": "blocks_world",
+  "run_index": 7,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 2,
+  "initial_verification_errors": [
+    "VAL Error: Type-checking pickup\nType problem with proposition (on b t) - parameter 2 is incorrectly typed\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 2,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pickup",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (on b t) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the second parameter of the 'on' predicate in the 'pickup' action is correctly typed as 'table' instead of 'block'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pickup",
+      "suspiciousness_score": 1.0,
+      "raw_log": "Type problem with proposition (on b t) - parameter 2 is incorrectly typed",
+      "suggested_repair_hint": "Ensure that the second parameter of the 'on' predicate in the 'pickup' action is correctly typed as 'block' instead of 'table'."
+    }
+  ],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 8,
+    "search_time_seconds": 0.000212,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(unstack a1 b5 b2)",
+      "(putdown a1 b5 t1)",
+      "(unstack a1 b2 b3)",
+      "(putdown a1 b2 t1)",
+      "(unstack a1 b3 b1)",
+      "(stack a1 b3 b5)",
+      "(pickup a1 b4 t1)",
+      "(stack a1 b4 b3)"
+    ]
+  }
+}

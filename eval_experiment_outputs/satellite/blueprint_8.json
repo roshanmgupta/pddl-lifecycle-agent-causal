@@ -1,0 +1,162 @@
+{
+  "domain_name": "satellite",
+  "run_index": 8,
+  "domain_blueprint": {
+    "domain_name": "satellite",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "satellite": "object",
+      "direction": "object",
+      "instrument": "object",
+      "mode": "object"
+    },
+    "constants": {},
+    "predicates": [
+      "(on_board ?i - instrument ?s - satellite)",
+      "(supports ?i - instrument ?m - mode)",
+      "(pointing ?s - satellite ?d - direction)",
+      "(power_avail ?s - satellite)",
+      "(power_on ?i - instrument)",
+      "(calibrated ?i - instrument)",
+      "(have_image ?d - direction ?m - mode)",
+      "(calibration_target ?i - instrument ?d - direction)",
+      "(transmitted_image ?d - direction ?m - mode)"
+    ],
+    "actions": [
+      {
+        "action_name": "turn_to",
+        "parameters": {
+          "?s": "satellite",
+          "?d_new": "direction",
+          "?d_prev": "direction"
+        },
+        "preconditions": [
+          "(pointing ?s ?d_prev)"
+        ],
+        "effects": [
+          "(pointing ?s ?d_new)",
+          "(not (pointing ?s ?d_prev))"
+        ]
+      },
+      {
+        "action_name": "switch_on",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite"
+        },
+        "preconditions": [
+          "(on_board ?i ?s)",
+          "(power_avail ?s)"
+        ],
+        "effects": [
+          "(power_on ?i)",
+          "(not (calibrated ?i))",
+          "(not (power_avail ?s))"
+        ]
+      },
+      {
+        "action_name": "switch_off",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite"
+        },
+        "preconditions": [
+          "(on_board ?i ?s)",
+          "(power_on ?i)"
+        ],
+        "effects": [
+          "(not (power_on ?i))",
+          "(power_avail ?s)"
+        ]
+      },
+      {
+        "action_name": "calibrate",
+        "parameters": {
+          "?s": "satellite",
+          "?i": "instrument",
+          "?d": "direction"
+        },
+        "preconditions": [
+          "(on_board ?i ?s)",
+          "(calibration_target ?i ?d)",
+          "(pointing ?s ?d)",
+          "(power_on ?i)"
+        ],
+        "effects": [
+          "(calibrated ?i)"
+        ]
+      },
+      {
+        "action_name": "take_image",
+        "parameters": {
+          "?s": "satellite",
+          "?d": "direction",
+          "?i": "instrument",
+          "?m": "mode"
+        },
+        "preconditions": [
+          "(calibrated ?i)",
+          "(on_board ?i ?s)",
+          "(supports ?i ?m)",
+          "(power_on ?i)",
+          "(pointing ?s ?d)"
+        ],
+        "effects": [
+          "(have_image ?d ?m)"
+        ]
+      },
+      {
+        "action_name": "transmit_image",
+        "parameters": {
+          "?s": "satellite",
+          "?d": "direction",
+          "?m": "mode"
+        },
+        "preconditions": [
+          "(have_image ?d ?m)",
+          "(power_avail ?s)"
+        ],
+        "effects": [
+          "(transmitted_image ?d ?m)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "strips-sat-x-1",
+    "domain_name": "satellite",
+    "objects": {
+      "satellite0": "satellite",
+      "instrument0": "instrument",
+      "instrument1": "instrument",
+      "image1": "mode",
+      "infrared2": "mode",
+      "thermograph0": "mode",
+      "Star1": "direction",
+      "GroundStation0": "direction",
+      "Phenomenon2": "direction",
+      "Planet3": "direction"
+    },
+    "initial_state": [
+      "(supports instrument0 image1)",
+      "(supports instrument0 thermograph0)",
+      "(calibration_target instrument0 Star1)",
+      "(supports instrument1 infrared2)",
+      "(supports instrument1 image1)",
+      "(calibration_target instrument1 GroundStation0)",
+      "(on_board instrument0 satellite0)",
+      "(on_board instrument1 satellite0)",
+      "(power_avail satellite0)",
+      "(pointing satellite0 Planet3)"
+    ],
+    "goal_state": [
+      "(have_image Phenomenon2 thermograph0)",
+      "(have_image Planet3 image1)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

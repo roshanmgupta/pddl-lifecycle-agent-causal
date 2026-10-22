@@ -1,0 +1,8 @@
+1: (unstack a1 b5 b2)
+2: (putdown a1 b5 t1)
+3: (unstack a1 b2 b3)
+4: (putdown a1 b2 t1)
+5: (unstack a1 b3 b1)
+6: (stack a1 b3 b5)
+7: (pickup a1 b4 t1)
+8: (stack a1 b4 b3)

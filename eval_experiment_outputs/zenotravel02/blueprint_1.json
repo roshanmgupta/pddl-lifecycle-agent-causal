@@ -1,0 +1,196 @@
+{
+  "domain_name": "zenotravel02",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "zenotravel02",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "person": "object",
+      "aircraft": "object",
+      "city": "object",
+      "flight_level": "object"
+    },
+    "predicates": [
+      "(at ?a - aircraft ?c - city)",
+      "(in ?p - person ?a - aircraft)",
+      "(person_at ?p - person ?c - city)",
+      "(fuel_level ?a - aircraft ?f - flight_level)",
+      "(next ?f1 - flight_level ?f2 - flight_level)",
+      "(is_person ?p - person)",
+      "(is_aircraft ?a - aircraft)",
+      "(is_city ?c - city)",
+      "(is_flight_level ?f - flight_level)"
+    ],
+    "actions": [
+      {
+        "action_name": "board",
+        "parameters": {
+          "?p": "person",
+          "?a": "aircraft",
+          "?c": "city"
+        },
+        "preconditions": [
+          "(is_person ?p)",
+          "(is_aircraft ?a)",
+          "(is_city ?c)",
+          "(person_at ?p ?c)",
+          "(at ?a ?c)"
+        ],
+        "effects": [
+          "(in ?p ?a)",
+          "(not (person_at ?p ?c))"
+        ]
+      },
+      {
+        "action_name": "debark",
+        "parameters": {
+          "?p": "person",
+          "?a": "aircraft",
+          "?c": "city"
+        },
+        "preconditions": [
+          "(is_person ?p)",
+          "(is_aircraft ?a)",
+          "(is_city ?c)",
+          "(in ?p ?a)",
+          "(at ?a ?c)"
+        ],
+        "effects": [
+          "(person_at ?p ?c)",
+          "(not (in ?p ?a))"
+        ]
+      },
+      {
+        "action_name": "fly",
+        "parameters": {
+          "?a": "aircraft",
+          "?from": "city",
+          "?to": "city",
+          "?f1": "flight_level",
+          "?f2": "flight_level"
+        },
+        "preconditions": [
+          "(is_aircraft ?a)",
+          "(is_city ?from)",
+          "(is_city ?to)",
+          "(is_flight_level ?f1)",
+          "(is_flight_level ?f2)",
+          "(at ?a ?from)",
+          "(fuel_level ?a ?f1)",
+          "(next ?f1 ?f2)"
+        ],
+        "effects": [
+          "(at ?a ?to)",
+          "(fuel_level ?a ?f2)",
+          "(not (at ?a ?from))",
+          "(not (fuel_level ?a ?f1))"
+        ]
+      },
+      {
+        "action_name": "zoom",
+        "parameters": {
+          "?a": "aircraft",
+          "?from": "city",
+          "?to": "city",
+          "?f1": "flight_level",
+          "?f2": "flight_level",
+          "?f3": "flight_level"
+        },
+        "preconditions": [
+          "(is_aircraft ?a)",
+          "(is_city ?from)",
+          "(is_city ?to)",
+          "(is_flight_level ?f1)",
+          "(is_flight_level ?f2)",
+          "(is_flight_level ?f3)",
+          "(at ?a ?from)",
+          "(fuel_level ?a ?f1)",
+          "(next ?f1 ?f2)",
+          "(next ?f2 ?f3)"
+        ],
+        "effects": [
+          "(at ?a ?to)",
+          "(fuel_level ?a ?f3)",
+          "(not (at ?a ?from))",
+          "(not (fuel_level ?a ?f1))"
+        ]
+      },
+      {
+        "action_name": "refuel",
+        "parameters": {
+          "?a": "aircraft",
+          "?c": "city",
+          "?f1": "flight_level",
+          "?f2": "flight_level"
+        },
+        "preconditions": [
+          "(is_aircraft ?a)",
+          "(is_city ?c)",
+          "(is_flight_level ?f1)",
+          "(is_flight_level ?f2)",
+          "(fuel_level ?a ?f1)",
+          "(next ?f2 ?f1)",
+          "(at ?a ?c)"
+        ],
+        "effects": [
+          "(fuel_level ?a ?f2)",
+          "(not (fuel_level ?a ?f1))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "zenotravel02",
+    "objects": {
+      "plane1": "aircraft",
+      "person1": "person",
+      "person2": "person",
+      "city0": "city",
+      "city1": "city",
+      "city2": "city",
+      "fl0": "flight_level",
+      "fl1": "flight_level",
+      "fl2": "flight_level",
+      "fl3": "flight_level",
+      "fl4": "flight_level",
+      "fl5": "flight_level",
+      "fl6": "flight_level"
+    },
+    "initial_state": [
+      "(is_aircraft plane1)",
+      "(is_person person1)",
+      "(is_person person2)",
+      "(is_city city0)",
+      "(is_city city1)",
+      "(is_city city2)",
+      "(is_flight_level fl0)",
+      "(is_flight_level fl1)",
+      "(is_flight_level fl2)",
+      "(is_flight_level fl3)",
+      "(is_flight_level fl4)",
+      "(is_flight_level fl5)",
+      "(is_flight_level fl6)",
+      "(at plane1 city0)",
+      "(fuel_level plane1 fl1)",
+      "(person_at person1 city0)",
+      "(person_at person2 city2)",
+      "(next fl0 fl1)",
+      "(next fl1 fl2)",
+      "(next fl2 fl3)",
+      "(next fl3 fl4)",
+      "(next fl4 fl5)",
+      "(next fl5 fl6)"
+    ],
+    "goal_state": [
+      "(at plane1 city1)",
+      "(person_at person1 city0)",
+      "(person_at person2 city2)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

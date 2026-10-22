@@ -1,0 +1,221 @@
+{
+  "domain_name": "hiking14",
+  "run_index": 2,
+  "domain_blueprint": {
+    "domain_name": "hiking14",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "car": "object",
+      "tent": "object",
+      "couple": "object",
+      "place": "object",
+      "person": "object"
+    },
+    "predicates": [
+      "(partners ?a - person ?b - person ?c - couple)",
+      "(at_person ?a - person ?p - place)",
+      "(walked_to ?c - couple ?p - place)",
+      "(at_tent ?t - tent ?p - place)",
+      "(at_car ?c - car ?p - place)",
+      "(next_to ?p1 - place ?p2 - place)",
+      "(tent_up ?t - tent)",
+      "(tent_down ?t - tent)"
+    ],
+    "actions": [
+      {
+        "action_name": "put_down_tent",
+        "parameters": {
+          "?a": "person",
+          "?b": "place",
+          "?c": "tent"
+        },
+        "preconditions": [
+          "(at_person ?a ?b)",
+          "(at_tent ?c ?b)",
+          "(tent_up ?c)"
+        ],
+        "effects": [
+          "(tent_down ?c)",
+          "(not (tent_up ?c))"
+        ]
+      },
+      {
+        "action_name": "put_up_tent",
+        "parameters": {
+          "?a": "person",
+          "?b": "place",
+          "?c": "tent"
+        },
+        "preconditions": [
+          "(at_person ?a ?b)",
+          "(at_tent ?c ?b)",
+          "(tent_down ?c)"
+        ],
+        "effects": [
+          "(tent_up ?c)",
+          "(not (tent_down ?c))"
+        ]
+      },
+      {
+        "action_name": "drive_person_person",
+        "parameters": {
+          "?a": "person",
+          "?e": "person",
+          "?b": "place",
+          "?c": "place",
+          "?d": "car"
+        },
+        "preconditions": [
+          "(at_person ?a ?b)",
+          "(at_car ?d ?b)",
+          "(at_person ?e ?b)",
+          "(not (= ?a ?e))"
+        ],
+        "effects": [
+          "(at_person ?a ?c)",
+          "(at_car ?d ?c)",
+          "(at_person ?e ?c)",
+          "(not (at_person ?a ?b))",
+          "(not (at_car ?d ?b))",
+          "(not (at_person ?e ?b))"
+        ]
+      },
+      {
+        "action_name": "drive_person",
+        "parameters": {
+          "?a": "person",
+          "?b": "place",
+          "?c": "place",
+          "?d": "car"
+        },
+        "preconditions": [
+          "(at_person ?a ?b)",
+          "(at_car ?d ?b)"
+        ],
+        "effects": [
+          "(at_person ?a ?c)",
+          "(at_car ?d ?c)",
+          "(not (at_person ?a ?b))",
+          "(not (at_car ?d ?b))"
+        ]
+      },
+      {
+        "action_name": "drive_person_with_tent",
+        "parameters": {
+          "?a": "person",
+          "?b": "place",
+          "?c": "place",
+          "?d": "car",
+          "?e": "tent"
+        },
+        "preconditions": [
+          "(at_person ?a ?b)",
+          "(at_car ?d ?b)",
+          "(at_tent ?e ?b)",
+          "(tent_down ?e)"
+        ],
+        "effects": [
+          "(at_person ?a ?c)",
+          "(at_car ?d ?c)",
+          "(at_tent ?e ?c)",
+          "(not (at_person ?a ?b))",
+          "(not (at_car ?d ?b))",
+          "(not (at_tent ?e ?b))"
+        ]
+      },
+      {
+        "action_name": "drive_person_person_with_tent",
+        "parameters": {
+          "?a": "person",
+          "?f": "person",
+          "?b": "place",
+          "?c": "place",
+          "?d": "car",
+          "?e": "tent"
+        },
+        "preconditions": [
+          "(at_person ?a ?b)",
+          "(at_car ?d ?b)",
+          "(at_tent ?e ?b)",
+          "(tent_down ?e)",
+          "(at_person ?f ?b)",
+          "(not (= ?a ?f))"
+        ],
+        "effects": [
+          "(at_person ?a ?c)",
+          "(at_car ?d ?c)",
+          "(at_tent ?e ?c)",
+          "(at_person ?f ?c)",
+          "(not (at_person ?a ?b))",
+          "(not (at_car ?d ?b))",
+          "(not (at_tent ?e ?b))",
+          "(not (at_person ?f ?b))"
+        ]
+      },
+      {
+        "action_name": "walk_together",
+        "parameters": {
+          "?d": "place",
+          "?b": "place",
+          "?a": "tent",
+          "?c": "person",
+          "?e": "person",
+          "?f": "couple"
+        },
+        "preconditions": [
+          "(at_tent ?a ?b)",
+          "(tent_up ?a)",
+          "(at_person ?c ?d)",
+          "(next_to ?d ?b)",
+          "(at_person ?e ?d)",
+          "(walked_to ?f ?d)",
+          "(partners ?c ?e ?f)",
+          "(not (= ?c ?e))"
+        ],
+        "effects": [
+          "(at_person ?c ?b)",
+          "(at_person ?e ?b)",
+          "(walked_to ?f ?b)",
+          "(not (at_person ?c ?d))",
+          "(not (at_person ?e ?d))",
+          "(not (walked_to ?f ?d))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-1",
+    "domain_name": "hiking14",
+    "objects": {
+      "car0": "car",
+      "car1": "car",
+      "tent0": "tent",
+      "couple0": "couple",
+      "place0": "place",
+      "place1": "place",
+      "place2": "place",
+      "guy0": "person",
+      "girl0": "person"
+    },
+    "initial_state": [
+      "(partners guy0 girl0 couple0)",
+      "(at_person guy0 place0)",
+      "(at_person girl0 place0)",
+      "(walked_to couple0 place0)",
+      "(at_tent tent0 place0)",
+      "(tent_up tent0)",
+      "(at_car car0 place0)",
+      "(at_car car1 place0)",
+      "(next_to place0 place1)",
+      "(next_to place1 place2)"
+    ],
+    "goal_state": [
+      "(walked_to couple0 place2)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

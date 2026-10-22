@@ -1,0 +1,107 @@
+{
+  "domain_name": "freecell",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "freecell",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "card": "object",
+      "pile": "container",
+      "freecell": "container",
+      "foundation": "container",
+      "container": "object"
+    },
+    "predicates": [
+      "(on ?c1 - card ?c2 - card)",
+      "(top ?c - card ?p - pile)",
+      "(in_freecell ?c - card ?f - freecell)",
+      "(in_foundation ?c - card ?f - foundation)",
+      "(empty_freecell ?f - freecell)",
+      "(empty_pile ?p - pile)",
+      "(empty_foundation ?f - foundation)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_card_to_freecell",
+        "parameters": {
+          "?c": "card",
+          "?p": "pile",
+          "?f": "freecell"
+        },
+        "preconditions": [
+          "(top ?c ?p)",
+          "(empty_freecell ?f)"
+        ],
+        "effects": [
+          "(not (top ?c ?p))",
+          "(in_freecell ?c ?f)",
+          "(empty_pile ?p)"
+        ]
+      },
+      {
+        "action_name": "move_card_to_foundation",
+        "parameters": {
+          "?c": "card",
+          "?p": "pile",
+          "?f": "foundation"
+        },
+        "preconditions": [
+          "(top ?c ?p)",
+          "(empty_foundation ?f)"
+        ],
+        "effects": [
+          "(not (top ?c ?p))",
+          "(in_foundation ?c ?f)",
+          "(empty_pile ?p)"
+        ]
+      },
+      {
+        "action_name": "move_card_between_piles",
+        "parameters": {
+          "?c1": "card",
+          "?p1": "pile",
+          "?c2": "card",
+          "?p2": "pile"
+        },
+        "preconditions": [
+          "(top ?c1 ?p1)",
+          "(top ?c2 ?p2)"
+        ],
+        "effects": [
+          "(not (top ?c1 ?p1))",
+          "(not (top ?c2 ?p2))",
+          "(on ?c1 ?c2)",
+          "(top ?c1 ?p2)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "freecell_problem",
+    "domain_name": "freecell",
+    "objects": {
+      "c1": "card",
+      "c2": "card",
+      "c3": "card",
+      "p1": "pile",
+      "p2": "pile",
+      "f1": "freecell",
+      "f2": "foundation"
+    },
+    "initial_state": [
+      "(top c1 p1)",
+      "(top c2 p2)",
+      "(empty_freecell f1)",
+      "(empty_foundation f2)"
+    ],
+    "goal_state": [
+      "(in_foundation c1 f2)",
+      "(in_foundation c2 f2)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

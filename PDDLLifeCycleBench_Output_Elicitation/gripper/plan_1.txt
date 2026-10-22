@@ -1,0 +1,5 @@
+1: (pick_object robot1 ball2 lgripper1 room2)
+2: (pick_object robot1 ball4 rgripper1 room2)
+3: (move_robot robot1 room2 room1)
+4: (drop_object robot1 ball2 lgripper1 room1)
+5: (drop_object robot1 ball4 rgripper1 room1)

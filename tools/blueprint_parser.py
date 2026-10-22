@@ -44,23 +44,41 @@ def parse_pddl_domain_to_blueprint(pddl_str: str) -> Dict[str, Any]:
     domain_name = re.search(r"\(\s*domain\s+([a-zA-Z0-9_\-]+)", pddl_str, re.IGNORECASE)
     dname = domain_name.group(1) if domain_name else "unnamed_domain"
 
+    req_match = re.search(r"\(:requirements\s+(.*?)\)", pddl_str, re.IGNORECASE)
+    reqs: List[str] = []
+    if req_match:
+        for r in req_match.group(1).split():
+            clean_r = r.strip()
+            if clean_r:
+                if not clean_r.startswith(":"):
+                    clean_r = f":{clean_r}"
+                reqs.append(clean_r)
+
     types_match = re.search(r"\(:types\s+(.*?)\)", pddl_str, re.DOTALL | re.IGNORECASE)
     types_dict: Dict[str, str] = {}
     if types_match:
-        for line in types_match.group(1).split("\n"):
-            line_clean = line.strip()
-            if not line_clean or line_clean.startswith(";"):
-                continue
-            if "-" in line_clean:
-                parts = line_clean.split("-")
-                objs = parts[0].strip().split()
-                parent = parts[1].strip()
-                for o in objs:
-                    types_dict[o] = parent
+        tokens = types_match.group(1).split()
+        current_types = []
+        i = 0
+        while i < len(tokens):
+            tok = tokens[i]
+            if tok == "-":
+                parent = tokens[i+1] if i+1 < len(tokens) else "object"
+                for t in current_types:
+                    types_dict[t] = parent
+                current_types = []
+                i += 2
             else:
-                objs = line_clean.split()
-                for o in objs:
-                    types_dict[o] = "object"
+                current_types.append(tok)
+                i += 1
+        for t in current_types:
+            types_dict[t] = "object"
+
+    if not reqs:
+        if types_dict or re.search(r"\?\w+\s*-\s*[a-zA-Z0-9_\-]+", pddl_str):
+            reqs = [":strips", ":typing"]
+        else:
+            reqs = [":strips"]
 
     pred_match = re.search(r"\(:predicates\s+(.*?)\)\s*\(:", pddl_str, re.DOTALL | re.IGNORECASE)
     preds: List[str] = []
@@ -129,7 +147,7 @@ def parse_pddl_domain_to_blueprint(pddl_str: str) -> Dict[str, Any]:
 
     return {
         "domain_name": dname,
-        "requirements": [":strips", ":typing"],
+        "requirements": reqs,
         "types": types_dict,
         "constants": consts_dict,
         "predicates": preds,

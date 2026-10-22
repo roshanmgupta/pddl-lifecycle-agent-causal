@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-10-14T01:44:05.080299",
+  "domain_name": "elevators",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 15,
+    "search_time_seconds": 0.001159,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(board-passenger p2 slow0-0 n2 n0 n1)",
+      "(move-slow-elevator-down slow0-0 n2 n4)",
+      "(move-slow-elevator-down slow1-0 n4 n8)",
+      "(board-passenger p0 slow1-0 n8 n0 n1)",
+      "(move-slow-elevator-up slow1-0 n8 n4)",
+      "(move-slow-elevator-up slow0-0 n4 n3)",
+      "(board-passenger p1 slow0-0 n3 n1 n2)",
+      "(move-slow-elevator-down slow0-0 n3 n4)",
+      "(leave-elevator p1 slow0-0 n4 n2 n1)",
+      "(board-passenger p1 slow1-0 n4 n1 n2)",
+      "(leave-elevator p0 slow1-0 n4 n2 n1)",
+      "(move-slow-elevator-down slow1-0 n4 n6)",
+      "(leave-elevator p1 slow1-0 n6 n1 n0)",
+      "(move-slow-elevator-up slow0-0 n4 n1)",
+      "(leave-elevator p2 slow0-0 n1 n1 n0)"
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+1: (move r1 f0-0f f1-0f)
+2: (pick-bomb r1 f1-0f)
+3: (detonate-bomb r1 f1-0f f1-1f)
+4: (move r1 f1-0f f1-1f)
+5: (pick-gold r1 f1-1f)

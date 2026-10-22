@@ -1,0 +1,152 @@
+{
+  "domain_name": "logistics_warehouse",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "logistics_warehouse",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "truck": "locatable",
+      "hoist": "locatable",
+      "crate": "surface",
+      "pallet": "surface",
+      "surface": "locatable",
+      "locatable": "object",
+      "location": "object"
+    },
+    "predicates": [
+      "(at ?x - locatable ?l - location)",
+      "(on ?c - crate ?s - surface)",
+      "(loaded ?c - crate ?t - truck)",
+      "(empty ?t - truck)"
+    ],
+    "actions": [
+      {
+        "action_name": "load",
+        "parameters": {
+          "?c": "crate",
+          "?t": "truck",
+          "?l": "location",
+          "?h": "hoist",
+          "?s": "surface"
+        },
+        "preconditions": [
+          "(at ?c ?l)",
+          "(at ?t ?l)",
+          "(at ?h ?l)",
+          "(on ?c ?s)",
+          "(empty ?t)"
+        ],
+        "effects": [
+          "(loaded ?c ?t)",
+          "(not (on ?c ?s))",
+          "(not (empty ?t))"
+        ]
+      },
+      {
+        "action_name": "unload",
+        "parameters": {
+          "?c": "crate",
+          "?t": "truck",
+          "?l": "location",
+          "?h": "hoist",
+          "?s": "surface"
+        },
+        "preconditions": [
+          "(loaded ?c ?t)",
+          "(at ?t ?l)",
+          "(at ?h ?l)",
+          "(at ?s ?l)"
+        ],
+        "effects": [
+          "(on ?c ?s)",
+          "(not (loaded ?c ?t))",
+          "(empty ?t)"
+        ]
+      },
+      {
+        "action_name": "lift",
+        "parameters": {
+          "?c": "crate",
+          "?l": "location",
+          "?h": "hoist",
+          "?s": "surface"
+        },
+        "preconditions": [
+          "(on ?c ?s)",
+          "(at ?c ?l)",
+          "(at ?h ?l)"
+        ],
+        "effects": [
+          "(not (on ?c ?s))",
+          "(not (at ?c ?l))"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?c": "crate",
+          "?l": "location",
+          "?h": "hoist",
+          "?s": "surface"
+        },
+        "preconditions": [
+          "(at ?h ?l)",
+          "(at ?s ?l)"
+        ],
+        "effects": [
+          "(on ?c ?s)",
+          "(at ?c ?l)"
+        ]
+      },
+      {
+        "action_name": "drive",
+        "parameters": {
+          "?t": "truck",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(at ?t ?from)"
+        ],
+        "effects": [
+          "(not (at ?t ?from))",
+          "(at ?t ?to)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "deliver_crates",
+    "domain_name": "logistics_warehouse",
+    "objects": {
+      "t1": "truck",
+      "h1": "hoist",
+      "c1": "crate",
+      "c2": "crate",
+      "p1": "pallet",
+      "p2": "pallet",
+      "loc_a": "location",
+      "loc_b": "location"
+    },
+    "initial_state": [
+      "(at t1 loc_a)",
+      "(at h1 loc_a)",
+      "(on c1 p1)",
+      "(on c2 p2)",
+      "(at p1 loc_a)",
+      "(at p2 loc_a)",
+      "(empty t1)"
+    ],
+    "goal_state": [
+      "(on c1 p2)",
+      "(on c2 p1)",
+      "(at c1 loc_b)",
+      "(at c2 loc_b)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

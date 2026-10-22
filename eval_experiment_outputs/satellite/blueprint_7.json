@@ -1,0 +1,158 @@
+{
+  "domain_name": "satellite",
+  "run_index": 7,
+  "domain_blueprint": {
+    "domain_name": "satellite",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "satellite": "object",
+      "direction": "object",
+      "instrument": "object",
+      "mode": "object"
+    },
+    "constants": {},
+    "predicates": [
+      "(on_board ?i - instrument ?s - satellite)",
+      "(supports ?i - instrument ?m - mode)",
+      "(pointing ?s - satellite ?d - direction)",
+      "(power_avail ?s - satellite)",
+      "(power_on ?i - instrument)",
+      "(calibrated ?i - instrument)",
+      "(have_image ?d - direction ?m - mode)",
+      "(calibration_target ?i - instrument ?d - direction)",
+      "(transmitted ?d - direction ?m - mode)"
+    ],
+    "actions": [
+      {
+        "action_name": "turn_to",
+        "parameters": {
+          "?s": "satellite",
+          "?d_new": "direction",
+          "?d_prev": "direction"
+        },
+        "preconditions": [
+          "(pointing ?s ?d_prev)"
+        ],
+        "effects": [
+          "(pointing ?s ?d_new)",
+          "(not (pointing ?s ?d_prev))"
+        ]
+      },
+      {
+        "action_name": "switch_on",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite"
+        },
+        "preconditions": [
+          "(on_board ?i ?s)",
+          "(power_avail ?s)"
+        ],
+        "effects": [
+          "(power_on ?i)",
+          "(not (calibrated ?i))",
+          "(not (power_avail ?s))"
+        ]
+      },
+      {
+        "action_name": "switch_off",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite"
+        },
+        "preconditions": [
+          "(on_board ?i ?s)",
+          "(power_on ?i)"
+        ],
+        "effects": [
+          "(not (power_on ?i))",
+          "(power_avail ?s)"
+        ]
+      },
+      {
+        "action_name": "calibrate",
+        "parameters": {
+          "?s": "satellite",
+          "?i": "instrument",
+          "?d": "direction"
+        },
+        "preconditions": [
+          "(on_board ?i ?s)",
+          "(calibration_target ?i ?d)",
+          "(pointing ?s ?d)",
+          "(power_on ?i)"
+        ],
+        "effects": [
+          "(calibrated ?i)"
+        ]
+      },
+      {
+        "action_name": "take_image",
+        "parameters": {
+          "?s": "satellite",
+          "?d": "direction",
+          "?i": "instrument",
+          "?m": "mode"
+        },
+        "preconditions": [
+          "(calibrated ?i)",
+          "(on_board ?i ?s)",
+          "(supports ?i ?m)",
+          "(power_on ?i)",
+          "(pointing ?s ?d)"
+        ],
+        "effects": [
+          "(have_image ?d ?m)"
+        ]
+      },
+      {
+        "action_name": "transmit_image",
+        "parameters": {
+          "?s": "satellite",
+          "?d": "direction",
+          "?m": "mode",
+          "?g": "direction"
+        },
+        "preconditions": [
+          "(have_image ?d ?m)",
+          "(pointing ?s ?g)",
+          "(power_avail ?s)"
+        ],
+        "effects": [
+          "(transmitted ?d ?m)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "strips-sat-x-1",
+    "domain_name": "satellite",
+    "objects": {
+      "satellite0": "satellite",
+      "instrument0": "instrument",
+      "instrument1": "instrument",
+      "image0": "mode",
+      "GroundStation0": "direction",
+      "GroundStation1": "direction",
+      "Star2": "direction"
+    },
+    "initial_state": [
+      "(supports instrument0 image0)",
+      "(calibration_target instrument0 GroundStation1)",
+      "(supports instrument1 image0)",
+      "(calibration_target instrument1 GroundStation1)",
+      "(on_board instrument0 satellite0)",
+      "(on_board instrument1 satellite0)",
+      "(power_avail satellite0)",
+      "(pointing satellite0 Star2)"
+    ],
+    "goal_state": [
+      "(have_image Star2 image0)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

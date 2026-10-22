@@ -1,0 +1,105 @@
+{
+  "domain_name": "miconic_elevator",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "miconic_elevator",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "floor": "object",
+      "passenger": "object"
+    },
+    "predicates": [
+      "(directly_below ?lower - floor ?upper - floor)",
+      "(lift_at ?f - floor)",
+      "(origin ?p - passenger ?f - floor)",
+      "(destination ?p - passenger ?f - floor)",
+      "(boarded ?p - passenger)",
+      "(served ?p - passenger)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_up",
+        "parameters": {
+          "?from": "floor",
+          "?to": "floor"
+        },
+        "preconditions": [
+          "(lift_at ?from)",
+          "(directly_below ?from ?to)"
+        ],
+        "effects": [
+          "(not (lift_at ?from))",
+          "(lift_at ?to)"
+        ]
+      },
+      {
+        "action_name": "move_down",
+        "parameters": {
+          "?from": "floor",
+          "?to": "floor"
+        },
+        "preconditions": [
+          "(lift_at ?from)",
+          "(directly_below ?to ?from)"
+        ],
+        "effects": [
+          "(not (lift_at ?from))",
+          "(lift_at ?to)"
+        ]
+      },
+      {
+        "action_name": "board",
+        "parameters": {
+          "?p": "passenger",
+          "?f": "floor"
+        },
+        "preconditions": [
+          "(lift_at ?f)",
+          "(origin ?p ?f)"
+        ],
+        "effects": [
+          "(boarded ?p)"
+        ]
+      },
+      {
+        "action_name": "depart",
+        "parameters": {
+          "?p": "passenger",
+          "?f": "floor"
+        },
+        "preconditions": [
+          "(lift_at ?f)",
+          "(destination ?p ?f)",
+          "(boarded ?p)"
+        ],
+        "effects": [
+          "(not (boarded ?p))",
+          "(served ?p)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "miconic_elevator_p0",
+    "domain_name": "miconic_elevator",
+    "objects": {
+      "p0": "passenger",
+      "f0": "floor",
+      "f1": "floor"
+    },
+    "initial_state": [
+      "(directly_below f1 f0)",
+      "(lift_at f0)",
+      "(origin p0 f1)",
+      "(destination p0 f0)"
+    ],
+    "goal_state": [
+      "(served p0)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

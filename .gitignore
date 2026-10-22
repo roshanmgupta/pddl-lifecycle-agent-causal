@@ -1,6 +1,8 @@
-# Python
+# Python & Solver Artifacts
 __pycache__/
 *.pyc
+sas_plan*
+output.sas
 
 # Environment
 agent_env/

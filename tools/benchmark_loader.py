@@ -736,8 +736,12 @@ def load_historical_case_from_ipc(year: str, domain_name: str, instance_filename
 
 # ==============================================================================
 # AutoPlanBench (ICAPS 2025 Pure Typed STRIPS) Loader Helpers
-# ==============================================================================
-AUTOPLANBENCH_ROOT = os.path.join(BENCHMARK_ROOT, "autoplanbench")
+try:
+    from config.paths import get_autoplanbench_dir
+    _cfg_apb = str(get_autoplanbench_dir())
+    AUTOPLANBENCH_ROOT = _cfg_apb if os.path.exists(_cfg_apb) else os.path.join(BENCHMARK_ROOT, "autoplanbench")
+except Exception:
+    AUTOPLANBENCH_ROOT = os.path.join(BENCHMARK_ROOT, "autoplanbench")
 
 def list_autoplanbench_domains() -> List[str]:
     """Returns sorted list of available pure typed STRIPS domains from AutoPlanBench."""

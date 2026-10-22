@@ -1,0 +1,174 @@
+{
+  "domain_name": "elevator_system",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "elevator_system",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "passenger": "object",
+      "floor": "object",
+      "elevator": "object",
+      "slow_elevator": "elevator",
+      "fast_elevator": "elevator",
+      "count": "object"
+    },
+    "predicates": [
+      "(at_floor ?p - passenger ?f - floor)",
+      "(in_elevator ?p - passenger ?e - elevator)",
+      "(elevator_at ?e - elevator ?f - floor)",
+      "(can_serve ?e - elevator ?f - floor)",
+      "(adjacent ?f1 - floor ?f2 - floor)",
+      "(fast_connected ?f1 - floor ?f2 - floor)",
+      "(passengers_count ?e - elevator ?c - count)",
+      "(next_count ?c1 - count ?c2 - count)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_slow",
+        "parameters": {
+          "?e": "slow_elevator",
+          "?from": "floor",
+          "?to": "floor"
+        },
+        "preconditions": [
+          "(elevator_at ?e ?from)",
+          "(can_serve ?e ?to)",
+          "(adjacent ?from ?to)"
+        ],
+        "effects": [
+          "(not (elevator_at ?e ?from))",
+          "(elevator_at ?e ?to)"
+        ]
+      },
+      {
+        "action_name": "move_fast",
+        "parameters": {
+          "?e": "fast_elevator",
+          "?from": "floor",
+          "?to": "floor"
+        },
+        "preconditions": [
+          "(elevator_at ?e ?from)",
+          "(can_serve ?e ?to)",
+          "(fast_connected ?from ?to)"
+        ],
+        "effects": [
+          "(not (elevator_at ?e ?from))",
+          "(elevator_at ?e ?to)"
+        ]
+      },
+      {
+        "action_name": "board",
+        "parameters": {
+          "?p": "passenger",
+          "?e": "elevator",
+          "?f": "floor",
+          "?n1": "count",
+          "?n2": "count"
+        },
+        "preconditions": [
+          "(at_floor ?p ?f)",
+          "(elevator_at ?e ?f)",
+          "(can_serve ?e ?f)",
+          "(passengers_count ?e ?n1)",
+          "(next_count ?n1 ?n2)"
+        ],
+        "effects": [
+          "(not (at_floor ?p ?f))",
+          "(in_elevator ?p ?e)",
+          "(not (passengers_count ?e ?n1))",
+          "(passengers_count ?e ?n2)"
+        ]
+      },
+      {
+        "action_name": "leave",
+        "parameters": {
+          "?p": "passenger",
+          "?e": "elevator",
+          "?f": "floor",
+          "?n1": "count",
+          "?n2": "count"
+        },
+        "preconditions": [
+          "(in_elevator ?p ?e)",
+          "(elevator_at ?e ?f)",
+          "(can_serve ?e ?f)",
+          "(passengers_count ?e ?n2)",
+          "(next_count ?n1 ?n2)"
+        ],
+        "effects": [
+          "(not (in_elevator ?p ?e))",
+          "(at_floor ?p ?f)",
+          "(not (passengers_count ?e ?n2))",
+          "(passengers_count ?e ?n1)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "elevator_problem",
+    "domain_name": "elevator_system",
+    "objects": {
+      "p1": "passenger",
+      "p2": "passenger",
+      "f0": "floor",
+      "f1": "floor",
+      "f2": "floor",
+      "f3": "floor",
+      "f4": "floor",
+      "f5": "floor",
+      "f6": "floor",
+      "e_slow1": "slow_elevator",
+      "e_slow2": "slow_elevator",
+      "e_fast1": "fast_elevator",
+      "n0": "count",
+      "n1": "count",
+      "n2": "count"
+    },
+    "initial_state": [
+      "(elevator_at e_slow1 f0)",
+      "(elevator_at e_slow2 f3)",
+      "(elevator_at e_fast1 f0)",
+      "(at_floor p1 f2)",
+      "(at_floor p2 f1)",
+      "(passengers_count e_slow1 n0)",
+      "(passengers_count e_slow2 n0)",
+      "(passengers_count e_fast1 n0)",
+      "(next_count n0 n1)",
+      "(next_count n1 n2)",
+      "(can_serve e_slow1 f0)",
+      "(can_serve e_slow1 f1)",
+      "(can_serve e_slow1 f2)",
+      "(can_serve e_slow1 f3)",
+      "(can_serve e_slow2 f3)",
+      "(can_serve e_slow2 f4)",
+      "(can_serve e_slow2 f5)",
+      "(can_serve e_slow2 f6)",
+      "(can_serve e_fast1 f0)",
+      "(can_serve e_fast1 f6)",
+      "(adjacent f0 f1)",
+      "(adjacent f1 f0)",
+      "(adjacent f1 f2)",
+      "(adjacent f2 f1)",
+      "(adjacent f2 f3)",
+      "(adjacent f3 f2)",
+      "(adjacent f3 f4)",
+      "(adjacent f4 f3)",
+      "(adjacent f4 f5)",
+      "(adjacent f5 f4)",
+      "(adjacent f5 f6)",
+      "(adjacent f6 f5)",
+      "(fast_connected f0 f6)",
+      "(fast_connected f6 f0)"
+    ],
+    "goal_state": [
+      "(at_floor p1 f5)",
+      "(at_floor p2 f6)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

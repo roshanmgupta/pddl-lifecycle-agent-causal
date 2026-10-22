@@ -1,0 +1,244 @@
+{
+  "domain_name": "freight_distribution_domain",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "freight_distribution_domain",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "location": "object",
+      "depot": "location",
+      "distributor": "location",
+      "pallet": "object",
+      "crate": "object",
+      "crane": "object",
+      "vehicle": "object",
+      "truck": "vehicle",
+      "capacity_slot": "object"
+    },
+    "predicates": [
+      "(connected ?from - location ?to - location)",
+      "(truck_at ?t - truck ?l - location)",
+      "(crane_at ?k - crane ?l - location)",
+      "(pallet_at ?p - pallet ?l - location)",
+      "(pallet_empty ?p - pallet)",
+      "(crate_at ?c - crate ?l - location)",
+      "(on ?c1 - crate ?c2 - crate)",
+      "(on_pallet ?c - crate ?p - pallet)",
+      "(clear ?c - crate)",
+      "(hoist_empty ?k - crane)",
+      "(holding ?k - crane ?c - crate)",
+      "(slot_of ?s - capacity_slot ?t - truck)",
+      "(slot_empty ?s - capacity_slot)",
+      "(in ?c - crate ?t - truck ?s - capacity_slot)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_truck",
+        "parameters": {
+          "?t": "truck",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(truck_at ?t ?from)",
+          "(connected ?from ?to)"
+        ],
+        "effects": [
+          "(not (truck_at ?t ?from))",
+          "(truck_at ?t ?to)"
+        ]
+      },
+      {
+        "action_name": "lift_from_pallet",
+        "parameters": {
+          "?k": "crane",
+          "?c": "crate",
+          "?p": "pallet",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(crane_at ?k ?l)",
+          "(hoist_empty ?k)",
+          "(clear ?c)",
+          "(crate_at ?c ?l)",
+          "(on_pallet ?c ?p)",
+          "(pallet_at ?p ?l)"
+        ],
+        "effects": [
+          "(not (hoist_empty ?k))",
+          "(holding ?k ?c)",
+          "(not (crate_at ?c ?l))",
+          "(not (on_pallet ?c ?p))",
+          "(pallet_empty ?p)",
+          "(not (clear ?c))"
+        ]
+      },
+      {
+        "action_name": "lift_from_crate",
+        "parameters": {
+          "?k": "crane",
+          "?c": "crate",
+          "?below": "crate",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(crane_at ?k ?l)",
+          "(hoist_empty ?k)",
+          "(clear ?c)",
+          "(crate_at ?c ?l)",
+          "(on ?c ?below)",
+          "(crate_at ?below ?l)"
+        ],
+        "effects": [
+          "(not (hoist_empty ?k))",
+          "(holding ?k ?c)",
+          "(not (crate_at ?c ?l))",
+          "(not (on ?c ?below))",
+          "(not (clear ?c))",
+          "(clear ?below)"
+        ]
+      },
+      {
+        "action_name": "put_on_pallet",
+        "parameters": {
+          "?k": "crane",
+          "?c": "crate",
+          "?p": "pallet",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(crane_at ?k ?l)",
+          "(holding ?k ?c)",
+          "(pallet_at ?p ?l)",
+          "(pallet_empty ?p)"
+        ],
+        "effects": [
+          "(not (holding ?k ?c))",
+          "(hoist_empty ?k)",
+          "(crate_at ?c ?l)",
+          "(on_pallet ?c ?p)",
+          "(not (pallet_empty ?p))",
+          "(clear ?c)"
+        ]
+      },
+      {
+        "action_name": "put_on_crate",
+        "parameters": {
+          "?k": "crane",
+          "?c": "crate",
+          "?target": "crate",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(crane_at ?k ?l)",
+          "(holding ?k ?c)",
+          "(crate_at ?target ?l)",
+          "(clear ?target)"
+        ],
+        "effects": [
+          "(not (holding ?k ?c))",
+          "(hoist_empty ?k)",
+          "(crate_at ?c ?l)",
+          "(on ?c ?target)",
+          "(not (clear ?target))",
+          "(clear ?c)"
+        ]
+      },
+      {
+        "action_name": "load_truck",
+        "parameters": {
+          "?k": "crane",
+          "?c": "crate",
+          "?t": "truck",
+          "?s": "capacity_slot",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(crane_at ?k ?l)",
+          "(truck_at ?t ?l)",
+          "(holding ?k ?c)",
+          "(slot_of ?s ?t)",
+          "(slot_empty ?s)"
+        ],
+        "effects": [
+          "(not (holding ?k ?c))",
+          "(hoist_empty ?k)",
+          "(in ?c ?t ?s)",
+          "(not (slot_empty ?s))",
+          "(not (clear ?c))"
+        ]
+      },
+      {
+        "action_name": "unload_truck",
+        "parameters": {
+          "?k": "crane",
+          "?c": "crate",
+          "?t": "truck",
+          "?s": "capacity_slot",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(crane_at ?k ?l)",
+          "(truck_at ?t ?l)",
+          "(hoist_empty ?k)",
+          "(in ?c ?t ?s)"
+        ],
+        "effects": [
+          "(holding ?k ?c)",
+          "(not (hoist_empty ?k))",
+          "(not (in ?c ?t ?s))",
+          "(slot_empty ?s)",
+          "(not (clear ?c))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "freight_distribution_problem",
+    "domain_name": "freight_distribution_domain",
+    "objects": {
+      "l1": "depot",
+      "l2": "distributor",
+      "crane1": "crane",
+      "crane2": "crane",
+      "truck1": "truck",
+      "s1": "capacity_slot",
+      "s2": "capacity_slot",
+      "p1": "pallet",
+      "p2": "pallet",
+      "c1": "crate",
+      "c2": "crate"
+    },
+    "initial_state": [
+      "(connected l1 l2)",
+      "(connected l2 l1)",
+      "(crane_at crane1 l1)",
+      "(crane_at crane2 l2)",
+      "(truck_at truck1 l1)",
+      "(slot_of s1 truck1)",
+      "(slot_of s2 truck1)",
+      "(slot_empty s1)",
+      "(slot_empty s2)",
+      "(pallet_at p1 l1)",
+      "(pallet_at p2 l2)",
+      "(pallet_empty p2)",
+      "(hoist_empty crane1)",
+      "(hoist_empty crane2)",
+      "(crate_at c1 l1)",
+      "(crate_at c2 l1)",
+      "(on_pallet c1 p1)",
+      "(on c2 c1)",
+      "(clear c2)"
+    ],
+    "goal_state": [
+      "(crate_at c2 l2)",
+      "(on_pallet c2 p2)",
+      "(clear c2)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

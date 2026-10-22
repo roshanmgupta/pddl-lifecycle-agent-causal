@@ -1,0 +1,246 @@
+{
+  "domain_name": "pipeline_distribution",
+  "run_index": 4,
+  "domain_blueprint": {
+    "domain_name": "pipeline_distribution",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "pipe": "object",
+      "area": "object",
+      "product": "object",
+      "batch_atom": "object"
+    },
+    "predicates": [
+      "(normal ?p - pipe)",
+      "(being_push_updated ?p - pipe)",
+      "(being_pop_updated ?p - pipe)",
+      "(unitary ?p - pipe)",
+      "(first_in ?b - batch_atom ?p - pipe)",
+      "(last_in ?b - batch_atom ?p - pipe)",
+      "(on ?b - batch_atom ?a - area)",
+      "(connect ?a1 - area ?a2 - area ?p - pipe)",
+      "(follows ?b1 - batch_atom ?b2 - batch_atom)",
+      "(product_of ?b - batch_atom ?p - product)",
+      "(may_interface ?p1 - product ?p2 - product)"
+    ],
+    "actions": [
+      {
+        "action_name": "push_start",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "batch_atom",
+          "?C": "area",
+          "?D": "area",
+          "?E": "batch_atom",
+          "?F": "product",
+          "?G": "product"
+        },
+        "preconditions": [
+          "(normal ?A)",
+          "(first_in ?E ?A)",
+          "(connect ?C ?D ?A)",
+          "(on ?B ?C)",
+          "(not (unitary ?A))",
+          "(product_of ?B ?F)",
+          "(product_of ?E ?G)",
+          "(may_interface ?F ?G)"
+        ],
+        "effects": [
+          "(being_push_updated ?A)",
+          "(first_in ?B ?A)",
+          "(follows ?E ?B)",
+          "(not (normal ?A))",
+          "(not (first_in ?E ?A))",
+          "(not (on ?B ?C))"
+        ]
+      },
+      {
+        "action_name": "push_end",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "area",
+          "?C": "area",
+          "?D": "batch_atom",
+          "?E": "batch_atom"
+        },
+        "preconditions": [
+          "(being_push_updated ?A)",
+          "(last_in ?D ?A)",
+          "(connect ?B ?C ?A)",
+          "(not (unitary ?A))",
+          "(follows ?D ?E)"
+        ],
+        "effects": [
+          "(normal ?A)",
+          "(last_in ?E ?A)",
+          "(on ?D ?C)",
+          "(not (being_push_updated ?A))",
+          "(not (follows ?D ?E))",
+          "(not (last_in ?D ?A))"
+        ]
+      },
+      {
+        "action_name": "pop_start",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "batch_atom",
+          "?C": "area",
+          "?D": "area",
+          "?E": "batch_atom",
+          "?F": "product",
+          "?G": "product"
+        },
+        "preconditions": [
+          "(normal ?A)",
+          "(last_in ?E ?A)",
+          "(connect ?C ?D ?A)",
+          "(on ?B ?D)",
+          "(not (unitary ?A))",
+          "(product_of ?B ?F)",
+          "(product_of ?E ?G)",
+          "(may_interface ?F ?G)"
+        ],
+        "effects": [
+          "(being_pop_updated ?A)",
+          "(last_in ?B ?A)",
+          "(follows ?B ?E)",
+          "(not (normal ?A))",
+          "(not (last_in ?E ?A))",
+          "(not (on ?B ?D))"
+        ]
+      },
+      {
+        "action_name": "pop_end",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "area",
+          "?C": "area",
+          "?D": "batch_atom",
+          "?E": "batch_atom"
+        },
+        "preconditions": [
+          "(being_pop_updated ?A)",
+          "(first_in ?D ?A)",
+          "(connect ?B ?C ?A)",
+          "(not (unitary ?A))",
+          "(follows ?E ?D)"
+        ],
+        "effects": [
+          "(normal ?A)",
+          "(first_in ?E ?A)",
+          "(on ?D ?B)",
+          "(not (being_pop_updated ?A))",
+          "(not (follows ?E ?D))",
+          "(not (first_in ?D ?A))"
+        ]
+      },
+      {
+        "action_name": "push_unitary",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "batch_atom",
+          "?C": "area",
+          "?D": "area",
+          "?E": "batch_atom",
+          "?F": "product",
+          "?G": "product"
+        },
+        "preconditions": [
+          "(first_in ?E ?A)",
+          "(connect ?C ?D ?A)",
+          "(on ?B ?C)",
+          "(unitary ?A)",
+          "(product_of ?B ?F)",
+          "(product_of ?E ?G)",
+          "(may_interface ?F ?G)"
+        ],
+        "effects": [
+          "(first_in ?B ?A)",
+          "(last_in ?B ?A)",
+          "(on ?E ?D)",
+          "(not (first_in ?E ?A))",
+          "(not (last_in ?E ?A))",
+          "(not (on ?B ?C))"
+        ]
+      },
+      {
+        "action_name": "pop_unitary",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "batch_atom",
+          "?C": "area",
+          "?D": "area",
+          "?E": "batch_atom",
+          "?F": "product",
+          "?G": "product"
+        },
+        "preconditions": [
+          "(last_in ?E ?A)",
+          "(connect ?C ?D ?A)",
+          "(on ?B ?D)",
+          "(unitary ?A)",
+          "(product_of ?B ?F)",
+          "(product_of ?E ?G)",
+          "(may_interface ?F ?G)"
+        ],
+        "effects": [
+          "(last_in ?B ?A)",
+          "(first_in ?B ?A)",
+          "(on ?E ?C)",
+          "(not (last_in ?E ?A))",
+          "(not (first_in ?E ?A))",
+          "(not (on ?B ?D))"
+        ]
+      },
+      {
+        "action_name": "initialize_pipe",
+        "parameters": {
+          "?A": "pipe",
+          "?B": "batch_atom",
+          "?C": "area",
+          "?D": "area"
+        },
+        "preconditions": [
+          "(connect ?C ?D ?A)",
+          "(on ?B ?C)"
+        ],
+        "effects": [
+          "(normal ?A)",
+          "(first_in ?B ?A)",
+          "(last_in ?B ?A)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "pipeline_distribution_problem",
+    "domain_name": "pipeline_distribution",
+    "objects": {
+      "pipe1": "pipe",
+      "area1": "area",
+      "area2": "area",
+      "batch1": "batch_atom",
+      "batch2": "batch_atom",
+      "product1": "product",
+      "product2": "product"
+    },
+    "initial_state": [
+      "(normal pipe1)",
+      "(first_in batch1 pipe1)",
+      "(connect area1 area2 pipe1)",
+      "(on batch1 area1)",
+      "(product_of batch1 product1)",
+      "(product_of batch2 product2)",
+      "(may_interface product1 product2)",
+      "(on batch2 area1)"
+    ],
+    "goal_state": [
+      "(on batch2 area2)"
+    ]
+  },
+  "iteration_count": 2,
+  "is_valid": true
+}

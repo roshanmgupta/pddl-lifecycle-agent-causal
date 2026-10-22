@@ -62,16 +62,15 @@ def run_full_validation_node(state: AgentState) -> AgentState:
         from tools.blueprint_parser import parse_pddl_problem_to_blueprint
         state["pddl_problem_blueprint"] = parse_pddl_problem_to_blueprint(problem_pddl_code)
 
-    os.makedirs("Streamlit_output_file", exist_ok=True)
-    
     # Save temporary domain file to disk
-    temp_domain_file = "Streamlit_output_file/temp_domain.pddl"
+    from config.paths import get_temp_domain_path, get_temp_problem_path
+    temp_domain_file = get_temp_domain_path()
     with open(temp_domain_file, "w", encoding="utf-8") as f:
         f.write(pddl_code)
         
     temp_problem_file = None
     if problem_pddl_code:
-        temp_problem_file = "Streamlit_output_file/temp_problem.pddl"
+        temp_problem_file = get_temp_problem_path()
         with open(temp_problem_file, "w", encoding="utf-8") as f:
             f.write(problem_pddl_code)
 
@@ -145,23 +144,28 @@ def route_after_triage(state: AgentState) -> str:
         print("[SUCCESS]: Model successfully verified by Oracles & Phase 4 Maintenance Suite!")
         return END           # Validation & Maintenance passed!
 
-    # Guard: If issues are external SYSTEM_ORACLE_ERROR, domain cannot be repaired by modifying AST
-    if reports and any(
-        (isinstance(r, dict) and (r.get("error_category") == "SYSTEM_ORACLE_ERROR" or str(r.get("error_category")).endswith("SYSTEM_ORACLE_ERROR")))
+    # Guard: Halt only if the oracle binary itself is missing on the host OS (not an AST issue miscategorized by LLM)
+    is_true_binary_failure = any(
+        isinstance(r, dict)
+        and (r.get("error_category") == "SYSTEM_ORACLE_ERROR" or str(r.get("error_category")).endswith("SYSTEM_ORACLE_ERROR"))
+        and (
+            r.get("faulty_element") in ["VAL Oracle Binary", "Fast Downward Binary"]
+            or any(k in str(r.get("raw_log", "")).lower() for k in ["binary not found", "executable not found", "cannot find the file specified", "failed to execute val binary", "failed to execute fast downward"])
+        )
         for r in reports
-    ):
-        print("[CRITICAL HALT]: System Oracle executable error detected (e.g. binary not found). Halting repair loop.")
+    )
+    if is_true_binary_failure:
+        print("[CRITICAL HALT]: System Oracle executable binary missing on host. Halting repair loop.")
         return END
         
-    current_iteration = state.get("iteration_count", 0) + 1
-    state["iteration_count"] = current_iteration
+    current_iteration = state.get("iteration_count", 0)
     max_iters = state.get("max_iterations", MAX_ITERATIONS_DEFAULT)
     
     if current_iteration >= max_iters:
-        print(f"[WARNING]: Max repair iterations ({max_iters}) reached. Terminating repair loop.")
+        print(f"[WARNING]: Max repair iterations ({max_iters}) reached ({current_iteration}/{max_iters}). Terminating repair loop.")
         return END           # Max iteration guard triggered
         
-    print(f"[ROUTER]: Routing to repair node (Iteration {current_iteration}/{max_iters})")
+    print(f"[ROUTER]: Routing to repair node (Next Repair Iteration: {current_iteration + 1}/{max_iters})")
     return "repair"          # Loop to repair node for targeted AST modification
 
 def route_initial_entry(state: AgentState) -> str:

@@ -1,0 +1,173 @@
+{
+  "domain_name": "freight_logistics",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "freight_logistics",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "truck": "object",
+      "crate": "object",
+      "pallet": "object",
+      "location": "object",
+      "hoist": "object",
+      "entity": "object"
+    },
+    "predicates": [
+      "(at ?t - truck ?l - location)",
+      "(at ?c - crate ?l - location)",
+      "(on ?c - crate ?p - pallet)",
+      "(on ?c1 - crate ?c2 - crate)",
+      "(loaded ?c - crate ?t - truck)",
+      "(empty ?t - truck)",
+      "(holding ?h - hoist ?c - crate)",
+      "(available ?h - hoist)",
+      "(at ?p - pallet ?l - location)",
+      "(at ?e - entity ?l - location)"
+    ],
+    "actions": [
+      {
+        "action_name": "drive",
+        "parameters": {
+          "?t": "truck",
+          "?from": "location",
+          "?to": "location"
+        },
+        "preconditions": [
+          "(at ?t ?from)"
+        ],
+        "effects": [
+          "(not (at ?t ?from))",
+          "(at ?t ?to)"
+        ]
+      },
+      {
+        "action_name": "load",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at ?t ?l)",
+          "(at ?c ?l)",
+          "(holding ?h ?c)",
+          "(empty ?t)"
+        ],
+        "effects": [
+          "(not (holding ?h ?c))",
+          "(not (at ?c ?l))",
+          "(loaded ?c ?t)",
+          "(not (empty ?t))"
+        ]
+      },
+      {
+        "action_name": "unload",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?t": "truck",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at ?t ?l)",
+          "(loaded ?c ?t)",
+          "(available ?h)"
+        ],
+        "effects": [
+          "(holding ?h ?c)",
+          "(not (loaded ?c ?t))",
+          "(empty ?t)",
+          "(at ?c ?l)"
+        ]
+      },
+      {
+        "action_name": "lift",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?p": "pallet",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(at ?c ?l)",
+          "(on ?c ?p)",
+          "(available ?h)"
+        ],
+        "effects": [
+          "(holding ?h ?c)",
+          "(not (on ?c ?p))",
+          "(not (available ?h))"
+        ]
+      },
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?h": "hoist",
+          "?c": "crate",
+          "?p": "pallet",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(holding ?h ?c)",
+          "(at ?p ?l)"
+        ],
+        "effects": [
+          "(on ?c ?p)",
+          "(not (holding ?h ?c))",
+          "(available ?h)"
+        ]
+      },
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?h": "hoist",
+          "?c1": "crate",
+          "?c2": "crate",
+          "?l": "location"
+        },
+        "preconditions": [
+          "(holding ?h ?c1)",
+          "(at ?c2 ?l)"
+        ],
+        "effects": [
+          "(on ?c1 ?c2)",
+          "(not (holding ?h ?c1))",
+          "(available ?h)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "deliver_crates",
+    "domain_name": "freight_logistics",
+    "objects": {
+      "truck1": "truck",
+      "crate1": "crate",
+      "crate2": "crate",
+      "pallet1": "pallet",
+      "depot1": "location",
+      "distributor1": "location",
+      "hoist1": "hoist"
+    },
+    "initial_state": [
+      "(at truck1 depot1)",
+      "(at crate1 depot1)",
+      "(at crate2 depot1)",
+      "(on crate1 pallet1)",
+      "(on crate2 pallet1)",
+      "(empty truck1)",
+      "(available hoist1)",
+      "(at pallet1 depot1)"
+    ],
+    "goal_state": [
+      "(at crate1 distributor1)",
+      "(at crate2 distributor1)"
+    ]
+  },
+  "iteration_count": 9,
+  "is_valid": false
+}

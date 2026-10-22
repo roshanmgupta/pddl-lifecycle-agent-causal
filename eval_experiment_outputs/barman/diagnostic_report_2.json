@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-10-13T16:33:29.145961",
+  "domain_name": "barman",
+  "run_index": 2,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 11,
+    "search_time_seconds": 0.000465,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(grasp right glass1)",
+      "(fill_shot glass1 ingredient1 right left dispenser1)",
+      "(pour_shot1_to_shaker glass1 ingredient1 shaker1 right)",
+      "(clean_glass glass1 right left)",
+      "(fill_shot glass1 ingredient2 right left dispenser2)",
+      "(pour_shot2_to_shaker glass1 ingredient2 shaker1 right)",
+      "(clean_glass glass1 right left)",
+      "(grasp left shaker1)",
+      "(leave right glass1)",
+      "(shake cocktail1 ingredient1 ingredient2 shaker1 left right)",
+      "(pour_shaker_to_glass shaker1 cocktail1 glass1 left)"
+    ]
+  }
+}

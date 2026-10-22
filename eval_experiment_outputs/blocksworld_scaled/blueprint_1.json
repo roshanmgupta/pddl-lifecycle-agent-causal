@@ -1,0 +1,133 @@
+{
+  "domain_name": "blocksworld_scaled",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "blocksworld_scaled",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "block": "object",
+      "table": "object"
+    },
+    "predicates": [
+      "(on ?x - block ?y - block)",
+      "(on-table ?x - block)",
+      "(clear ?x - block)",
+      "(holding ?x - block)",
+      "(hand-empty)"
+    ],
+    "actions": [
+      {
+        "action_name": "pick-up",
+        "parameters": {
+          "?a": "block"
+        },
+        "preconditions": [
+          "(on-table ?a)",
+          "(clear ?a)",
+          "(hand-empty)"
+        ],
+        "effects": [
+          "(holding ?a)",
+          "(not (on-table ?a))",
+          "(not (clear ?a))",
+          "(not (hand-empty))"
+        ]
+      },
+      {
+        "action_name": "put-down",
+        "parameters": {
+          "?a": "block"
+        },
+        "preconditions": [
+          "(holding ?a)"
+        ],
+        "effects": [
+          "(on-table ?a)",
+          "(clear ?a)",
+          "(hand-empty)",
+          "(not (holding ?a))"
+        ]
+      },
+      {
+        "action_name": "stack",
+        "parameters": {
+          "?a": "block",
+          "?b": "block"
+        },
+        "preconditions": [
+          "(holding ?a)",
+          "(clear ?b)"
+        ],
+        "effects": [
+          "(on ?a ?b)",
+          "(clear ?a)",
+          "(hand-empty)",
+          "(not (holding ?a))",
+          "(not (clear ?b))"
+        ]
+      },
+      {
+        "action_name": "unstack",
+        "parameters": {
+          "?a": "block",
+          "?b": "block"
+        },
+        "preconditions": [
+          "(on ?a ?b)",
+          "(clear ?a)",
+          "(hand-empty)"
+        ],
+        "effects": [
+          "(holding ?a)",
+          "(clear ?b)",
+          "(not (on ?a ?b))",
+          "(not (clear ?a))",
+          "(not (hand-empty))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "instance-3",
+    "domain_name": "blocksworld_scaled",
+    "objects": {
+      "b1": "block",
+      "b2": "block",
+      "b3": "block",
+      "b4": "block",
+      "b5": "block",
+      "b6": "block",
+      "b7": "block",
+      "b8": "block",
+      "b9": "block"
+    },
+    "initial_state": [
+      "(hand-empty)",
+      "(on b1 b5)",
+      "(on b2 b8)",
+      "(on b3 b6)",
+      "(on b4 b7)",
+      "(on-table b5)",
+      "(on b6 b9)",
+      "(on b7 b3)",
+      "(on-table b8)",
+      "(on-table b9)",
+      "(clear b1)",
+      "(clear b2)",
+      "(clear b4)"
+    ],
+    "goal_state": [
+      "(on b3 b9)",
+      "(on b4 b5)",
+      "(on b5 b8)",
+      "(on b7 b3)",
+      "(on b8 b1)",
+      "(on b9 b2)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

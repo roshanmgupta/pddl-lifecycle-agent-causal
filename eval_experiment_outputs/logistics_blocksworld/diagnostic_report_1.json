@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-10-11T23:35:58.984932",
+  "domain_name": "logistics_blocksworld",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 3,
+    "search_time_seconds": 5.5e-05,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(lift h1 c1 p1 d1)",
+      "(load h1 c1 t1 d1)",
+      "(drive t1 d1 d2)"
+    ]
+  }
+}

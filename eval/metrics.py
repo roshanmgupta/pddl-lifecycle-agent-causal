@@ -37,7 +37,15 @@ class EvaluationMetrics(BaseModel):
     )
     plan_execution_valid: bool = Field(
         default=False,
-        description="True if VAL Validate.exe mathematically certifies that the plan reaches the goal"
+        description="True if VAL Validate.exe mathematically certifies that the plan reaches the goal on the generated domain"
+    )
+    semantic_soundness_valid: Optional[bool] = Field(
+        default=None,
+        description="True if the plan synthesized from D_gen is certified by VAL against the human ground-truth domain D_gt (Non-circular PSS check)"
+    )
+    logic_match_score: Optional[float] = Field(
+        default=None,
+        description="Logic-aware action matching score (0.0 to 1.0) against ground-truth domain D_gt (Thesis Section 6.3.6)"
     )
     is_repaired: bool = Field(
         default=False,

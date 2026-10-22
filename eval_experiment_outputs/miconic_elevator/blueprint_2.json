@@ -1,0 +1,105 @@
+{
+  "domain_name": "miconic_elevator",
+  "run_index": 2,
+  "domain_blueprint": {
+    "domain_name": "miconic_elevator",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "floor": null,
+      "passenger": null
+    },
+    "predicates": [
+      "(above ?higher - floor ?lower - floor)",
+      "(lift-at ?f - floor)",
+      "(origin ?p - passenger ?f - floor)",
+      "(destin ?p - passenger ?f - floor)",
+      "(boarded ?p - passenger)",
+      "(served ?p - passenger)"
+    ],
+    "actions": [
+      {
+        "action_name": "move_up",
+        "parameters": {
+          "?from": "floor",
+          "?to": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?from)",
+          "(above ?to ?from)"
+        ],
+        "effects": [
+          "(not (lift-at ?from))",
+          "(lift-at ?to)"
+        ]
+      },
+      {
+        "action_name": "move_down",
+        "parameters": {
+          "?from": "floor",
+          "?to": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?from)",
+          "(above ?from ?to)"
+        ],
+        "effects": [
+          "(not (lift-at ?from))",
+          "(lift-at ?to)"
+        ]
+      },
+      {
+        "action_name": "board",
+        "parameters": {
+          "?p": "passenger",
+          "?f": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?f)",
+          "(origin ?p ?f)"
+        ],
+        "effects": [
+          "(boarded ?p)"
+        ]
+      },
+      {
+        "action_name": "depart",
+        "parameters": {
+          "?p": "passenger",
+          "?f": "floor"
+        },
+        "preconditions": [
+          "(lift-at ?f)",
+          "(destin ?p ?f)",
+          "(boarded ?p)"
+        ],
+        "effects": [
+          "(not (boarded ?p))",
+          "(served ?p)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "miconic_elevator_p0",
+    "domain_name": "miconic_elevator",
+    "objects": {
+      "p0": "passenger",
+      "f0": "floor",
+      "f1": "floor"
+    },
+    "initial_state": [
+      "(above f0 f1)",
+      "(lift-at f0)",
+      "(origin p0 f1)",
+      "(destin p0 f0)"
+    ],
+    "goal_state": [
+      "(served p0)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

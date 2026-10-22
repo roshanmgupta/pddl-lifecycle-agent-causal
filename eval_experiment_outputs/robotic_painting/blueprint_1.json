@@ -1,0 +1,115 @@
+{
+  "domain_name": "robotic_painting",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "robotic_painting",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot": "object",
+      "tile": "object",
+      "paint_station": "object",
+      "color": "object"
+    },
+    "predicates": [
+      "(at ?r - robot ?t - tile)",
+      "(adjacent ?t1 - tile ?t2 - tile)",
+      "(painted ?t - tile ?c - color)",
+      "(unpainted ?t - tile)",
+      "(current_color ?r - robot ?c - color)",
+      "(at_paint_station ?r - robot ?ps - paint_station)"
+    ],
+    "actions": [
+      {
+        "action_name": "move",
+        "parameters": {
+          "?r": "robot",
+          "?from": "tile",
+          "?to": "tile"
+        },
+        "preconditions": [
+          "(at ?r ?from)",
+          "(adjacent ?from ?to)",
+          "(unpainted ?to)"
+        ],
+        "effects": [
+          "(not (at ?r ?from))",
+          "(at ?r ?to)"
+        ]
+      },
+      {
+        "action_name": "paint",
+        "parameters": {
+          "?r": "robot",
+          "?t": "tile",
+          "?c": "color"
+        },
+        "preconditions": [
+          "(at ?r ?t)",
+          "(current_color ?r ?c)",
+          "(unpainted ?t)"
+        ],
+        "effects": [
+          "(not (unpainted ?t))",
+          "(painted ?t ?c)"
+        ]
+      },
+      {
+        "action_name": "change_color",
+        "parameters": {
+          "?r": "robot",
+          "?ps": "paint_station",
+          "?new_color": "color",
+          "?old_color": "color"
+        },
+        "preconditions": [
+          "(at_paint_station ?r ?ps)",
+          "(current_color ?r ?old_color)"
+        ],
+        "effects": [
+          "(not (current_color ?r ?old_color))",
+          "(current_color ?r ?new_color)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "paint_tiles",
+    "domain_name": "robotic_painting",
+    "objects": {
+      "r1": "robot",
+      "t1": "tile",
+      "t2": "tile",
+      "t3": "tile",
+      "t4": "tile",
+      "ps1": "paint_station",
+      "black": "color",
+      "white": "color"
+    },
+    "initial_state": [
+      "(at r1 t1)",
+      "(adjacent t1 t2)",
+      "(adjacent t2 t1)",
+      "(adjacent t2 t3)",
+      "(adjacent t3 t2)",
+      "(adjacent t3 t4)",
+      "(adjacent t4 t3)",
+      "(unpainted t1)",
+      "(unpainted t2)",
+      "(unpainted t3)",
+      "(unpainted t4)",
+      "(current_color r1 black)",
+      "(at_paint_station r1 ps1)"
+    ],
+    "goal_state": [
+      "(painted t1 black)",
+      "(painted t2 white)",
+      "(painted t3 black)",
+      "(painted t4 white)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}

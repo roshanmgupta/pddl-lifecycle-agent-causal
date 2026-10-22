@@ -1,0 +1,148 @@
+{
+  "domain_name": "cleaning",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "cleaning",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot": "object",
+      "tile": "object"
+    },
+    "constants": {},
+    "predicates": [
+      "(robot-at ?robot - robot ?tile - tile)",
+      "(clear ?tile - tile)",
+      "(cleaned ?tile - tile)",
+      "(left ?tile1 - tile ?tile2 - tile)",
+      "(right ?tile1 - tile ?tile2 - tile)"
+    ],
+    "actions": [
+      {
+        "action_name": "clean-up",
+        "parameters": {
+          "?robot": "robot",
+          "?robotTile": "tile",
+          "?tileToBeCleaned": "tile"
+        },
+        "preconditions": [
+          "(robot-at ?robot ?robotTile)",
+          "(clear ?tileToBeCleaned)"
+        ],
+        "effects": [
+          "(not (clear ?tileToBeCleaned))",
+          "(cleaned ?tileToBeCleaned)"
+        ]
+      },
+      {
+        "action_name": "clean-down",
+        "parameters": {
+          "?robot": "robot",
+          "?robotTile": "tile",
+          "?tileToBeCleaned": "tile"
+        },
+        "preconditions": [
+          "(robot-at ?robot ?robotTile)",
+          "(cleaned ?tileToBeCleaned)"
+        ],
+        "effects": [
+          "(not (cleaned ?tileToBeCleaned))",
+          "(clear ?tileToBeCleaned)"
+        ]
+      },
+      {
+        "action_name": "up",
+        "parameters": {
+          "?robot": "robot",
+          "?robotTile": "tile",
+          "?moveToNextTile": "tile"
+        },
+        "preconditions": [
+          "(robot-at ?robot ?robotTile)",
+          "(left ?robotTile ?moveToNextTile)"
+        ],
+        "effects": [
+          "(not (robot-at ?robot ?robotTile))",
+          "(robot-at ?robot ?moveToNextTile)"
+        ]
+      },
+      {
+        "action_name": "down",
+        "parameters": {
+          "?robot": "robot",
+          "?robotTile": "tile",
+          "?moveToNextTile": "tile"
+        },
+        "preconditions": [
+          "(robot-at ?robot ?robotTile)",
+          "(right ?robotTile ?moveToNextTile)"
+        ],
+        "effects": [
+          "(not (robot-at ?robot ?robotTile))",
+          "(robot-at ?robot ?moveToNextTile)"
+        ]
+      },
+      {
+        "action_name": "right",
+        "parameters": {
+          "?robot": "robot",
+          "?robotTile": "tile",
+          "?moveToNextTile": "tile"
+        },
+        "preconditions": [
+          "(robot-at ?robot ?robotTile)",
+          "(right ?robotTile ?moveToNextTile)"
+        ],
+        "effects": [
+          "(not (robot-at ?robot ?robotTile))",
+          "(robot-at ?robot ?moveToNextTile)"
+        ]
+      },
+      {
+        "action_name": "left",
+        "parameters": {
+          "?robot": "robot",
+          "?robotTile": "tile",
+          "?moveToNextTile": "tile"
+        },
+        "preconditions": [
+          "(robot-at ?robot ?robotTile)",
+          "(left ?robotTile ?moveToNextTile)"
+        ],
+        "effects": [
+          "(not (robot-at ?robot ?robotTile))",
+          "(robot-at ?robot ?moveToNextTile)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "problem_gold",
+    "domain_name": "cleaning",
+    "objects": {
+      "robo": "robot",
+      "t1": "tile",
+      "t2": "tile",
+      "t3": "tile"
+    },
+    "initial_state": [
+      "(robot-at robo t1)",
+      "(clear t2)",
+      "(clear t3)",
+      "(cleaned t1)",
+      "(cleaned t2)",
+      "(cleaned t3)",
+      "(left t1 t2)",
+      "(right t2 t1)",
+      "(right t3 t2)",
+      "(left t2 t3)"
+    ],
+    "goal_state": [
+      "(cleaned t2)"
+    ]
+  },
+  "iteration_count": 0,
+  "is_valid": true
+}

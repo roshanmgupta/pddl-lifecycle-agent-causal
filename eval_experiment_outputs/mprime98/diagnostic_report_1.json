@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-10-14T14:41:57.609687",
+  "domain_name": "mprime98",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 5,
+    "search_time_seconds": 0.000495,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(overcome_pain_with_pleasure abrasion rest pork uranus venus)",
+      "(feast_with_pleasure rest pork lamb alsace quebec)",
+      "(feast_with_pleasure rest lamb flounder surrey pennsylvania)",
+      "(feast_with_pleasure rest flounder rice pennsylvania alsace)",
+      "(succumb_to_pleasure abrasion rest rice uranus venus)"
+    ]
+  }
+}

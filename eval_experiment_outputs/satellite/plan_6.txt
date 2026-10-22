@@ -1,0 +1,1 @@
+1: (take_image star2 instrument0 image0 satellite0)

@@ -1,0 +1,228 @@
+{
+  "domain_name": "painting_domain",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "painting_domain",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "robot": "object",
+      "tile": "object",
+      "color": "object"
+    },
+    "predicates": [
+      "(at ?r - robot ?t - tile)",
+      "(has ?r - robot ?c - color)",
+      "(painted ?t - tile ?c - color)",
+      "(clear ?t - tile)",
+      "(up ?t1 - tile ?t2 - tile)",
+      "(down ?t1 - tile ?t2 - tile)",
+      "(left ?t1 - tile ?t2 - tile)",
+      "(right ?t1 - tile ?t2 - tile)"
+    ],
+    "actions": [
+      {
+        "action_name": "change_color",
+        "parameters": {
+          "?r": "robot",
+          "?c1": "color",
+          "?c2": "color"
+        },
+        "preconditions": [
+          "(has ?r ?c1)"
+        ],
+        "effects": [
+          "(not (has ?r ?c1))",
+          "(has ?r ?c2)"
+        ]
+      },
+      {
+        "action_name": "paint_up",
+        "parameters": {
+          "?r": "robot",
+          "?t1": "tile",
+          "?t2": "tile",
+          "?c": "color"
+        },
+        "preconditions": [
+          "(has ?r ?c)",
+          "(at ?r ?t1)",
+          "(up ?t2 ?t1)",
+          "(clear ?t2)"
+        ],
+        "effects": [
+          "(painted ?t2 ?c)",
+          "(not (clear ?t2))"
+        ]
+      },
+      {
+        "action_name": "paint_down",
+        "parameters": {
+          "?r": "robot",
+          "?t1": "tile",
+          "?t2": "tile",
+          "?c": "color"
+        },
+        "preconditions": [
+          "(has ?r ?c)",
+          "(at ?r ?t1)",
+          "(down ?t2 ?t1)",
+          "(clear ?t2)"
+        ],
+        "effects": [
+          "(painted ?t2 ?c)",
+          "(not (clear ?t2))"
+        ]
+      },
+      {
+        "action_name": "paint_left",
+        "parameters": {
+          "?r": "robot",
+          "?t1": "tile",
+          "?t2": "tile",
+          "?c": "color"
+        },
+        "preconditions": [
+          "(has ?r ?c)",
+          "(at ?r ?t1)",
+          "(left ?t2 ?t1)",
+          "(clear ?t2)"
+        ],
+        "effects": [
+          "(painted ?t2 ?c)",
+          "(not (clear ?t2))"
+        ]
+      },
+      {
+        "action_name": "paint_right",
+        "parameters": {
+          "?r": "robot",
+          "?t1": "tile",
+          "?t2": "tile",
+          "?c": "color"
+        },
+        "preconditions": [
+          "(has ?r ?c)",
+          "(at ?r ?t1)",
+          "(right ?t2 ?t1)",
+          "(clear ?t2)"
+        ],
+        "effects": [
+          "(painted ?t2 ?c)",
+          "(not (clear ?t2))"
+        ]
+      },
+      {
+        "action_name": "move_up",
+        "parameters": {
+          "?r": "robot",
+          "?t1": "tile",
+          "?t2": "tile"
+        },
+        "preconditions": [
+          "(at ?r ?t1)",
+          "(up ?t2 ?t1)",
+          "(clear ?t2)"
+        ],
+        "effects": [
+          "(not (at ?r ?t1))",
+          "(at ?r ?t2)",
+          "(clear ?t1)",
+          "(not (clear ?t2))"
+        ]
+      },
+      {
+        "action_name": "move_down",
+        "parameters": {
+          "?r": "robot",
+          "?t1": "tile",
+          "?t2": "tile"
+        },
+        "preconditions": [
+          "(at ?r ?t1)",
+          "(down ?t2 ?t1)",
+          "(clear ?t2)"
+        ],
+        "effects": [
+          "(not (at ?r ?t1))",
+          "(at ?r ?t2)",
+          "(clear ?t1)",
+          "(not (clear ?t2))"
+        ]
+      },
+      {
+        "action_name": "move_left",
+        "parameters": {
+          "?r": "robot",
+          "?t1": "tile",
+          "?t2": "tile"
+        },
+        "preconditions": [
+          "(at ?r ?t1)",
+          "(left ?t2 ?t1)",
+          "(clear ?t2)"
+        ],
+        "effects": [
+          "(not (at ?r ?t1))",
+          "(at ?r ?t2)",
+          "(clear ?t1)",
+          "(not (clear ?t2))"
+        ]
+      },
+      {
+        "action_name": "move_right",
+        "parameters": {
+          "?r": "robot",
+          "?t1": "tile",
+          "?t2": "tile"
+        },
+        "preconditions": [
+          "(at ?r ?t1)",
+          "(right ?t2 ?t1)",
+          "(clear ?t2)"
+        ],
+        "effects": [
+          "(not (at ?r ?t1))",
+          "(at ?r ?t2)",
+          "(clear ?t1)",
+          "(not (clear ?t2))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "painting_problem",
+    "domain_name": "painting_domain",
+    "objects": {
+      "r1": "robot",
+      "t1": "tile",
+      "t2": "tile",
+      "t3": "tile",
+      "t4": "tile",
+      "red": "color",
+      "blue": "color"
+    },
+    "initial_state": [
+      "(at r1 t1)",
+      "(has r1 red)",
+      "(has r1 blue)",
+      "(clear t1)",
+      "(clear t2)",
+      "(clear t3)",
+      "(clear t4)",
+      "(up t2 t1)",
+      "(down t3 t1)",
+      "(left t4 t1)",
+      "(right t1 t4)"
+    ],
+    "goal_state": [
+      "(painted t2 red)",
+      "(painted t3 blue)",
+      "(painted t4 red)"
+    ]
+  },
+  "iteration_count": 3,
+  "is_valid": true
+}

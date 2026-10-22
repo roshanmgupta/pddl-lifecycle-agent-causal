@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-10-14T02:07:57.616302",
+  "domain_name": "ged14",
+  "run_index": 1,
+  "verification_status": "PASSED",
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
+  "final_verification_errors": [],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
+  "formatted_diagnostic_feedback": "",
+  "plan_summary": {
+    "is_solvable": true,
+    "plan_length": 1,
+    "search_time_seconds": 0.000344,
+    "val_plan_valid": true,
+    "plan_steps": [
+      "(invert_single_gene_a sub3)"
+    ]
+  }
+}

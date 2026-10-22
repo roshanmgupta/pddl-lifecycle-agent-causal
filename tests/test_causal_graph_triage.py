@@ -12,7 +12,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from tools.sbfl_analyzer import run_causal_graph_sbfl_analysis
+from tools.causal_triage_analyzer import run_causal_triage_analysis
 from nodes.triage import parse_fast_downward_log
 
 def test_gripper_absorbing_state():
@@ -48,7 +48,7 @@ def test_gripper_absorbing_state():
 
     raw_errors = ["Planner Error: completely explored state space -- no solution"]
 
-    res = run_causal_graph_sbfl_analysis(domain_bp, problem_bp, raw_errors)
+    res = run_causal_triage_analysis(domain_bp, problem_bp, raw_errors)
     reports = parse_fast_downward_log("completely explored state space -- no solution", causal_analysis=res)
 
     print("\n[Causal Graph Summary]:")
@@ -56,7 +56,7 @@ def test_gripper_absorbing_state():
 
     print("\n[Generated Triage Diagnostic Reports]:")
     for idx, r in enumerate(reports, 1):
-        print(f" {idx}. [{r.error_category.value}] Element: {r.faulty_element} | Score: {r.suspiciousness_score} | Op: {r.repair_operation_type.value}")
+        print(f" {idx}. [{r.error_category.value}] Element: {r.faulty_element} | Op: {r.repair_operation_type.value}")
         print(f"    Hint: {r.suggested_repair_hint}")
 
     assert any(it["predicate"] == "free" for it in res["irreversible_transitions"]), "Failed to detect irreversible predicate 'free'!"
@@ -95,7 +95,7 @@ def test_blocksworld_deadlock_cycle():
 
     raw_errors = ["Planner Error: search stopped without finding a solution (deadlock)"]
 
-    res = run_causal_graph_sbfl_analysis(domain_bp, problem_bp, raw_errors)
+    res = run_causal_triage_analysis(domain_bp, problem_bp, raw_errors)
     reports = parse_fast_downward_log("search stopped without finding a solution", causal_analysis=res)
 
     print("\n[Causal Graph Summary]:")
@@ -103,7 +103,7 @@ def test_blocksworld_deadlock_cycle():
 
     print("\n[Generated Triage Diagnostic Reports]:")
     for idx, r in enumerate(reports, 1):
-        print(f" {idx}. [{r.error_category.value}] Element: {r.faulty_element} | Score: {r.suspiciousness_score} | Op: {r.repair_operation_type.value}")
+        print(f" {idx}. [{r.error_category.value}] Element: {r.faulty_element} | Op: {r.repair_operation_type.value}")
         print(f"    Hint: {r.suggested_repair_hint}")
 
     assert len(res["causal_cycles"]) > 0, "Failed to detect causal cycle!"
@@ -155,7 +155,7 @@ def test_satellite_mutex_and_leaf_bloat():
 
     raw_errors = ["VAL Error: contradictory effects in action calibrate"]
 
-    res = run_causal_graph_sbfl_analysis(domain_bp, problem_bp, raw_errors)
+    res = run_causal_triage_analysis(domain_bp, problem_bp, raw_errors)
 
     print("\n[Causal Graph Summary]:")
     print(res["diagnostic_summary"])
@@ -163,14 +163,84 @@ def test_satellite_mutex_and_leaf_bloat():
     assert len(res["internal_contradictions"]) > 0, "Failed to detect internal contradiction!"
     assert "refuel_thrusters" in res["non_goal_leaf_actions"], "Failed to detect non-goal leaf action 'refuel_thrusters'!"
     assert res["top_action"] == "calibrate", f"Expected top action 'calibrate', got {res['top_action']}"
-    assert res["top_score"] == 1.00, f"Expected top score 1.00, got {res['top_score']}"
-    print("\n>>> TEST 3 PASSED: Successfully detected Mutex Contradiction (Score 1.0) and Non-Goal Leaf Bloat!\n")
+    print("\n>>> TEST 3 PASSED: Successfully detected Mutex Contradiction and Non-Goal Leaf Bloat!\n")
+
+def test_empty_parameter_domain():
+    print("=" * 70)
+    print("TEST 4: Empty Parameter Domain (0 Groundings Action Lockout)")
+    print("Scenario: An action requires a specialized subtype with 0 objects in problem :objects.")
+    print("=" * 70)
+
+    domain_bp = {
+        "domain_name": "test_domain",
+        "types": {"special_place": "place", "place": "object"},
+        "actions": [
+            {
+                "action_name": "normal_transit",
+                "parameters": {"?p": "place"},
+                "preconditions": [],
+                "effects": []
+            },
+            {
+                "action_name": "special_transit",
+                "parameters": {"?p1": "special_place", "?p2": "special_place"},
+                "preconditions": [],
+                "effects": []
+            }
+        ]
+    }
+
+    problem_bp = {
+        "objects": {"p1": "place", "p2": "place"},
+        "init": [],
+        "goal": []
+    }
+
+    raw_errors = ["Planner Error: Could not find a plan"]
+    res = run_causal_triage_analysis(domain_bp, problem_bp, raw_errors)
+
+    assert len(res["ungroundable_preconditions"]) >= 1, "Failed to detect empty parameter domain!"
+    assert res["top_action"] == "special_transit", f"Expected top action 'special_transit', got {res['top_action']}"
+    print("\n>>> TEST 4 PASSED: Successfully detected empty parameter domain lockout!\n")
+
+def test_directional_asymmetry_deadlock():
+    print("=" * 70)
+    print("TEST 5: Directional Asymmetry Deadlock (Missing Inverse Action Schema)")
+    print("Scenario: Move action only allows forward transition along an asymmetric static relation,")
+    print("but problem goal requires an entity to move in the reverse direction.")
+    print("=" * 70)
+
+    domain_bp = {
+        "domain_name": "direction_benchmark",
+        "actions": [
+            {
+                "action_name": "move_forward",
+                "parameters": {"?e": "vehicle", "?from": "location", "?to": "location"},
+                "preconditions": ["(at ?e ?from)", "(above ?from ?to)"],
+                "effects": ["(at ?e ?to)", "(not (at ?e ?from))"]
+            }
+        ]
+    }
+
+    problem_bp = {
+        "init": ["(above f1 f2)", "(at e1 f2)", "(at item1 f2)"],
+        "goal": ["(at item1 f1)"]
+    }
+
+    raw_errors = ["Planner Error: search stopped without finding a solution (Completely explored state space)"]
+    res = run_causal_triage_analysis(domain_bp, problem_bp, raw_errors)
+
+    assert len(res["directional_traps"]) >= 1, "Failed to detect directional asymmetry trap!"
+    assert res["top_action"] == "move_forward", f"Expected top action 'move_forward', got {res['top_action']}"
+    print("\n>>> TEST 5 PASSED: Successfully detected directional asymmetry deadlock!\n")
 
 if __name__ == "__main__":
     print("\nRUNNING EMPIRICAL CAUSAL GRAPH & DTG TRIAGE TEST SUITE...\n")
     test_gripper_absorbing_state()
     test_blocksworld_deadlock_cycle()
     test_satellite_mutex_and_leaf_bloat()
+    test_empty_parameter_domain()
+    test_directional_asymmetry_deadlock()
     print("=" * 70)
-    print("ALL 3 DOMAIN CAUSAL GRAPH INVARIANT TESTS PASSED WITH 100% SUCCESS!")
+    print("ALL 5 DOMAIN CAUSAL GRAPH INVARIANT TESTS PASSED WITH 100% SUCCESS!")
     print("=" * 70)

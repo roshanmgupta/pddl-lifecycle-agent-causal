@@ -1,0 +1,100 @@
+{
+  "domain_name": "depot",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "depot",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "place": "object",
+      "locatable": "object",
+      "depot": "place",
+      "distributor": "place",
+      "truck": "locatable",
+      "hoist": "locatable",
+      "surface": "locatable",
+      "pallet": "surface",
+      "crate": "locatable"
+    },
+    "predicates": [
+      "(at ?x - locatable ?p - place)",
+      "(on ?c - crate ?s - surface)",
+      "(lifting ?h - hoist ?c - crate)",
+      "(available ?h - hoist)",
+      "(clear ?x - locatable)"
+    ],
+    "actions": [
+      {
+        "action_name": "drop",
+        "parameters": {
+          "?x": "hoist",
+          "?y": "crate",
+          "?z": "surface",
+          "?p": "place"
+        },
+        "preconditions": [
+          "(at ?x ?p)",
+          "(at ?z ?p)",
+          "(clear ?z)",
+          "(lifting ?x ?y)"
+        ],
+        "effects": [
+          "(available ?x)",
+          "(not (lifting ?x ?y))",
+          "(at ?y ?p)",
+          "(not (clear ?z))",
+          "(on ?y ?z)"
+        ]
+      },
+      {
+        "action_name": "lift",
+        "parameters": {
+          "?x": "hoist",
+          "?y": "crate",
+          "?z": "surface",
+          "?p": "place"
+        },
+        "preconditions": [
+          "(at ?x ?p)",
+          "(available ?x)",
+          "(at ?y ?p)",
+          "(on ?y ?z)",
+          "(clear ?y)"
+        ],
+        "effects": [
+          "(not (at ?y ?p))",
+          "(lifting ?x ?y)",
+          "(not (clear ?y))",
+          "(not (available ?x))",
+          "(clear ?z)",
+          "(not (on ?y ?z))"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "depot_prob_01",
+    "domain_name": "depot",
+    "objects": {
+      "d1": "depot",
+      "h1": "hoist",
+      "c1": "crate",
+      "p1": "pallet"
+    },
+    "initial_state": [
+      "(at h1 d1)",
+      "(at p1 d1)",
+      "(at c1 d1)",
+      "(on c1 p1)",
+      "(clear c1)",
+      "(available h1)"
+    ],
+    "goal_state": [
+      "(lifting h1 c1)"
+    ]
+  },
+  "iteration_count": 3,
+  "is_valid": true
+}

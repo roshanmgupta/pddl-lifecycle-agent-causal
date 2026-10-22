@@ -1,0 +1,102 @@
+{
+  "domain_name": "satellite",
+  "run_index": 1,
+  "domain_blueprint": {
+    "domain_name": "satellite",
+    "requirements": [
+      ":strips",
+      ":typing"
+    ],
+    "types": {
+      "satellite": "object",
+      "direction": "object",
+      "instrument": "object",
+      "mode": "object"
+    },
+    "predicates": [
+      "(on-board ?i - instrument ?s - satellite)",
+      "(supports ?i - instrument ?m - mode)",
+      "(pointing ?s - satellite ?d - direction)",
+      "(power-avail ?s - satellite)",
+      "(power-on ?i - instrument)",
+      "(calibrated ?i - instrument)",
+      "(have-image ?d - direction ?m - mode)"
+    ],
+    "actions": [
+      {
+        "action_name": "turn-to",
+        "parameters": {
+          "?s": "satellite",
+          "?dnew": "direction",
+          "?dprev": "direction"
+        },
+        "preconditions": [
+          "(pointing ?s ?dprev)"
+        ],
+        "effects": [
+          "(pointing ?s ?dnew)",
+          "(not (pointing ?s ?dprev))"
+        ]
+      },
+      {
+        "action_name": "switch-on",
+        "parameters": {
+          "?i": "instrument",
+          "?s": "satellite"
+        },
+        "preconditions": [
+          "(on-board ?i ?s)",
+          "(power-avail ?s)"
+        ],
+        "effects": [
+          "(power-on ?i)",
+          "(not (power-avail ?s))",
+          "(not (calibrated ?i))"
+        ]
+      },
+      {
+        "action_name": "take-image",
+        "parameters": {
+          "?s": "satellite",
+          "?d": "direction",
+          "?i": "instrument",
+          "?m": "mode"
+        },
+        "preconditions": [
+          "(calibrated ?i)",
+          "(on-board ?i ?s)",
+          "(supports ?i ?m)",
+          "(power-on ?i)",
+          "(pointing ?s ?d)"
+        ],
+        "effects": [
+          "(have-image ?d ?m)"
+        ]
+      }
+    ]
+  },
+  "problem_blueprint": {
+    "problem_name": "sat_prob_01",
+    "domain_name": "satellite",
+    "objects": {
+      "sat1": "satellite",
+      "dir1": "direction",
+      "dir2": "direction",
+      "inst1": "instrument",
+      "spectrograph": "mode"
+    },
+    "initial_state": [
+      "(on-board inst1 sat1)",
+      "(supports inst1 spectrograph)",
+      "(pointing sat1 dir1)",
+      "(power-avail sat1)",
+      "(power-on inst1)",
+      "(calibrated inst1)"
+    ],
+    "goal_state": [
+      "(have-image dir2 spectrograph)"
+    ]
+  },
+  "iteration_count": 1,
+  "is_valid": true
+}
