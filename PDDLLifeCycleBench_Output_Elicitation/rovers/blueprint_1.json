@@ -31,9 +31,15 @@
       "(supports ?c - camera ?m - mode)",
       "(available ?r - rover)",
       "(channel-free ?l - lander)",
-      "(has-soil-analysis ?r - rover ?w - waypoint)",
-      "(has-rock-analysis ?r - rover ?w - waypoint)",
-      "(has-image ?r - rover ?o - objective ?m - mode)"
+      "(has-image ?r - rover ?o - objective ?m - mode)",
+      "(can-traverse ?r - rover ?src - waypoint ?dst - waypoint)",
+      "(on-board ?c - camera ?r - rover)",
+      "(calibration-target ?c - camera ?o - objective)",
+      "(has-soil-analysis ?r - rover ?c - waypoint)",
+      "(has-rock-analysis ?r - rover ?c - waypoint)",
+      "(communicated-soil-data ?c - waypoint)",
+      "(communicated-rock-data ?c - waypoint)",
+      "(communicated-image-data ?o - objective ?m - mode)"
     ],
     "actions": [
       {
@@ -44,10 +50,10 @@
           "?dst": "waypoint"
         },
         "preconditions": [
-          "(can-traverse ?r ?src ?dst)",
-          "(available ?r)",
           "(at ?r ?src)",
-          "(visible ?src ?dst)"
+          "(visible ?src ?dst)",
+          "(available ?r)",
+          "(can-traverse ?r ?src ?dst)"
         ],
         "effects": [
           "(at ?r ?dst)",
@@ -70,6 +76,8 @@
         ],
         "effects": [
           "(full ?s)",
+          "(not (empty ?s))",
+          "(not (at-sample ?w))",
           "(has-soil-analysis ?r ?w)"
         ]
       },
@@ -89,6 +97,8 @@
         ],
         "effects": [
           "(full ?s)",
+          "(not (empty ?s))",
+          "(not (at-sample ?w))",
           "(has-rock-analysis ?r ?w)"
         ]
       },
@@ -103,7 +113,8 @@
           "(full ?s)"
         ],
         "effects": [
-          "(empty ?s)"
+          "(empty ?s)",
+          "(not (full ?s))"
         ]
       },
       {
@@ -195,17 +206,18 @@
         "action_name": "communicate-image-data",
         "parameters": {
           "?r": "rover",
-          "?d": "waypoint",
+          "?e": "waypoint",
           "?l": "lander",
+          "?f": "waypoint",
           "?o": "objective",
           "?c": "camera",
           "?m": "mode"
         },
         "preconditions": [
-          "(at ?r ?d)",
-          "(at ?l ?e)",
+          "(at ?r ?e)",
+          "(at ?l ?f)",
           "(has-image ?r ?o ?m)",
-          "(visible ?d ?e)",
+          "(visible ?e ?f)",
           "(available ?r)",
           "(channel-free ?l)"
         ],
@@ -243,16 +255,13 @@
       "(at-sample waypoint0)",
       "(at-sample waypoint1)",
       "(at-sample waypoint2)",
-      "(at-sample waypoint2)",
-      "(at general waypoint0)",
-      "(channel-free general)",
-      "(at rover0 waypoint0)",
-      "(available rover0)",
       "(store-of rover0store rover0)",
       "(empty rover0store)",
       "(equipped-for-soil-analysis rover0)",
       "(equipped-for-rock-analysis rover0)",
       "(equipped-for-imaging rover0)",
+      "(at rover0 waypoint0)",
+      "(available rover0)",
       "(can-traverse rover0 waypoint0 waypoint1)",
       "(can-traverse rover0 waypoint1 waypoint0)",
       "(can-traverse rover0 waypoint0 waypoint2)",
@@ -262,7 +271,12 @@
       "(supports camera0 colour)",
       "(supports camera0 high_res)",
       "(supports camera0 low_res)",
-      "(visible objective0 waypoint2)"
+      "(visible objective0 waypoint2)",
+      "(at general waypoint0)",
+      "(channel-free general)",
+      "(has-soil-analysis rover0 waypoint0)",
+      "(has-rock-analysis rover0 waypoint1)",
+      "(has-image rover0 objective0 colour)"
     ],
     "goal_state": [
       "(communicated-soil-data waypoint2)",
@@ -270,6 +284,6 @@
       "(communicated-image-data objective0 colour)"
     ]
   },
-  "iteration_count": 0,
+  "iteration_count": 2,
   "is_valid": true
 }

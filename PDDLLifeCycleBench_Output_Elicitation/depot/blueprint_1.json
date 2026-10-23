@@ -22,8 +22,8 @@
     "constants": {},
     "predicates": [
       "(at ?x - object ?loc - place)",
-      "(clear ?x - surface)",
-      "(available ?h - hoist)",
+      "(clear ?x - object)",
+      "(available ?x - hoist)",
       "(lifting ?h - hoist ?c - crate)",
       "(in ?c - crate ?t - truck)",
       "(on ?c1 - crate ?c2 - surface)"
@@ -45,7 +45,7 @@
         ]
       },
       {
-        "action_name": "lift_hoist",
+        "action_name": "lift_crate",
         "parameters": {
           "?h": "hoist",
           "?c": "crate",
@@ -83,10 +83,10 @@
           "(lifting ?h ?c)"
         ],
         "effects": [
-          "(available ?h)",
           "(at ?c ?loc)",
           "(clear ?c)",
           "(on ?c ?s)",
+          "(available ?h)",
           "(not (lifting ?h ?c))",
           "(not (clear ?s))"
         ]

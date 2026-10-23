@@ -19,12 +19,12 @@
     (supports ?c - camera ?m - mode)
     (available ?r - rover)
     (channel-free ?l - lander)
-    (has-soil-analysis ?r - rover ?w - waypoint)
-    (has-rock-analysis ?r - rover ?w - waypoint)
     (has-image ?r - rover ?o - objective ?m - mode)
     (can-traverse ?r - rover ?src - waypoint ?dst - waypoint)
-    (calibration-target ?c - camera ?o - objective)
     (on-board ?c - camera ?r - rover)
+    (calibration-target ?c - camera ?o - objective)
+    (has-soil-analysis ?r - rover ?c - waypoint)
+    (has-rock-analysis ?r - rover ?c - waypoint)
     (communicated-soil-data ?c - waypoint)
     (communicated-rock-data ?c - waypoint)
     (communicated-image-data ?o - objective ?m - mode)
@@ -32,26 +32,26 @@
 
   (:action navigate
     :parameters (?r - rover ?src - waypoint ?dst - waypoint)
-    :precondition (and (can-traverse ?r ?src ?dst) (available ?r) (at ?r ?src) (visible ?src ?dst))
+    :precondition (and (at ?r ?src) (visible ?src ?dst) (available ?r) (can-traverse ?r ?src ?dst))
     :effect (and (at ?r ?dst) (not (at ?r ?src)))
   )
 
   (:action sample-soil
     :parameters (?r - rover ?w - waypoint ?s - store)
     :precondition (and (at ?r ?w) (at-sample ?w) (equipped-for-soil-analysis ?r) (store-of ?s ?r) (empty ?s))
-    :effect (and (full ?s) (has-soil-analysis ?r ?w))
+    :effect (and (full ?s) (not (empty ?s)) (not (at-sample ?w)) (has-soil-analysis ?r ?w))
   )
 
   (:action sample-rock
     :parameters (?r - rover ?w - waypoint ?s - store)
     :precondition (and (at ?r ?w) (at-sample ?w) (equipped-for-rock-analysis ?r) (store-of ?s ?r) (empty ?s))
-    :effect (and (full ?s) (has-rock-analysis ?r ?w))
+    :effect (and (full ?s) (not (empty ?s)) (not (at-sample ?w)) (has-rock-analysis ?r ?w))
   )
 
   (:action drop-contents
     :parameters (?r - rover ?s - store)
     :precondition (and (store-of ?s ?r) (full ?s))
-    :effect (empty ?s)
+    :effect (and (empty ?s) (not (full ?s)))
   )
 
   (:action calibrate
@@ -79,8 +79,8 @@
   )
 
   (:action communicate-image-data
-    :parameters (?r - rover ?d - waypoint ?l - lander ?o - objective ?c - camera ?m - mode ?e - object)
-    :precondition (and (at ?r ?d) (at ?l ?e) (has-image ?r ?o ?m) (visible ?d ?e) (available ?r) (channel-free ?l))
+    :parameters (?r - rover ?e - waypoint ?l - lander ?f - waypoint ?o - objective ?c - camera ?m - mode)
+    :precondition (and (at ?r ?e) (at ?l ?f) (has-image ?r ?o ?m) (visible ?e ?f) (available ?r) (channel-free ?l))
     :effect (and (channel-free ?l) (communicated-image-data ?o ?m) (available ?r))
   )
 

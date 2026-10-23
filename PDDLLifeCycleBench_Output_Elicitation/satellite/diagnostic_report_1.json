@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-23T00:21:59.107722",
+  "timestamp": "2026-10-23T01:50:47.967770",
   "domain_name": "satellite",
   "run_index": 1,
   "verification_status": "PASSED",
@@ -12,14 +12,14 @@
   "plan_summary": {
     "is_solvable": true,
     "plan_length": 5,
-    "search_time_seconds": 0.000103,
+    "search_time_seconds": 9.9e-05,
     "val_plan_valid": true,
     "plan_steps": [
       "(switch-on-instrument instrument0 satellite0)",
       "(turn-satellite satellite0 star2 groundstation1)",
       "(calibrate-instrument instrument0 satellite0 groundstation1)",
       "(turn-satellite satellite0 groundstation1 star2)",
-      "(take-image satellite0 star2 instrument0 image0)"
+      "(take-image satellite0 instrument0 star2 image0)"
     ]
   }
 }

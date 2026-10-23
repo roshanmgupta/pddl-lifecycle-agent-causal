@@ -1,21 +1,23 @@
 {
-  "timestamp": "2026-10-23T01:21:48.743481",
+  "timestamp": "2026-10-23T02:11:25.840843",
   "domain_name": "logistics",
   "run_index": 1,
-  "verification_status": "PASSED",
-  "repair_iterations_used": 1,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 5,
   "initial_verification_errors": [
     "VAL Error: Type-checking load_truck\n...action passes type checking.\nType-checking load_airplane\n...action passes type checking.\nType-checking unload_truck\n...action passes type checking.\nType-checking unload_airplane\n...action passes type checking.\nType-checking drive_truck\n...action passes type checking.\nType-checking fly_airplane\n...action passes type checking.\nType problem with proposition (at-airport l0-0) - parameter 1 is incorrectly typed\nType-checking initial state failed\n\nType problem in problem specification!"
   ],
-  "final_verification_errors": [],
-  "diagnostic_issues_count": 2,
+  "final_verification_errors": [
+    "VAL Error: Type-checking load_truck\n...action passes type checking.\nType-checking load_airplane\n...action passes type checking.\nType-checking unload_truck\n...action passes type checking.\nType-checking unload_airplane\n...action passes type checking.\nType-checking drive_truck\n...action passes type checking.\nType-checking fly_airplane\n...action passes type checking.\nType problem with proposition (in-city l0-0 c0) - parameter 1 is incorrectly typed\nType-checking initial state failed\n\nType problem in problem specification!"
+  ],
+  "diagnostic_issues_count": 16,
   "diagnostic_reports": [
     {
       "error_category": "TYPE_SIGNATURE",
       "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
-      "faulty_element": "at-airport",
+      "faulty_element": "types",
       "raw_log": "Type problem with proposition (at-airport l0-0) - parameter 1 is incorrectly typed",
-      "suggested_repair_hint": "Type mismatch on proposition '(at-airport l0-0 ...)': Object/parameter 'l0-0' has declared type 'location', but predicate 'at-airport' was declared too narrowly expecting subtype 'airport' (which already inherits from 'location'). In domain 'predicates', generalize parameter 1 of predicate 'at-airport' to supertype 'location' (e.g. '(at-airport ... ?x - location ...)'). Alternatively, if problem requirements designate that 'l0-0' is a specialized 'airport', declare 'l0-0 - airport' in problem ':objects'. Do NOT invert domain 'types' by declaring 'location' as a subtype of 'airport'."
+      "suggested_repair_hint": "In domain 'types', declare 'location': 'airplane' (currently inheriting from 'object'). Object 'l0-0' has type 'location' and must inherit from 'airplane' to satisfy predicate 'at-airport'. Do NOT change predicate 'at-airport', as it already expects 'airplane'."
     },
     {
       "error_category": "GROUNDING_UNSOLVABILITY",
@@ -23,19 +25,106 @@
       "faulty_element": "fly_airplane",
       "raw_log": "Action 'fly_airplane' parameter '?b' requires type 'airport', but problem :objects and domain :constants contain ZERO objects of type 'airport' (or its subtypes)!",
       "suggested_repair_hint": "Action 'fly_airplane' parameter '?c' requires type 'airport', but problem :objects and domain :constants contain ZERO objects of type 'airport' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'airport' according to the requirements (e.g. declare them as 'airport' instead of a broad supertype), or if 'fly_airplane' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "types",
+      "raw_log": "Type problem with proposition (in-city l0-0 c0) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "In domain 'types', declare 'airport': 'location' (currently inheriting from 'airplane'). Object 'l0-0' has type 'airport' and must inherit from 'location' to satisfy predicate 'in-city'. Do NOT change predicate 'in-city', as it already expects 'location'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load_truck",
+      "raw_log": "Action 'load_truck' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)!",
+      "suggested_repair_hint": "Action 'load_truck' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'location' according to the requirements (e.g. declare them as 'location' instead of a broad supertype), or if 'load_truck' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load_airplane",
+      "raw_log": "Action 'load_airplane' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)!",
+      "suggested_repair_hint": "Action 'load_airplane' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'location' according to the requirements (e.g. declare them as 'location' instead of a broad supertype), or if 'load_airplane' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "unload_truck",
+      "raw_log": "Action 'unload_truck' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)!",
+      "suggested_repair_hint": "Action 'unload_truck' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'location' according to the requirements (e.g. declare them as 'location' instead of a broad supertype), or if 'unload_truck' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "unload_airplane",
+      "raw_log": "Action 'unload_airplane' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)!",
+      "suggested_repair_hint": "Action 'unload_airplane' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'location' according to the requirements (e.g. declare them as 'location' instead of a broad supertype), or if 'unload_airplane' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive_truck",
+      "raw_log": "Action 'drive_truck' parameter '?b' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)!",
+      "suggested_repair_hint": "Action 'drive_truck' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'location' according to the requirements (e.g. declare them as 'location' instead of a broad supertype), or if 'drive_truck' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "drive_truck",
+      "raw_log": "Action 'drive_truck' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)!",
+      "suggested_repair_hint": "In problem ':objects', declare 'l0-0' and 'l1-0' as type 'location' to ensure the action can be grounded."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "types",
+      "raw_log": "Type problem with proposition (at-airport l0-0) - parameter 1 is incorrectly typed",
+      "suggested_repair_hint": "In domain 'types', declare 'airport': 'airplane' (currently inheriting from 'location'). Object 'l0-0' has type 'airport' and must inherit from 'airplane' to satisfy predicate 'at-airport'. Do NOT change predicate 'at-airport', as it already expects 'airplane'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": "fly_airplane",
+      "raw_log": "Action 'fly_airplane' parameter '?a' requires type 'airplane', but goal object 'p0' has declared type 'obj'.",
+      "suggested_repair_hint": "In problem ':objects', declare 'p0' as type 'airplane' to ensure that the action 'fly_airplane' can be grounded. The exact modification should be: 'p0: airplane'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": null,
+      "raw_log": "Action 'load_truck' parameter '?a' requires type 'obj', but problem :objects and domain :constants contain ZERO objects of type 'obj' (or its subtypes)!",
+      "suggested_repair_hint": "In problem ':objects', declare 'p0' as type 'obj' to ensure that there is at least one object of type 'obj' available for grounding actions that require it."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load_truck",
+      "raw_log": "Action 'load_truck' parameter '?a' requires type 'obj', but problem :objects and domain :constants contain ZERO objects of type 'obj' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'obj' according to the requirements (e.g. declare them as 'obj' instead of a broad supertype), or if 'load_truck' should operate on the broader supertype, generalize parameter '?a' in domain 'actions'.",
+      "suggested_repair_hint": "Action 'load_truck' parameter '?a' requires type 'obj', but problem :objects and domain :constants contain ZERO objects of type 'obj' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'obj' according to the requirements (e.g. declare them as 'obj' instead of a broad supertype), or if 'load_truck' should operate on the broader supertype, generalize parameter '?a' in domain 'actions'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "load_airplane",
+      "raw_log": "Action 'load_airplane' parameter '?a' requires type 'obj', but problem :objects and domain :constants contain ZERO objects of type 'obj' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'obj' according to the requirements (e.g. declare them as 'obj' instead of a broad supertype), or if 'load_airplane' should operate on the broader supertype, generalize parameter '?a' in domain 'actions'.",
+      "suggested_repair_hint": "Action 'load_airplane' parameter '?a' requires type 'obj', but problem :objects and domain :constants contain ZERO objects of type 'obj' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'obj' according to the requirements (e.g. declare them as 'obj' instead of a broad supertype), or if 'load_airplane' should operate on the broader supertype, generalize parameter '?a' in domain 'actions'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "unload_truck",
+      "raw_log": "Action 'unload_truck' parameter '?a' requires type 'obj', but problem :objects and domain :constants contain ZERO objects of type 'obj' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'obj' according to the requirements (e.g. declare them as 'obj' instead of a broad supertype), or if 'unload_truck' should operate on the broader supertype, generalize parameter '?a' in domain 'actions'.",
+      "suggested_repair_hint": "Action 'unload_truck' parameter '?a' requires type 'obj', but problem :objects and domain :constants contain ZERO objects of type 'obj' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'obj' according to the requirements (e.g. declare them as 'obj' instead of a broad supertype), or if 'unload_truck' should operate on the broader supertype, generalize parameter '?a' in domain 'actions'."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "unload_airplane",
+      "raw_log": "Action 'unload_airplane' parameter '?a' requires type 'obj', but problem :objects and domain :constants contain ZERO objects of type 'obj' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'obj' according to the requirements (e.g. declare them as 'obj' instead of a broad supertype), or if 'unload_airplane' should operate on the broader supertype, generalize parameter '?a' in domain 'actions'.",
+      "suggested_repair_hint": "Action 'unload_airplane' parameter '?a' requires type 'obj', but problem :objects and domain :constants contain ZERO objects of type 'obj' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'obj' according to the requirements (e.g. declare them as 'obj' instead of a broad supertype), or if 'unload_airplane' should operate on the broader supertype, generalize parameter '?a' in domain 'actions'."
     }
   ],
-  "formatted_diagnostic_feedback": "",
-  "plan_summary": {
-    "is_solvable": true,
-    "plan_length": 4,
-    "search_time_seconds": 0.000135,
-    "val_plan_valid": true,
-    "plan_steps": [
-      "(fly_airplane a0 l0-0 l1-0)",
-      "(load_airplane p0 a0 l1-0)",
-      "(fly_airplane a0 l1-0 l0-0)",
-      "(unload_airplane p0 a0 l0-0)"
-    ]
-  }
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: types\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (in-city l0-0 c0) - parameter 1 is incorrectly typed\n  - [SUGGESTION FOR REPAIR]: In domain 'types', declare 'airport': 'location' (currently inheriting from 'airplane'). Object 'l0-0' has type 'airport' and must inherit from 'location' to satisfy predicate 'in-city'. Do NOT change predicate 'in-city', as it already expects 'location'.\n\nIssue #2:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: load_truck\n  - [DESCRIPTION / RAW TRACE]: Action 'load_truck' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)!\n  - [SUGGESTION FOR REPAIR]: Action 'load_truck' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'location' according to the requirements (e.g. declare them as 'location' instead of a broad supertype), or if 'load_truck' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'.\n\nIssue #3:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: load_airplane\n  - [DESCRIPTION / RAW TRACE]: Action 'load_airplane' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)!\n  - [SUGGESTION FOR REPAIR]: Action 'load_airplane' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'location' according to the requirements (e.g. declare them as 'location' instead of a broad supertype), or if 'load_airplane' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'.\n\nIssue #4:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: unload_truck\n  - [DESCRIPTION / RAW TRACE]: Action 'unload_truck' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)!\n  - [SUGGESTION FOR REPAIR]: Action 'unload_truck' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'location' according to the requirements (e.g. declare them as 'location' instead of a broad supertype), or if 'unload_truck' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'.\n\nIssue #5:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: unload_airplane\n  - [DESCRIPTION / RAW TRACE]: Action 'unload_airplane' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)!\n  - [SUGGESTION FOR REPAIR]: Action 'unload_airplane' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'location' according to the requirements (e.g. declare them as 'location' instead of a broad supertype), or if 'unload_airplane' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'.\n\nIssue #6:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: drive_truck\n  - [DESCRIPTION / RAW TRACE]: Action 'drive_truck' parameter '?b' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)!\n  - [SUGGESTION FOR REPAIR]: Action 'drive_truck' parameter '?c' requires type 'location', but problem :objects and domain :constants contain ZERO objects of type 'location' (or its subtypes)! This action can NEVER be grounded (0 groundings), making any plan relying on it unreachable. To resolve: In problem ':objects', declare the relevant objects as type 'location' according to the requirements (e.g. declare them as 'location' instead of a broad supertype), or if 'drive_truck' should operate on the broader supertype, generalize parameter '?c' in domain 'actions'.\n\nIssue #7:\n  - [ERROR TYPE]: GROUNDING_UNSOLVABILITY\n  - [TARGET AST OPERATION]: INITIAL_STATE_AUGMENTATION\n  - [LOCATION / COMPONENT]: fly_airplane\n  - [DESCRIPTION / RAW TRACE]: Action 'fly_airplane' parameter '?a' requires type 'airplane', but goal object 'p0' has declared type 'obj'.\n  - [SUGGESTION FOR REPAIR]: In problem ':objects', declare 'p0' as type 'airplane' to ensure that the action 'fly_airplane' can be grounded. The exact modification should be: 'p0: airplane'.",
+  "plan_summary": null
 }

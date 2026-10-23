@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-10-23T00:20:55.642842",
+  "timestamp": "2026-10-23T01:50:25.884262",
   "domain_name": "depot",
   "run_index": 1,
   "verification_status": "PASSED",
   "repair_iterations_used": 1,
   "initial_verification_errors": [
-    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\temp_domain.pddl' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\temp_problem.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing: [0.000s CPU, 0.003s wall-clock]\nNormalizing task... [0.000s CPU, 0.000s wall-clock]\nInstantiating...\nGenerating Datalog program... [0.000s CPU, 0.000s wall-clock]\nNormalizing Datalog program...\nNormalizing Datalog program: [0.000s CPU, 0.002s wall-clock]\nPreparing model... [0.000s CPU, 0.002s wall-clock]\nGenerated 42 rules.\nComputing model... [0.000s CPU, 0.002s wall-clock]\n297 relevant atoms\n325 auxiliary atoms\n622 final queue length\n825 total queue pushes\nCompleting instantiation... [0.016s CPU, 0.002s wall-clock]\nInstantiating: [0.016s CPU, 0.009s wall-clock]\nNo relaxed solution! Generating unsolvable task...\nTranslator variables: 1\nTranslator derived variables: 0\nTranslator facts: 2\nTranslator goal facts: 1\nTranslator mutex groups: 0\nTranslator total mutex groups size: 0\nTranslator operators: 0\nTranslator axioms: 0\nTranslator task size: 4\nwarning: could not determine peak memory\nWriting output... [0.000s CPU, 0.001s wall-clock]\nDone! [0.016s CPU, 0.013s wall-clock]\ntranslate exit code: 0\n\nINFO     Running search (release).\nINFO     search stdin: output.sas\nINFO     search time limit: None\nINFO     search memory limit: None\nINFO     search command line string: 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\downward.exe' --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas\n[t=0.000127s, 820 KB] reading input...\n[t=0.000235s, 820 KB] done reading input!\n[t=0.002134s, 1248 KB] Simplifying 0 unary operators... done! [0 unary operators]\n[t=0.002177s, 1248 KB] time to simplify: 0.000050s\n[t=0.002190s, 1248 KB] Initializing additive heuristic...\n[t=0.002195s, 1248 KB] Initializing FF heuristic...\n[t=0.002259s, 1248 KB] Building successor generator...done!\n[t=0.002280s, 1248 KB] peak memory difference for successor generator creation: 0 KB\n[t=0.002288s, 1248 KB] time for successor generation creation: 0.000005s\n[t=0.002302s, 1248 KB] Variables: 1\n[t=0.002309s, 1248 KB] FactPairs: 2\n[t=0.002318s, 1248 KB] Bytes per state: 4\n[t=0.002374s, 1248 KB] Conducting lazy best first search, (real) bound = 2147483647\n[t=0.002399s, 1248 KB] Initial heuristic value for ff: infinity\n[t=0.002412s, 1248 KB] Completely explored state space -- no solution!\n[t=0.002420s, 1248 KB] Actual search time: 0.000033s\n[t=0.002430s, 1248 KB] Expanded 0 state(s).\n[t=0.002430s, 1248 KB] Reopened 0 state(s).\n[t=0.002430s, 1248 KB] Evaluated 1 state(s).\n[t=0.002430s, 1248 KB] Evaluations: 1\n[t=0.002430s, 1248 KB] Generated 0 state(s).\n[t=0.002430s, 1248 KB] Dead ends: 1 state(s).\n[t=0.002430s, 1248 KB] Number of registered states: 1\n[t=0.002430s, 1248 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.002430s, 1248 KB] Int hash set resizes: 0\n[t=0.002430s, 1248 KB] Search time: 0.000057s\n[t=0.002430s, 1248 KB] Total time: 0.002430s\nSearch stopped without finding a solution.\nRemove intermediate file output.sas\nsearch exit code: 12\n\nDriver aborting after search\n\n"
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\temp_domain.pddl' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\temp_problem.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing: [0.000s CPU, 0.003s wall-clock]\nNormalizing task... [0.000s CPU, 0.000s wall-clock]\nInstantiating...\nGenerating Datalog program... [0.000s CPU, 0.000s wall-clock]\nNormalizing Datalog program...\nNormalizing Datalog program: [0.000s CPU, 0.002s wall-clock]\nPreparing model... [0.000s CPU, 0.003s wall-clock]\nGenerated 42 rules.\nComputing model... [0.016s CPU, 0.003s wall-clock]\n297 relevant atoms\n325 auxiliary atoms\n622 final queue length\n825 total queue pushes\nCompleting instantiation... [0.000s CPU, 0.005s wall-clock]\nInstantiating: [0.016s CPU, 0.013s wall-clock]\nNo relaxed solution! Generating unsolvable task...\nTranslator variables: 1\nTranslator derived variables: 0\nTranslator facts: 2\nTranslator goal facts: 1\nTranslator mutex groups: 0\nTranslator total mutex groups size: 0\nTranslator operators: 0\nTranslator axioms: 0\nTranslator task size: 4\nwarning: could not determine peak memory\nWriting output... [0.000s CPU, 0.001s wall-clock]\nDone! [0.016s CPU, 0.017s wall-clock]\ntranslate exit code: 0\n\nINFO     Running search (release).\nINFO     search stdin: output.sas\nINFO     search time limit: None\nINFO     search memory limit: None\nINFO     search command line string: 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\downward.exe' --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas\n[t=0.000402s, 824 KB] reading input...\n[t=0.000660s, 828 KB] done reading input!\n[t=0.005195s, 1232 KB] Simplifying 0 unary operators... done! [0 unary operators]\n[t=0.005267s, 1232 KB] time to simplify: 0.000081s\n[t=0.005282s, 1232 KB] Initializing additive heuristic...\n[t=0.005288s, 1232 KB] Initializing FF heuristic...\n[t=0.005369s, 1232 KB] Building successor generator...done!\n[t=0.005386s, 1232 KB] peak memory difference for successor generator creation: 0 KB\n[t=0.005392s, 1232 KB] time for successor generation creation: 0.000006s\n[t=0.005401s, 1232 KB] Variables: 1\n[t=0.005408s, 1232 KB] FactPairs: 2\n[t=0.005413s, 1232 KB] Bytes per state: 4\n[t=0.005456s, 1232 KB] Conducting lazy best first search, (real) bound = 2147483647\n[t=0.005486s, 1232 KB] Initial heuristic value for ff: infinity\n[t=0.005495s, 1232 KB] Completely explored state space -- no solution!\n[t=0.005501s, 1232 KB] Actual search time: 0.000032s\n[t=0.005508s, 1232 KB] Expanded 0 state(s).\n[t=0.005508s, 1232 KB] Reopened 0 state(s).\n[t=0.005508s, 1232 KB] Evaluated 1 state(s).\n[t=0.005508s, 1232 KB] Evaluations: 1\n[t=0.005508s, 1232 KB] Generated 0 state(s).\n[t=0.005508s, 1232 KB] Dead ends: 1 state(s).\n[t=0.005508s, 1232 KB] Number of registered states: 1\n[t=0.005508s, 1232 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.005508s, 1232 KB] Int hash set resizes: 0\n[t=0.005508s, 1232 KB] Search time: 0.000053s\n[t=0.005508s, 1232 KB] Total time: 0.005508s\nSearch stopped without finding a solution.\nRemove intermediate file output.sas\nsearch exit code: 12\n\nDriver aborting after search\n\n"
   ],
   "final_verification_errors": [],
   "diagnostic_issues_count": 1,
@@ -13,28 +13,28 @@
     {
       "error_category": "GROUNDING_UNSOLVABILITY",
       "repair_operation_type": "EFFECT_ALIGNMENT",
-      "faulty_element": "lift_hoist",
-      "raw_log": "Planner Error: Could not find a plan. INFO planner time limit: None",
-      "suggested_repair_hint": "Add the missing positive effect '(clear ?s)' to the action 'lift_hoist' to restore the surface state after lifting the crate."
+      "faulty_element": "lift_crate",
+      "raw_log": "Planner Error: Could not find a plan.",
+      "suggested_repair_hint": "Modify domain.actions.lift_crate: ADD positive effect '(clear ?s)' to restore the operational readiness of the surface after lifting the crate."
     }
   ],
   "formatted_diagnostic_feedback": "",
   "plan_summary": {
     "is_solvable": true,
     "plan_length": 16,
-    "search_time_seconds": 0.007977,
+    "search_time_seconds": 0.008842,
     "val_plan_valid": true,
     "plan_steps": [
-      "(lift_hoist hoist2 crate1 pallet2 depot2)",
+      "(lift_crate hoist2 crate1 pallet2 depot2)",
       "(load_crate hoist2 crate1 truck1 depot2)",
       "(drive_truck truck1 depot2 depot1)",
       "(drive_truck truck1 depot1 distributor0)",
       "(unload_crate hoist3 crate1 truck1 distributor0)",
       "(drop_crate hoist3 crate1 pallet3 distributor0)",
       "(drive_truck truck2 depot0 depot1)",
-      "(lift_hoist hoist1 crate2 crate0 depot1)",
+      "(lift_crate hoist1 crate2 crate0 depot1)",
       "(load_crate hoist1 crate2 truck2 depot1)",
-      "(lift_hoist hoist1 crate0 pallet1 depot1)",
+      "(lift_crate hoist1 crate0 pallet1 depot1)",
       "(load_crate hoist1 crate0 truck2 depot1)",
       "(unload_crate hoist1 crate2 truck2 depot1)",
       "(drive_truck truck2 depot1 distributor0)",

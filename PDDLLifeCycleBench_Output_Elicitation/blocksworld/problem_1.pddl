@@ -3,18 +3,19 @@
 
   (:objects
     a b c d - block
+    table - table
   )
 
   (:init
     (hand-empty)
-    (on a table)
-    (on b c)
-    (on c table)
-    (on d table)
+    (on a)
+    (on b)
+    (on c)
+    (on d)
     (clear a)
     (clear b)
     (clear d)
   )
 
-  (:goal (and (on c b)))
+  (:goal (and (on c)))
 )

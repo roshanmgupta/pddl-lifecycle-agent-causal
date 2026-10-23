@@ -12,13 +12,11 @@
       "block": "object",
       "table": "object"
     },
-    "constants": {
-      "table": "table"
-    },
+    "constants": {},
     "predicates": [
-      "(on ?x - block ?y - block)",
-      "(clear ?x - block)",
-      "(holding ?x - block)",
+      "(on ?a - object ?b - object)",
+      "(clear ?a - block)",
+      "(holding ?a - block)",
       "(hand-empty)"
     ],
     "actions": [
@@ -29,13 +27,13 @@
         },
         "preconditions": [
           "(clear ?a)",
-          "(on ?a table)",
+          "(on ?a - table)",
           "(hand-empty)"
         ],
         "effects": [
           "(holding ?a)",
           "(not (clear ?a))",
-          "(not (on ?a table))",
+          "(not (on ?a - table))",
           "(not (hand-empty))"
         ]
       },
@@ -49,7 +47,7 @@
         ],
         "effects": [
           "(clear ?a)",
-          "(on ?a table)",
+          "(on ?a - table)",
           "(hand-empty)",
           "(not (holding ?a))"
         ]
@@ -66,7 +64,7 @@
         ],
         "effects": [
           "(clear ?a)",
-          "(on ?a ?b)",
+          "(on ?a - ?b)",
           "(not (clear ?b))",
           "(not (holding ?a))"
         ]
@@ -78,14 +76,14 @@
           "?b": "block"
         },
         "preconditions": [
-          "(on ?a ?b)",
+          "(on ?a - ?b)",
           "(clear ?a)",
           "(hand-empty)"
         ],
         "effects": [
           "(holding ?a)",
           "(clear ?b)",
-          "(not (on ?a ?b))",
+          "(not (on ?a - ?b))",
           "(not (clear ?a))",
           "(not (hand-empty))"
         ]
@@ -104,18 +102,18 @@
     },
     "initial_state": [
       "(hand-empty)",
-      "(on a table)",
-      "(on b c)",
-      "(on c table)",
-      "(on d table)",
+      "(on a - table)",
+      "(on b - c)",
+      "(on c - table)",
+      "(on d - table)",
       "(clear a)",
       "(clear b)",
       "(clear d)"
     ],
     "goal_state": [
-      "(on c b)"
+      "(on c - b)"
     ]
   },
-  "iteration_count": 1,
-  "is_valid": true
+  "iteration_count": 5,
+  "is_valid": false
 }

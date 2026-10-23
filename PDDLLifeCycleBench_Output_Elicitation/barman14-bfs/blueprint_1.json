@@ -11,22 +11,22 @@
       "object": null,
       "hand": "object",
       "level": "object",
-      "beverage": "object",
-      "ingredient": "beverage",
-      "cocktail": "beverage",
       "container": "object",
       "shot": "container",
       "shaker": "container",
+      "ingredient": "beverage",
+      "beverage": "object",
+      "cocktail": "beverage",
       "dispenser": "object"
     },
     "constants": {},
     "predicates": [
-      "(on ?c - container ?t - table)",
+      "(on-table ?c - container)",
       "(holding ?h - hand ?c - container)",
       "(empty ?h - hand)",
       "(clean ?c - container)",
       "(contains ?c - container ?b - beverage)",
-      "(dispenses ?d - dispenser ?b - ingredient)",
+      "(dispenses ?d - dispenser ?i - ingredient)",
       "(shaken ?s - shaker)",
       "(unshaken ?s - shaker)",
       "(at-level ?s - shaker ?l - level)",
@@ -41,12 +41,12 @@
           "?c": "container"
         },
         "preconditions": [
-          "(on ?c ?t)",
+          "(on-table ?c)",
           "(empty ?h)"
         ],
         "effects": [
           "(holding ?h ?c)",
-          "(not (on ?c ?t))",
+          "(not (on-table ?c))",
           "(not (empty ?h))"
         ]
       },
@@ -61,7 +61,7 @@
         ],
         "effects": [
           "(empty ?h)",
-          "(on ?c ?t)",
+          "(on-table ?c)",
           "(not (holding ?h ?c))"
         ]
       },
@@ -71,18 +71,18 @@
           "?hC": "hand",
           "?hD": "hand",
           "?s": "shot",
-          "?b": "ingredient",
+          "?i": "ingredient",
           "?d": "dispenser"
         },
         "preconditions": [
           "(holding ?hC ?s)",
           "(empty ?hD)",
-          "(dispenses ?d ?b)",
+          "(dispenses ?d ?i)",
           "(empty ?s)",
           "(clean ?s)"
         ],
         "effects": [
-          "(contains ?s ?b)",
+          "(contains ?s ?i)",
           "(not (empty ?s))",
           "(not (clean ?s))"
         ]
@@ -93,18 +93,19 @@
           "?hC": "hand",
           "?hD": "hand",
           "?s": "shot",
-          "?b": "ingredient",
+          "?i": "ingredient",
           "?d": "dispenser"
         },
         "preconditions": [
           "(holding ?hC ?s)",
           "(empty ?hD)",
-          "(dispenses ?d ?b)",
-          "(not (empty ?s))",
-          "(not (clean ?s))"
+          "(dispenses ?d ?i)",
+          "(empty ?s)",
+          "(not (clean ?s))",
+          "(part-of ?s ?i)"
         ],
         "effects": [
-          "(contains ?s ?b)",
+          "(contains ?s ?i)",
           "(not (empty ?s))"
         ]
       },
@@ -136,11 +137,11 @@
           "(holding ?hC ?s)",
           "(empty ?hD)",
           "(not (empty ?s))",
-          "(contains ?s ?b)"
+          "(part-of ?s ?b)"
         ],
         "effects": [
           "(clean ?s)",
-          "(not (contains ?s ?b))"
+          "(not (part-of ?s ?b))"
         ]
       },
       {
@@ -148,14 +149,14 @@
         "parameters": {
           "?h": "hand",
           "?s": "shot",
-          "?b": "ingredient",
+          "?i": "ingredient",
           "?c": "shaker",
           "?lE": "level",
           "?lF": "level"
         },
         "preconditions": [
           "(holding ?h ?s)",
-          "(contains ?s ?b)",
+          "(contains ?s ?i)",
           "(empty ?c)",
           "(clean ?c)",
           "(at-level ?c ?lE)",
@@ -163,7 +164,7 @@
         ],
         "effects": [
           "(empty ?s)",
-          "(contains ?c ?b)",
+          "(contains ?c ?i)",
           "(unshaken ?c)",
           "(at-level ?c ?lF)"
         ]
@@ -173,21 +174,21 @@
         "parameters": {
           "?h": "hand",
           "?s": "shot",
-          "?b": "ingredient",
+          "?i": "ingredient",
           "?c": "shaker",
           "?lE": "level",
           "?lF": "level"
         },
         "preconditions": [
           "(holding ?h ?s)",
-          "(contains ?s ?b)",
+          "(contains ?s ?i)",
           "(not (empty ?c))",
           "(shaken ?c)",
           "(at-level ?c ?lE)",
           "(next-to ?lE ?lF)"
         ],
         "effects": [
-          "(contains ?c ?b)",
+          "(contains ?c ?i)",
           "(empty ?s)",
           "(at-level ?c ?lF)"
         ]
@@ -196,37 +197,37 @@
         "action_name": "empty_shaker",
         "parameters": {
           "?h": "hand",
-          "?s": "shaker",
-          "?c": "cocktail",
+          "?c": "shaker",
+          "?b": "cocktail",
           "?lD": "level",
           "?lE": "level"
         },
         "preconditions": [
-          "(holding ?h ?s)",
-          "(contains ?s ?c)",
-          "(shaken ?s)",
-          "(at-level ?s ?lD)",
+          "(holding ?h ?c)",
+          "(contains ?c ?b)",
+          "(shaken ?c)",
+          "(at-level ?c ?lD)",
           "(next-to ?lD ?lE)"
         ],
         "effects": [
-          "(empty ?s)",
-          "(at-level ?s ?lE)",
-          "(not (contains ?s ?c))"
+          "(at-level ?c ?lE)",
+          "(empty ?c)",
+          "(not (contains ?c ?b))"
         ]
       },
       {
         "action_name": "clean_shaker",
         "parameters": {
           "?h": "hand",
-          "?s": "shaker"
+          "?c": "shaker"
         },
         "preconditions": [
-          "(holding ?h ?s)",
+          "(holding ?h ?c)",
           "(empty ?h)",
-          "(not (empty ?s))"
+          "(empty ?c)"
         ],
         "effects": [
-          "(clean ?s)"
+          "(clean ?c)"
         ]
       },
       {
@@ -234,49 +235,49 @@
         "parameters": {
           "?hE": "hand",
           "?hF": "hand",
-          "?c": "cocktail",
-          "?s": "shaker",
+          "?c": "shaker",
           "?b": "ingredient",
-          "?i": "ingredient"
+          "?i": "ingredient",
+          "?cocktail": "cocktail"
         },
         "preconditions": [
-          "(holding ?hE ?s)",
+          "(holding ?hE ?c)",
           "(empty ?hF)",
-          "(contains ?s ?b)",
-          "(contains ?s ?i)",
-          "(part-of ?b ?c)",
-          "(part-of ?i ?c)",
-          "(unshaken ?s)"
+          "(contains ?c ?b)",
+          "(contains ?c ?i)",
+          "(part-of ?cocktail ?b)",
+          "(part-of ?cocktail ?i)",
+          "(unshaken ?c)"
         ],
         "effects": [
-          "(shaken ?s)",
-          "(contains ?s ?c)"
+          "(shaken ?c)",
+          "(contains ?c ?cocktail)"
         ]
       },
       {
         "action_name": "pour_beverage",
         "parameters": {
           "?h": "hand",
-          "?s": "shaker",
+          "?c": "shaker",
           "?b": "beverage",
-          "?s2": "shot",
+          "?s": "shot",
           "?lE": "level",
           "?lF": "level"
         },
         "preconditions": [
-          "(holding ?h ?s)",
-          "(shaken ?s)",
-          "(empty ?s2)",
-          "(clean ?s2)",
-          "(contains ?s ?b)",
-          "(at-level ?s ?lE)",
+          "(holding ?h ?c)",
+          "(shaken ?c)",
+          "(empty ?s)",
+          "(clean ?s)",
+          "(contains ?c ?b)",
+          "(at-level ?c ?lE)",
           "(next-to ?lE ?lF)"
         ],
         "effects": [
-          "(contains ?s2 ?b)",
-          "(at-level ?s ?lF)",
-          "(not (clean ?s2))",
-          "(not (empty ?s2))"
+          "(contains ?s ?b)",
+          "(at-level ?c ?lF)",
+          "(not (empty ?s))",
+          "(not (empty ?c))"
         ]
       }
     ]
@@ -308,12 +309,12 @@
       "l2": "level"
     },
     "initial_state": [
-      "(on shaker1 table)",
-      "(on shot1 table)",
-      "(on shot2 table)",
-      "(on shot3 table)",
-      "(on shot4 table)",
-      "(on shot5 table)",
+      "(on-table shaker1)",
+      "(on-table shot1)",
+      "(on-table shot2)",
+      "(on-table shot3)",
+      "(on-table shot4)",
+      "(on-table shot5)",
       "(dispenses dispenser1 ingredient1)",
       "(dispenses dispenser2 ingredient2)",
       "(dispenses dispenser3 ingredient3)",
@@ -335,14 +336,14 @@
       "(at-level shaker1 l0)",
       "(next-to l0 l1)",
       "(next-to l1 l2)",
-      "(part-of ingredient1 cocktail1)",
-      "(part-of ingredient3 cocktail1)",
-      "(part-of ingredient2 cocktail2)",
-      "(part-of ingredient3 cocktail2)",
-      "(part-of ingredient3 cocktail3)",
-      "(part-of ingredient2 cocktail3)",
-      "(part-of ingredient3 cocktail4)",
-      "(part-of ingredient1 cocktail4)"
+      "(part-of cocktail1 ingredient3)",
+      "(part-of cocktail1 ingredient1)",
+      "(part-of cocktail2 ingredient2)",
+      "(part-of cocktail2 ingredient3)",
+      "(part-of cocktail3 ingredient3)",
+      "(part-of cocktail3 ingredient2)",
+      "(part-of cocktail4 ingredient3)",
+      "(part-of cocktail4 ingredient1)"
     ],
     "goal_state": [
       "(contains shot1 cocktail4)",
@@ -351,6 +352,6 @@
       "(contains shot4 cocktail1)"
     ]
   },
-  "iteration_count": 2,
+  "iteration_count": 0,
   "is_valid": true
 }

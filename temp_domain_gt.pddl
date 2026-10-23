@@ -1,85 +1,66 @@
-(define (domain logistics-strips)
-  (:requirements :strips) 
-  (:predicates 	(OBJ ?obj)
-	       	(TRUCK ?truck)
-               	(LOCATION ?loc)
-		(AIRPLANE ?airplane)
-                (CITY ?city)
-                (AIRPORT ?airport)
-		(at ?obj ?loc)
-		(in ?obj1 ?obj2)
-		(in-city ?obj ?city))
+(define (domain transport-strips)
+(:requirements :typing)
 
-  ; (:types )		; default object
-
-(:action LOAD-TRUCK
-  :parameters
-   (?obj
-    ?truck
-    ?loc)
-  :precondition
-   (and (OBJ ?obj) (TRUCK ?truck) (LOCATION ?loc)
-   (at ?truck ?loc) (at ?obj ?loc))
-  :effect
-   (and (not (at ?obj ?loc)) (in ?obj ?truck)))
-
-(:action LOAD-AIRPLANE
-  :parameters
-   (?obj
-    ?airplane
-    ?loc)
-  :precondition
-   (and (OBJ ?obj) (AIRPLANE ?airplane) (LOCATION ?loc)
-   (at ?obj ?loc) (at ?airplane ?loc))
-  :effect
-   (and (not (at ?obj ?loc)) (in ?obj ?airplane)))
-
-
-
-(:action UNLOAD-TRUCK
-  :parameters
-   (?obj
-    ?truck
-    ?loc)
-  :precondition
-   (and (OBJ ?obj) (TRUCK ?truck) (LOCATION ?loc)
-        (at ?truck ?loc) (in ?obj ?truck))
-  :effect
-   (and (not (in ?obj ?truck)) (at ?obj ?loc)))
-
-(:action UNLOAD-AIRPLANE
-  :parameters
-   (?obj
-    ?airplane
-    ?loc)
-  :precondition
-   (and (OBJ ?obj) (AIRPLANE ?airplane) (LOCATION ?loc)
-        (in ?obj ?airplane) (at ?airplane ?loc))
-  :effect
-   (and (not (in ?obj ?airplane)) (at ?obj ?loc)))
-
-(:action DRIVE-TRUCK
-  :parameters
-   (?truck
-    ?loc-from
-    ?loc-to
-    ?city)
-  :precondition
-   (and (TRUCK ?truck) (LOCATION ?loc-from) (LOCATION ?loc-to) (CITY ?city)
-   (at ?truck ?loc-from)
-   (in-city ?loc-from ?city)
-   (in-city ?loc-to ?city))
-  :effect
-   (and (not (at ?truck ?loc-from)) (at ?truck ?loc-to)))
-
-(:action FLY-AIRPLANE
-  :parameters
-   (?airplane
-    ?loc-from
-    ?loc-to)
-  :precondition
-   (and (AIRPLANE ?airplane) (AIRPORT ?loc-from) (AIRPORT ?loc-to)
-	(at ?airplane ?loc-from))
-  :effect
-   (and (not (at ?airplane ?loc-from)) (at ?airplane ?loc-to)))
+(:types location fuellevel locatable - object 
+	package truck - locatable
 )
+
+(:predicates 
+(connected ?l1 ?l2 - location)
+(at ?o - locatable ?l - location)
+(in ?p - package ?t - truck)
+(fuel ?t - truck ?level - fuellevel)
+(fuelcost ?level - fuellevel ?l1 ?l2 - location)
+(sum ?a ?b ?c - fuellevel)
+)
+
+
+(:action LOAD
+:parameters
+(?p - package
+?t - truck
+?l - location)
+:precondition
+(and (at ?t ?l) (at ?p ?l))
+:effect
+(and (not (at ?p ?l)) (in ?p ?t))
+)
+
+(:action UNLOAD
+:parameters
+(?p - package
+?t - truck
+?l - location)
+:precondition
+(and (at ?t ?l) (in ?p ?t))
+:effect
+(and (at ?p ?l) (not (in ?p ?t)))
+)
+
+(:action DRIVE
+:parameters
+(?t - truck
+?l1 - location
+?l2 - location
+?fuelpost - fuellevel
+?fueldelta - fuellevel
+?fuelpre - fuellevel)
+:precondition
+(and 
+(connected ?l1 ?l2)
+(fuelcost ?fueldelta ?l1 ?l2)
+(fuel ?t ?fuelpre)
+(sum ?fuelpost ?fueldelta ?fuelpre)
+(at ?t ?l1)
+)
+:effect
+(and (not (at ?t ?l1)) 
+     (at ?t ?l2) 
+     (not (fuel ?t ?fuelpre)) 
+     (fuel ?t ?fuelpost)
+    )
+)
+
+)
+
+
