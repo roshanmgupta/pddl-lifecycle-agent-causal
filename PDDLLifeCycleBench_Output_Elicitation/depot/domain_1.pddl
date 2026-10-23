@@ -10,8 +10,8 @@
 
   (:predicates
     (at ?x - object ?loc - place)
-    (clear ?x - surface)
-    (available ?h - hoist)
+    (clear ?x - object)
+    (available ?x - hoist)
     (lifting ?h - hoist ?c - crate)
     (in ?c - crate ?t - truck)
     (on ?c1 - crate ?c2 - surface)
@@ -23,7 +23,7 @@
     :effect (and (at ?t ?to) (not (at ?t ?from)))
   )
 
-  (:action lift_hoist
+  (:action lift_crate
     :parameters (?h - hoist ?c - crate ?s - surface ?loc - place)
     :precondition (and (at ?h ?loc) (available ?h) (at ?c ?loc) (on ?c ?s) (clear ?c))
     :effect (and (lifting ?h ?c) (not (at ?c ?loc)) (not (clear ?c)) (not (available ?h)) (not (on ?c ?s)) (clear ?s))
@@ -32,7 +32,7 @@
   (:action drop_crate
     :parameters (?h - hoist ?c - crate ?s - surface ?loc - place)
     :precondition (and (at ?h ?loc) (at ?s ?loc) (clear ?s) (lifting ?h ?c))
-    :effect (and (available ?h) (at ?c ?loc) (clear ?c) (on ?c ?s) (not (lifting ?h ?c)) (not (clear ?s)))
+    :effect (and (at ?c ?loc) (clear ?c) (on ?c ?s) (available ?h) (not (lifting ?h ?c)) (not (clear ?s)))
   )
 
   (:action load_crate

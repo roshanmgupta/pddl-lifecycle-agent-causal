@@ -1,30 +1,119 @@
 {
-  "timestamp": "2026-10-22T22:36:21.871051",
+  "timestamp": "2026-10-23T02:14:07.853044",
   "domain_name": "rovers",
   "run_index": 1,
   "verification_status": "PASSED",
-  "repair_iterations_used": 0,
-  "initial_verification_errors": [],
+  "repair_iterations_used": 2,
+  "initial_verification_errors": [
+    "Planner Error: Could not find a plan. INFO     planner time limit: None\nINFO     planner memory limit: None\n\nINFO     Running translator.\nINFO     translator stdin: None\nINFO     translator time limit: None\nINFO     translator memory limit: None\nINFO     translator command line string: 'C:\\Users\\Srushti\\miniconda3\\envs\\agent_env\\python.exe' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\translate\\translate.py' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\temp_domain.pddl' 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\temp_problem.pddl' --sas-file output.sas\nWarning! SIGXCPU is not available on your platform. This means that the planner cannot be gracefully terminated when using a time limit, which, however, is probably supported on your platform anyway.\nParsing...\nParsing: [0.000s CPU, 0.003s wall-clock]\nNormalizing task... [0.000s CPU, 0.000s wall-clock]\nInstantiating...\nGenerating Datalog program... [0.000s CPU, 0.000s wall-clock]\nNormalizing Datalog program...\nNormalizing Datalog program: [0.016s CPU, 0.012s wall-clock]\nPreparing model... [0.000s CPU, 0.001s wall-clock]\nGenerated 90 rules.\nComputing model... [0.000s CPU, 0.001s wall-clock]\n89 relevant atoms\n155 auxiliary atoms\n244 final queue length\n265 total queue pushes\nCompleting instantiation... [0.000s CPU, 0.000s wall-clock]\nInstantiating: [0.016s CPU, 0.015s wall-clock]\nNo relaxed solution! Generating unsolvable task...\nTranslator variables: 1\nTranslator derived variables: 0\nTranslator facts: 2\nTranslator goal facts: 1\nTranslator mutex groups: 0\nTranslator total mutex groups size: 0\nTranslator operators: 0\nTranslator axioms: 0\nTranslator task size: 4\nwarning: could not determine peak memory\nWriting output... [0.000s CPU, 0.002s wall-clock]\nDone! [0.016s CPU, 0.020s wall-clock]\ntranslate exit code: 0\n\nINFO     Running search (release).\nINFO     search stdin: output.sas\nINFO     search time limit: None\nINFO     search memory limit: None\nINFO     search command line string: 'E:\\Rosh\\Thesis\\pddl_lifecycle_agent\\tools\\bin\\downward\\builds\\release\\bin\\downward.exe' --search 'lazy_greedy([ff()])' --internal-plan-file sas_plan < output.sas\n[t=0.000545s, 816 KB] reading input...\n[t=0.000660s, 820 KB] done reading input!\n[t=0.002258s, 1224 KB] Simplifying 0 unary operators... done! [0 unary operators]\n[t=0.002272s, 1224 KB] time to simplify: 0.000017s\n[t=0.002278s, 1224 KB] Initializing additive heuristic...\n[t=0.002280s, 1224 KB] Initializing FF heuristic...\n[t=0.002388s, 1224 KB] Building successor generator...done!\n[t=0.002402s, 1224 KB] peak memory difference for successor generator creation: 0 KB\n[t=0.002406s, 1224 KB] time for successor generation creation: 0.000004s\n[t=0.002412s, 1224 KB] Variables: 1\n[t=0.002417s, 1224 KB] FactPairs: 2\n[t=0.002420s, 1224 KB] Bytes per state: 4\n[t=0.002452s, 1224 KB] Conducting lazy best first search, (real) bound = 2147483647\n[t=0.002463s, 1224 KB] Initial heuristic value for ff: infinity\n[t=0.002467s, 1224 KB] Completely explored state space -- no solution!\n[t=0.002470s, 1224 KB] Actual search time: 0.000016s\n[t=0.002474s, 1224 KB] Expanded 0 state(s).\n[t=0.002474s, 1224 KB] Reopened 0 state(s).\n[t=0.002474s, 1224 KB] Evaluated 1 state(s).\n[t=0.002474s, 1224 KB] Evaluations: 1\n[t=0.002474s, 1224 KB] Generated 0 state(s).\n[t=0.002474s, 1224 KB] Dead ends: 1 state(s).\n[t=0.002474s, 1224 KB] Number of registered states: 1\n[t=0.002474s, 1224 KB] Int hash set load factor: 1/1 = 1.000000\n[t=0.002474s, 1224 KB] Int hash set resizes: 0\n[t=0.002474s, 1224 KB] Search time: 0.000022s\n[t=0.002474s, 1224 KB] Total time: 0.002474s\nSearch stopped without finding a solution.\nRemove intermediate file output.sas\nsearch exit code: 12\n\nDriver aborting after search\n\n"
+  ],
   "final_verification_errors": [],
-  "diagnostic_issues_count": 0,
-  "diagnostic_reports": [],
+  "diagnostic_issues_count": 13,
+  "diagnostic_reports": [
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": null,
+      "raw_log": "Undeclared predicate in problem initial_state: Atom '(can-traverse rover0 waypoint0 waypoint1)' uses predicate symbol 'can-traverse', which is NOT declared in domain 'predicates'.",
+      "suggested_repair_hint": "ADD predicate '(can-traverse ?r - rover ?src - waypoint ?dst - waypoint)' to domain.predicates to declare the traversal capability of the rover."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": null,
+      "raw_log": "Undeclared predicate in problem initial_state: Atom '(on-board camera0 rover0)' uses predicate symbol 'on-board', which is NOT declared in domain 'predicates'.",
+      "suggested_repair_hint": "ADD predicate '(on-board ?c - camera ?r - rover)' to domain.predicates to declare the relationship of cameras being on board rovers."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": null,
+      "raw_log": "Undeclared predicate in problem initial_state: Atom '(calibration-target camera0 objective0)' uses predicate symbol 'calibration-target', which is NOT declared in domain 'predicates'.",
+      "suggested_repair_hint": "ADD predicate '(calibration-target ?c - camera ?o - objective)' to domain.predicates to declare the calibration relationship between cameras and objectives."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": "communicate-soil-data",
+      "raw_log": "Static precondition '(has-soil-analysis ?r ?c)' has ZERO facts in problem :init (predicate 'has-soil-analysis' is never added by any action and is completely missing from :init).",
+      "suggested_repair_hint": "ADD predicate '(has-soil-analysis ?r - rover ?c - waypoint)' to domain.predicates and ensure it is asserted in the effects of the sampling actions."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": "communicate-rock-data",
+      "raw_log": "Static precondition '(has-rock-analysis ?r ?c)' has ZERO facts in problem :init (predicate 'has-rock-analysis' is never added by any action and is completely missing from :init).",
+      "suggested_repair_hint": "ADD predicate '(has-rock-analysis ?r - rover ?c - waypoint)' to domain.predicates and ensure it is asserted in the effects of the sampling actions."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": null,
+      "raw_log": "Undeclared predicate in problem goal_state: Atom '(communicated-soil-data waypoint2)' uses predicate symbol 'communicated-soil-data', which is NOT declared in domain 'predicates'.",
+      "suggested_repair_hint": "ADD predicate '(communicated-soil-data ?c - waypoint)' to domain.predicates to declare the communication of soil data."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": null,
+      "raw_log": "Undeclared predicate in problem goal_state: Atom '(communicated-rock-data waypoint1)' uses predicate symbol 'communicated-rock-data', which is NOT declared in domain 'predicates'.",
+      "suggested_repair_hint": "ADD predicate '(communicated-rock-data ?c - waypoint)' to domain.predicates to declare the communication of rock data."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "PRECONDITION_INSERTION",
+      "faulty_element": null,
+      "raw_log": "Undeclared predicate in problem goal_state: Atom '(communicated-image-data objective0 colour)' uses predicate symbol 'communicated-image-data', which is NOT declared in domain 'predicates'.",
+      "suggested_repair_hint": "ADD predicate '(communicated-image-data ?o - objective ?m - mode)' to domain.predicates to declare the communication of image data."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": "navigate",
+      "raw_log": "Fast Downward executed SAS+ translation and heuristic search, but found NO valid plan to reach the goal state.",
+      "suggested_repair_hint": "ADD initial state fact '(at-sample waypoint2)' to ensure that the rover can sample soil at waypoint2."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": "sample-soil",
+      "raw_log": "Fast Downward executed SAS+ translation and heuristic search, but found NO valid plan to reach the goal state.",
+      "suggested_repair_hint": "ADD initial state fact '(at-sample waypoint1)' to ensure that the rover can sample rock at waypoint1."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": "communicate-soil-data",
+      "raw_log": "Fast Downward executed SAS+ translation and heuristic search, but found NO valid plan to reach the goal state.",
+      "suggested_repair_hint": "ADD initial state fact '(has-soil-analysis rover0 waypoint0)' to ensure that the rover has soil analysis data to communicate."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": "communicate-rock-data",
+      "raw_log": "Fast Downward executed SAS+ translation and heuristic search, but found NO valid plan to reach the goal state.",
+      "suggested_repair_hint": "ADD initial state fact '(has-rock-analysis rover0 waypoint1)' to ensure that the rover has rock analysis data to communicate."
+    },
+    {
+      "error_category": "GROUNDING_UNSOLVABILITY",
+      "repair_operation_type": "INITIAL_STATE_AUGMENTATION",
+      "faulty_element": "communicate-image-data",
+      "raw_log": "Fast Downward executed SAS+ translation and heuristic search, but found NO valid plan to reach the goal state.",
+      "suggested_repair_hint": "ADD initial state fact '(has-image rover0 objective0 colour)' to ensure that the rover has an image to communicate."
+    }
+  ],
   "formatted_diagnostic_feedback": "",
   "plan_summary": {
     "is_solvable": true,
-    "plan_length": 10,
-    "search_time_seconds": 0.000219,
+    "plan_length": 5,
+    "search_time_seconds": 0.000166,
     "val_plan_valid": true,
     "plan_steps": [
-      "(navigate rover0 waypoint0 waypoint1)",
-      "(sample-rock rover0 waypoint1 rover0store)",
-      "(communicate-rock-data rover0 waypoint1 general waypoint1 waypoint0)",
-      "(navigate rover0 waypoint1 waypoint0)",
       "(navigate rover0 waypoint0 waypoint2)",
-      "(calibrate rover0 camera0 objective0 waypoint2)",
+      "(communicate-image-data rover0 waypoint2 general waypoint0 objective0 camera0 colour)",
+      "(communicate-rock-data rover0 waypoint2 general waypoint1 waypoint0)",
       "(sample-soil rover0 waypoint2 rover0store)",
-      "(communicate-soil-data rover0 waypoint2 general waypoint2 waypoint0)",
-      "(take-image rover0 waypoint2 objective0 camera0 colour)",
-      "(communicate-image-data rover0 waypoint2 general objective0 camera0 colour waypoint0)"
+      "(communicate-soil-data rover0 waypoint2 general waypoint2 waypoint0)"
     ]
   }
 }

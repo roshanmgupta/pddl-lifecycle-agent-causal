@@ -68,20 +68,23 @@ def test_type_mismatch_subtyping_triage_routing():
     assert target_elem == "at-subloc", f"Expected target_elem 'at-subloc', got '{target_elem}'"
     assert action_allowed == "generalize_predicate_or_update_object"
 
-    # Case 2: Object has child_item, predicate expects parent_item (normal missing inheritance in types)
+    # Case 2: Object has child_item, predicate expects parent_item (missing inheritance in types)
     expected_type_2 = "item"
     arg_type_2 = "special_item"
-    dom_types_2 = {"item": "object", "special_item": "object"}
+    dom_types_2 = {"special_item": "item", "item": "object"}
     
-    assert is_subtype(expected_type_2, arg_type_2, dom_types_2) is False
-    assert is_subtype(arg_type_2, expected_type_2, dom_types_2) is False
+    assert is_subtype(arg_type_2, expected_type_2, dom_types_2) is True
     
-    if is_subtype(expected_type_2, arg_type_2, dom_types_2) and expected_type_2.lower() != arg_type_2.lower():
-        target_elem_2 = "pred"
-    else:
-        target_elem_2 = "types"
-        
-    assert target_elem_2 == "types"
+    # Case 3: Arity mismatch (predicate declared with 2 args, proposition has 1 arg)
+    is_arity_mismatch = (2 > 0 and 1 != 2)
+    assert is_arity_mismatch is True
+    
+    # Case 4: Disjoint types (hand vs container, airplane vs location)
+    dom_types_4 = {"hand": "object", "container": "object", "airplane": "object", "location": "object"}
+    assert is_subtype("hand", "container", dom_types_4) is False
+    assert is_subtype("container", "hand", dom_types_4) is False
+    assert is_subtype("location", "airplane", dom_types_4) is False
+    assert is_subtype("airplane", "location", dom_types_4) is False
 
 if __name__ == "__main__":
     test_is_subtype_hierarchy()

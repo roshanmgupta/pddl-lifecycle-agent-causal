@@ -1,44 +1,35 @@
-(define (domain elevators08)
+(define (domain nomystery11-bfs)
   (:requirements :strips :typing)
 
   (:types
-    count elevator passenger - object
-    fast-elevator slow-elevator - elevator
+    fuellevel locatable location - object
+    package truck - locatable
   )
 
   (:predicates
-    (at ?e - object ?c - count)
-    (has ?e - elevator ?n - count)
-    (can-hold ?e - elevator ?n - count)
-    (reachable ?e - elevator ?c - count)
-    (next-to ?c1 - count ?c2 - count)
-    (above ?c1 - count ?c2 - count)
-    (boarded ?p - passenger ?e - elevator)
-    (passengers ?e - elevator ?n - count)
+    (at ?x - locatable ?y - location)
+    (in ?p - locatable ?t - object)
+    (connected ?l1 - location ?l2 - location)
+    (fuel-cost ?f1 - fuellevel ?l - location ?f2 - fuellevel)
+    (has-fuel ?t - truck ?f_start - fuellevel)
   )
 
-  (:action move_slow_elevator
-    :parameters (?e - slow-elevator ?from - count ?to - count)
-    :precondition (and (at ?e ?from) (above ?from ?to) (reachable ?e ?to))
-    :effect (and (at ?e ?to) (not (at ?e ?from)))
+  (:action load_package
+    :parameters (?p - package ?t - truck ?l - location)
+    :precondition (and (at ?t ?l) (at ?p ?l))
+    :effect (and (in ?p ?t) (not (at ?p ?l)))
   )
 
-  (:action move_fast_elevator
-    :parameters (?e - fast-elevator ?from - count ?to - count)
-    :precondition (and (at ?e ?from) (above ?from ?to) (reachable ?e ?to))
-    :effect (and (at ?e ?to) (not (at ?e ?from)))
+  (:action unload_package
+    :parameters (?p - package ?t - truck ?l - location)
+    :precondition (and (at ?t ?l) (in ?p ?t))
+    :effect (and (at ?p ?l) (not (in ?p ?t)))
   )
 
-  (:action board_passenger
-    :parameters (?p - passenger ?e - elevator ?c - count ?d - count ?e_count - count)
-    :precondition (and (at ?e ?c) (at ?p ?c) (passengers ?e ?d) (next-to ?d ?e_count) (can-hold ?e ?e_count))
-    :effect (and (boarded ?p ?e) (passengers ?e ?e_count) (not (at ?p ?c)) (not (passengers ?e ?d)))
-  )
-
-  (:action leave_elevator
-    :parameters (?p - passenger ?e - elevator ?c - count ?d - count ?e_count - count)
-    :precondition (and (at ?e ?c) (boarded ?p ?e) (passengers ?e ?d) (next-to ?e_count ?d) (reachable ?e ?c))
-    :effect (and (at ?p ?c) (passengers ?e ?e_count) (not (boarded ?p ?e)) (not (passengers ?e ?d)))
+  (:action drive_truck
+    :parameters (?t - truck ?from - location ?to - location ?f_cost - fuellevel ?f_start - fuellevel ?f_end - fuellevel)
+    :precondition (and (connected ?from ?to) (fuel-cost ?f_cost ?from ?f_end) (at ?t ?from) (not (at ?t ?to)) (not (in ?t ?from)))
+    :effect (and (at ?t ?to) (not (at ?t ?from)) (not (has-fuel ?t ?f_start)) (has-fuel ?t ?f_end))
   )
 
 )

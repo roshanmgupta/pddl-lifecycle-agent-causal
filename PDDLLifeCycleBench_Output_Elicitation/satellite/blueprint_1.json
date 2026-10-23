@@ -10,8 +10,8 @@
     "types": {
       "satellite": "object",
       "instrument": "object",
-      "direction": "object",
-      "mode": "object"
+      "mode": "object",
+      "direction": "object"
     },
     "constants": {},
     "predicates": [
@@ -50,7 +50,7 @@
           "(power-available ?s)"
         ],
         "effects": [
-          "(power-on ?i)",
+          "(power-available ?i)",
           "(not (calibrated ?i))",
           "(not (power-available ?s))"
         ]
@@ -63,11 +63,11 @@
         },
         "preconditions": [
           "(on-board ?i ?s)",
-          "(power-on ?i)"
+          "(power-available ?i)"
         ],
         "effects": [
           "(power-available ?s)",
-          "(not (power-on ?i))"
+          "(not (power-available ?i))"
         ]
       },
       {
@@ -81,7 +81,7 @@
           "(on-board ?i ?s)",
           "(is-calibration-target ?i ?d)",
           "(pointing-at ?s ?d)",
-          "(power-on ?i)"
+          "(power-available ?i)"
         ],
         "effects": [
           "(calibrated ?i)"
@@ -91,15 +91,15 @@
         "action_name": "take-image",
         "parameters": {
           "?s": "satellite",
-          "?d": "direction",
           "?i": "instrument",
+          "?d": "direction",
           "?m": "mode"
         },
         "preconditions": [
           "(calibrated ?i)",
           "(on-board ?i ?s)",
           "(supports ?i ?m)",
-          "(power-on ?i)",
+          "(power-available ?i)",
           "(pointing-at ?s ?d)"
         ],
         "effects": [
@@ -109,7 +109,7 @@
     ]
   },
   "problem_blueprint": {
-    "problem_name": "instance-1",
+    "problem_name": "instance-1.pddl",
     "domain_name": "satellite",
     "objects": {
       "satellite0": "satellite",

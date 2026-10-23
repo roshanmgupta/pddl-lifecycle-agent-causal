@@ -1,0 +1,32 @@
+(define (domain tpp06-bfs)
+  (:requirements :strips)
+  (:predicates
+    (at ?truck - truck ?place - place)
+    (loaded ?goods - goods ?truck - truck ?level - level)
+    (ready-to-load ?goods - goods ?market - market ?level - level)
+    (on-sale ?goods - goods ?market - market ?level - level)
+    (stored ?goods - goods ?level - level)
+    (next-to ?level1 - level ?level2 - level)
+    (connected ?place1 - place ?place2 - place)
+  )
+  (:action drive
+    :parameters (?truck - truck ?from - place ?to - place)
+    :precondition (and (at ?truck ?from) (connected ?from ?to))
+    :effect (and (at ?truck ?to) (not (at ?truck ?from)))
+  )
+  (:action load
+    :parameters (?goods - goods ?truck - truck ?market - market ?from - level ?to - level ?next1 - level ?next2 - level)
+    :precondition (and (at ?truck ?market) (loaded ?goods ?truck ?next2) (ready-to-load ?goods ?market ?from) (next-to ?from ?next1) (next-to ?to ?next2))
+    :effect (and (loaded ?goods ?truck ?to) (ready-to-load ?goods ?market ?next1) (not (loaded ?goods ?truck ?next2)) (not (ready-to-load ?goods ?market ?from)))
+  )
+  (:action unload
+    :parameters (?goods - goods ?truck - truck ?depot - place ?from - level ?to - level ?next1 - level ?next2 - level)
+    :precondition (and (at ?truck ?depot) (loaded ?goods ?truck ?from) (stored ?goods ?next2) (next-to ?from ?next1) (next-to ?to ?next2))
+    :effect (and (loaded ?goods ?truck ?to) (stored ?goods ?next2) (not (loaded ?goods ?truck ?from)) (not (stored ?goods ?next1)))
+  )
+  (:action buy
+    :parameters (?goods - goods ?truck - truck ?market - market ?from - level ?to - level ?next1 - level ?next2 - level)
+    :precondition (and (at ?truck ?market) (on-sale ?goods ?market ?from) (ready-to-load ?goods ?market ?next2) (next-to ?from ?next1) (next-to ?to ?next2))
+    :effect (and (on-sale ?goods ?market ?to) (ready-to-load ?goods ?market ?next1) (not (on-sale ?goods ?market ?from)) (not (ready-to-load ?goods ?market ?next2)))
+  )
+)

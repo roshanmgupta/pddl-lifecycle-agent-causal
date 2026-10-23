@@ -28,7 +28,7 @@
     ],
     "actions": [
       {
-        "action_name": "move_slow_elevator",
+        "action_name": "move_slow_elevator_up",
         "parameters": {
           "?e": "slow-elevator",
           "?from": "count",
@@ -45,7 +45,24 @@
         ]
       },
       {
-        "action_name": "move_fast_elevator",
+        "action_name": "move_slow_elevator_down",
+        "parameters": {
+          "?e": "slow-elevator",
+          "?from": "count",
+          "?to": "count"
+        },
+        "preconditions": [
+          "(at ?e ?from)",
+          "(above ?to ?from)",
+          "(reachable ?e ?to)"
+        ],
+        "effects": [
+          "(at ?e ?to)",
+          "(not (at ?e ?from))"
+        ]
+      },
+      {
+        "action_name": "move_fast_elevator_up",
         "parameters": {
           "?e": "fast-elevator",
           "?from": "count",
@@ -54,6 +71,23 @@
         "preconditions": [
           "(at ?e ?from)",
           "(above ?from ?to)",
+          "(reachable ?e ?to)"
+        ],
+        "effects": [
+          "(at ?e ?to)",
+          "(not (at ?e ?from))"
+        ]
+      },
+      {
+        "action_name": "move_fast_elevator_down",
+        "parameters": {
+          "?e": "fast-elevator",
+          "?from": "count",
+          "?to": "count"
+        },
+        "preconditions": [
+          "(at ?e ?from)",
+          "(above ?to ?from)",
           "(reachable ?e ?to)"
         ],
         "effects": [
@@ -97,8 +131,7 @@
           "(at ?e ?c)",
           "(boarded ?p ?e)",
           "(passengers ?e ?d)",
-          "(next-to ?e_count ?d)",
-          "(reachable ?e ?c)"
+          "(next-to ?e_count ?d)"
         ],
         "effects": [
           "(at ?p ?c)",
@@ -110,7 +143,7 @@
     ]
   },
   "problem_blueprint": {
-    "problem_name": "instance-1",
+    "problem_name": "instance-1.pddl",
     "domain_name": "elevators08",
     "objects": {
       "n0": "count",
@@ -212,6 +245,6 @@
       "(at p2 n1)"
     ]
   },
-  "iteration_count": 5,
-  "is_valid": false
+  "iteration_count": 0,
+  "is_valid": true
 }

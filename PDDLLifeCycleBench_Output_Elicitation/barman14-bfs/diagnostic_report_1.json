@@ -1,88 +1,44 @@
 {
-  "timestamp": "2026-10-23T00:18:21.923774",
+  "timestamp": "2026-10-23T02:09:05.191939",
   "domain_name": "barman14-bfs",
   "run_index": 1,
   "verification_status": "PASSED",
-  "repair_iterations_used": 2,
-  "initial_verification_errors": [
-    "VAL Error: Type-checking grasp_container\n...action passes type checking.\nType-checking leave_container\n...action passes type checking.\nType-checking fill_shot\n...action passes type checking.\nType-checking refill_shot\n...action passes type checking.\nType-checking empty_shot\n...action passes type checking.\nType-checking clean_shot\n...action passes type checking.\nType-checking pour_into_clean_shaker\n...action passes type checking.\nType-checking pour_into_used_shaker\n...action passes type checking.\nType-checking empty_shaker\n...action passes type checking.\nType-checking clean_shaker\n...action passes type checking.\nType-checking shake_cocktail\n...action passes type checking.\nType-checking pour_beverage\n...action passes type checking.\nType problem with proposition (part-of cocktail1 ingredient3) - parameter 1 is incorrectly typed\nType-checking initial state failed\n\nType problem in problem specification!"
-  ],
+  "repair_iterations_used": 0,
+  "initial_verification_errors": [],
   "final_verification_errors": [],
-  "diagnostic_issues_count": 6,
-  "diagnostic_reports": [
-    {
-      "error_category": "TYPE_SIGNATURE",
-      "repair_operation_type": "GENERAL_AST_REPAIR",
-      "faulty_element": null,
-      "raw_log": "Type problem with proposition (part-of cocktail1 ingredient3) - parameter 1 is incorrectly typed",
-      "suggested_repair_hint": "Declare predicate '(part-of ?c - cocktail ?i - ingredient)' in domain 'predicates' to match the usage in the initial state."
-    },
-    {
-      "error_category": "GROUNDING_UNSOLVABILITY",
-      "repair_operation_type": "PRECONDITION_INSERTION",
-      "faulty_element": "shake_cocktail",
-      "raw_log": "Static precondition '(part-of ?b ?c)' requires argument types ['ingredient', 'cocktail'], but :init contains ZERO matching facts!",
-      "suggested_repair_hint": "Ensure that the initial state includes facts for the 'part-of' predicate for all ingredients and cocktails involved in the shake_cocktail action."
-    },
-    {
-      "error_category": "GROUNDING_UNSOLVABILITY",
-      "repair_operation_type": "PRECONDITION_INSERTION",
-      "faulty_element": "clean_shaker",
-      "raw_log": "Causal clash in preconditions: Precondition '(empty ?h)' is explicitly DELETED by producer 'grasp_container' when establishing '(holding ?h ?s)'",
-      "suggested_repair_hint": "Modify the preconditions of 'clean_shaker' to ensure that it checks for a different hand state, such as '(hand-empty ?h)' instead of '(empty ?h)'."
-    },
-    {
-      "error_category": "GROUNDING_UNSOLVABILITY",
-      "repair_operation_type": "PRECONDITION_INSERTION",
-      "faulty_element": "clean_shaker",
-      "raw_log": "Causal clash in preconditions: Precondition '(empty ?h)' is explicitly DELETED by producer 'grasp_container' when establishing '(holding ?h ?s)'.",
-      "suggested_repair_hint": "Modify the 'clean_shaker' action to ensure that it checks for the correct hand state. The precondition should ensure that the hand is empty before it can hold the shaker, or adjust the effects of 'grasp_container' to not delete the '(empty ?h)' state if it is still needed for subsequent actions."
-    },
-    {
-      "error_category": "GROUNDING_UNSOLVABILITY",
-      "repair_operation_type": "PRECONDITION_INSERTION",
-      "faulty_element": "shake_cocktail",
-      "raw_log": "Static precondition '(part-of ?b ?c)' requires argument types ['ingredient', 'cocktail'], but :init contains ZERO matching facts!",
-      "suggested_repair_hint": "Ensure that the initial state includes facts that match the required types for the 'part-of' predicate. Specifically, add facts that establish the relationship between ingredients and cocktails as required by the action's preconditions."
-    },
-    {
-      "error_category": "GROUNDING_UNSOLVABILITY",
-      "repair_operation_type": "PRECONDITION_INSERTION",
-      "faulty_element": "shake_cocktail",
-      "raw_log": "Static precondition '(part-of ?i ?c)' requires argument types ['ingredient', 'cocktail'], but :init contains ZERO matching facts!",
-      "suggested_repair_hint": "Similar to the previous report, ensure that the initial state includes facts that establish the relationship between ingredients and cocktails for both ingredients involved in the cocktail shaking action."
-    }
-  ],
+  "diagnostic_issues_count": 0,
+  "diagnostic_reports": [],
   "formatted_diagnostic_feedback": "",
   "plan_summary": {
     "is_solvable": true,
-    "plan_length": 23,
-    "search_time_seconds": 0.09011,
+    "plan_length": 24,
+    "search_time_seconds": 2.625788,
     "val_plan_valid": true,
     "plan_steps": [
-      "(grasp_container left shaker1 table)",
-      "(grasp_container right shot1 table)",
-      "(leave_container left shaker1 cocktail1)",
-      "(fill_shot right left shot1 ingredient1 dispenser1)",
-      "(refill_shot right left shot1 ingredient2 dispenser2)",
-      "(clean_shot right left shot1 ingredient1)",
-      "(pour_into_clean_shaker right shot1 ingredient2 shaker1 l0 l1)",
-      "(grasp_container left shaker1 cocktail1)",
-      "(leave_container right shot1 cocktail1)",
-      "(shake_cocktail left right cocktail2 shaker1 ingredient2 ingredient2)",
-      "(shake_cocktail left right cocktail3 shaker1 ingredient2 ingredient2)",
+      "(grasp_container left shaker1)",
+      "(grasp_container right shot5)",
+      "(leave_container left shaker1)",
+      "(fill_shot right left shot5 ingredient1 dispenser1)",
+      "(pour_into_clean_shaker right shot5 ingredient1 shaker1 l0 l1)",
+      "(grasp_container left shaker1)",
+      "(leave_container right shot5)",
+      "(shake_cocktail left right shaker1 ingredient1 ingredient1 cocktail1)",
+      "(shake_cocktail left right shaker1 ingredient1 ingredient1 cocktail4)",
+      "(pour_beverage left shaker1 cocktail4 shot1 l0 l1)",
+      "(grasp_container right shot4)",
+      "(pour_beverage left shaker1 ingredient1 shot4 l0 l1)",
+      "(pour_into_used_shaker right shot4 ingredient1 shaker1 l1 l2)",
+      "(pour_beverage left shaker1 cocktail1 shot4 l0 l1)",
+      "(empty_shot right shot4 ingredient1)",
+      "(leave_container left shaker1)",
+      "(fill_shot right left shot4 ingredient2 dispenser2)",
+      "(pour_into_used_shaker right shot4 ingredient2 shaker1 l1 l2)",
+      "(grasp_container left shaker1)",
+      "(leave_container right shot4)",
+      "(shake_cocktail left right shaker1 ingredient2 ingredient2 cocktail2)",
+      "(shake_cocktail left right shaker1 ingredient2 ingredient2 cocktail3)",
       "(pour_beverage left shaker1 cocktail2 shot2 l0 l1)",
-      "(pour_beverage left shaker1 cocktail3 shot3 l1 l2)",
-      "(grasp_container right shot2 table)",
-      "(leave_container left shaker1 cocktail1)",
-      "(refill_shot right left shot2 ingredient1 dispenser1)",
-      "(pour_into_clean_shaker right shot2 ingredient1 shaker1 l0 l1)",
-      "(grasp_container left shaker1 cocktail1)",
-      "(leave_container right shot2 cocktail1)",
-      "(shake_cocktail left right cocktail1 shaker1 ingredient1 ingredient1)",
-      "(shake_cocktail left right cocktail4 shaker1 ingredient1 ingredient1)",
-      "(pour_beverage left shaker1 cocktail1 shot4 l1 l2)",
-      "(pour_beverage left shaker1 cocktail4 shot1 l0 l1)"
+      "(pour_beverage left shaker1 cocktail3 shot3 l0 l1)"
     ]
   }
 }

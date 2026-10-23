@@ -1,41 +1,88 @@
 {
-  "timestamp": "2026-10-23T01:04:46.212402",
+  "timestamp": "2026-10-23T01:55:48.744910",
   "domain_name": "blocksworld",
   "run_index": 1,
-  "verification_status": "PASSED",
-  "repair_iterations_used": 1,
+  "verification_status": "FAILED",
+  "repair_iterations_used": 5,
   "initial_verification_errors": [
-    "VAL Error: Type-checking pick-up\nObject with unknown type: table\n\nErrors: 0, warnings: 1\n\nError: Error in type-checking!"
+    "VAL Error: Type-checking pick-up\nProblem with proposition (on a) - too few parameters\nConditions fail type-checking.\n\nType problem in domain description!"
   ],
-  "final_verification_errors": [],
-  "diagnostic_issues_count": 2,
+  "final_verification_errors": [
+    "VAL Error: Type-checking pick-up\nProblem with proposition (on a) - too few parameters\nConditions fail type-checking.\n\nType problem in domain description!"
+  ],
+  "diagnostic_issues_count": 10,
   "diagnostic_reports": [
     {
       "error_category": "TYPE_SIGNATURE",
       "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
-      "faulty_element": "pick-up",
-      "raw_log": "VAL Error: Type-checking pick-up Object with unknown type: table",
-      "suggested_repair_hint": "Symbol 'table' referenced in domain action 'pick-up' is treated as a constant/object but is not declared in domain 'constants'. In Classical PDDL 2.1, domain action schemas cannot access problem ':objects'. To resolve this, either: 1) Declare 'table - <type>' in domain 'constants' (and remove 'table' from problem ':objects' to prevent duplicate object errors), 2) Declare it as an action parameter in 'pick-up', or 3) Model the condition as a state predicate (e.g. unary predicate) without referencing an undeclared constant."
+      "faulty_element": "domain.types",
+      "raw_log": "VAL Error: Type-checking pick-up Problem with proposition (on a) - too few parameters Conditions fail type-checking.",
+      "suggested_repair_hint": "In domain 'types', declare 'table' as inheriting from 'object'. This resolves the type-checking issue for the 'on' predicate."
     },
     {
       "error_category": "TYPE_SIGNATURE",
       "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
-      "faulty_element": null,
+      "faulty_element": "domain.predicates",
       "raw_log": "Overly narrow action typing or missing supertype hierarchy: Object 'table' has type 'table', but ZERO actions in the domain accept type 'table' or any of its ancestors!",
-      "suggested_repair_hint": "Generalize action parameters to accept a common supertype that includes 'table', or declare 'table' as a parameter in relevant actions."
+      "suggested_repair_hint": "Generalize parameter of predicate '(on ?a - block ?b - block)' to '(on ?a - object ?b - object)' in domain 'predicates' to allow for 'table' interactions."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "types",
+      "raw_log": "Type problem in domain description!",
+      "suggested_repair_hint": "In domain 'types', declare 'table' as inheriting from 'object': 'table': 'object'. This resolves the type-checking issue for the 'on' predicate."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "predicates",
+      "raw_log": "Problem with proposition (on a) - too few parameters",
+      "suggested_repair_hint": "In domain 'predicates', generalize the parameter of '(on ?a - object ?b - object)' to accept 'table' as a valid type, ensuring all objects can be used in the 'on' predicate."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "domain.types",
+      "raw_log": "Type problem in domain description!",
+      "suggested_repair_hint": "In domain 'types', declare 'table' as inheriting from 'object': 'table': 'object'. This resolves the type mismatch for the 'table' object."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "domain.predicates",
+      "raw_log": "Problem with proposition (on a) - too few parameters",
+      "suggested_repair_hint": "Generalize parameter of predicate '(on ?a - object ?b - object)' to accept a common supertype, ensuring it can handle both 'block' and 'table' types."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "types",
+      "raw_log": "Type problem in domain description!",
+      "suggested_repair_hint": "In domain 'types', declare 'table' as inheriting from 'object': 'table': 'object'. This resolves the type mismatch for the 'on' predicate."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pick-up",
+      "raw_log": "Type problem with proposition (on a) - too few parameters",
+      "suggested_repair_hint": "In domain 'predicates', generalize the parameter of '(on ?a - object ?b - object)' to accept a common supertype, allowing for proper type matching."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "domain.predicates",
+      "raw_log": "Problem with proposition (on a) - too few parameters",
+      "suggested_repair_hint": "In domain 'predicates', change the predicate '(on ?a - object ?b - object)' to '(on ?a - object ?b - object)' to ensure it accepts the correct number of parameters."
+    },
+    {
+      "error_category": "TYPE_SIGNATURE",
+      "repair_operation_type": "TYPE_ARITY_ALIGNMENT",
+      "faulty_element": "pick-up",
+      "raw_log": "Type problem with proposition (on a) - too few parameters",
+      "suggested_repair_hint": "In domain 'predicates', generalize the parameter of '(on ?a - object ?b - object)' to accept a common supertype, ensuring it can handle both 'block' and 'table'."
     }
   ],
-  "formatted_diagnostic_feedback": "",
-  "plan_summary": {
-    "is_solvable": true,
-    "plan_length": 4,
-    "search_time_seconds": 0.000127,
-    "val_plan_valid": true,
-    "plan_steps": [
-      "(unstack b c)",
-      "(put-down b)",
-      "(pick-up c)",
-      "(stack c b)"
-    ]
-  }
+  "formatted_diagnostic_feedback": "### Diagnostic Failure Analysis Report (Symbolic Oracle Triage):\n\nIssue #1:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: types\n  - [DESCRIPTION / RAW TRACE]: Type problem in domain description!\n  - [SUGGESTION FOR REPAIR]: In domain 'types', declare 'table' as inheriting from 'object': 'table': 'object'. This resolves the type mismatch for the 'on' predicate.\n\nIssue #2:\n  - [ERROR TYPE]: TYPE_SIGNATURE\n  - [TARGET AST OPERATION]: TYPE_ARITY_ALIGNMENT\n  - [LOCATION / COMPONENT]: pick-up\n  - [DESCRIPTION / RAW TRACE]: Type problem with proposition (on a) - too few parameters\n  - [SUGGESTION FOR REPAIR]: In domain 'predicates', generalize the parameter of '(on ?a - object ?b - object)' to accept a common supertype, ensuring it can handle both 'block' and 'table'.",
+  "plan_summary": null
 }

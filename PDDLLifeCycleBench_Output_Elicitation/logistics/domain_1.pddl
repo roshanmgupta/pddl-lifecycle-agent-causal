@@ -2,21 +2,20 @@
   (:requirements :strips :typing)
 
   (:types
-    city location obj - object
-    airplane truck - obj
-    airport - location
+    airplane city location obj truck - object
+    airport - airplane
   )
 
   (:predicates
-    (at ?x - obj ?loc - location)
-    (in ?x - obj ?y - obj)
-    (at-city ?loc - location ?c - object)
-    (at-airport ?x - location)
+    (at ?b - object ?loc - object)
+    (in ?x - obj ?b - object)
+    (in-city ?loc - location ?c - city)
+    (at-airport ?a - airplane ?loc - airport)
   )
 
   (:action load_truck
-    :parameters (?a - obj ?b - truck ?c - location ?city - object)
-    :precondition (and (at ?a ?c) (at ?b ?c) (at-city ?c ?city))
+    :parameters (?a - obj ?b - truck ?c - location)
+    :precondition (and (at ?a ?c) (at ?b ?c))
     :effect (and (in ?a ?b) (not (at ?a ?c)))
   )
 
@@ -40,7 +39,7 @@
 
   (:action drive_truck
     :parameters (?a - truck ?b - location ?c - location ?d - city)
-    :precondition (and (at ?a ?b) (at-city ?b ?d) (at-city ?c ?d))
+    :precondition (and (at ?a ?b) (in-city ?b ?d) (in-city ?c ?d))
     :effect (and (at ?a ?c) (not (at ?a ?b)))
   )
 

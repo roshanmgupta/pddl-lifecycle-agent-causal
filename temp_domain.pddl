@@ -1,44 +1,35 @@
-(define (domain elevators08)
+(define (domain jump_move_domain)
   (:requirements :strips :typing)
 
   (:types
-    count elevator passenger - object
-    fast-elevator slow-elevator - elevator
+    location move - object
+    continue-jump jump - move
   )
 
   (:predicates
-    (at ?e - object ?c - count)
-    (has ?e - elevator ?n - count)
-    (can-hold ?e - elevator ?n - count)
-    (reachable ?e - elevator ?c - count)
-    (next-to ?c1 - count ?c2 - count)
-    (above ?c1 - count ?c2 - count)
-    (boarded ?p - passenger ?e - elevator)
-    (passengers ?e - elevator ?n - count)
+    (move-ended)
+    (in-line ?a - location ?b - location ?c - location)
+    (occupied ?loc - location)
+    (free ?loc - location)
+    (last-visited ?loc - location)
   )
 
-  (:action move_slow_elevator
-    :parameters (?e - slow-elevator ?from - count ?to - count)
-    :precondition (and (at ?e ?from) (above ?from ?to) (reachable ?e ?to))
-    :effect (and (at ?e ?to) (not (at ?e ?from)))
+  (:action jump-new-move
+    :parameters (?a - location ?b - location ?c - location)
+    :precondition (and (move-ended) (in-line ?a ?b ?c) (occupied ?a) (occupied ?b) (free ?c))
+    :effect (and (not (occupied ?a)) (not (occupied ?b)) (occupied ?c) (not (move-ended)) (last-visited ?c) (not (free ?c)))
   )
 
-  (:action move_fast_elevator
-    :parameters (?e - fast-elevator ?from - count ?to - count)
-    :precondition (and (at ?e ?from) (above ?from ?to) (reachable ?e ?to))
-    :effect (and (at ?e ?to) (not (at ?e ?from)))
+  (:action continue-jump
+    :parameters (?a - location ?b - location ?c - location)
+    :precondition (and (last-visited ?a) (in-line ?a ?b ?c) (occupied ?a) (occupied ?b) (free ?c))
+    :effect (and (not (occupied ?a)) (not (occupied ?b)) (occupied ?c) (last-visited ?c) (not (free ?c)))
   )
 
-  (:action board_passenger
-    :parameters (?p - passenger ?e - elevator ?c - count ?d - count ?e_count - count)
-    :precondition (and (at ?e ?c) (at ?p ?c) (passengers ?e ?d) (next-to ?d ?e_count) (can-hold ?e ?e_count))
-    :effect (and (boarded ?p ?e) (passengers ?e ?e_count) (not (at ?p ?c)) (not (passengers ?e ?d)))
-  )
-
-  (:action leave_elevator
-    :parameters (?p - passenger ?e - elevator ?c - count ?d - count ?e_count - count)
-    :precondition (and (at ?e ?c) (boarded ?p ?e) (passengers ?e ?d) (next-to ?e_count ?d) (reachable ?e ?c))
-    :effect (and (at ?p ?c) (passengers ?e ?e_count) (not (boarded ?p ?e)) (not (passengers ?e ?d)))
+  (:action end-move
+    :parameters (?a - location)
+    :precondition (last-visited ?a)
+    :effect (and (move-ended) (not (last-visited ?a)))
   )
 
 )
