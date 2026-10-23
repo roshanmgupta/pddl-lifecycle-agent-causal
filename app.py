@@ -36,7 +36,7 @@ from config.paths import (
 )
 
 from benchmark.pure_strips_benchmarks import (
-    AUTOPLANBENCH_PURE_STRIPS_10,
+    AUTOPLANBENCH_PURE_STRIPS_DOMAINS,
     NL2PDDL_PURE_STRIPS_10,
     load_autoplanbench_original_domain_data,
     load_nl2pddl_original_domain_data,
@@ -266,7 +266,7 @@ st.sidebar.title("⚙️ Agent Controls & Benchmarks")
 input_mode = st.sidebar.radio(
     "Select Requirement Input Mode:",
     [
-        "🚀 AutoPlanBench (Pure STRIPS+Typing - 10 Curated Domains)",
+        "🚀 AutoPlanBench (Pure STRIPS+Typing Domains)",
         "🎯 NL2PDDL (Pure STRIPS+Typing - 10 Curated Domains)",
         # "📖 Extracted Prompts (prompt_autoplanbench/)",
         # "📚 NL2PDDL Prompts (prompt_NL2PDDL/)",
@@ -288,10 +288,10 @@ initial_prob_bp_input = {}
 initial_errors_input = []
 hist_case = None
 
-if input_mode == "🚀 AutoPlanBench (Pure STRIPS+Typing - 10 Curated Domains)":
+if input_mode == "🚀 AutoPlanBench (Pure STRIPS+Typing Domains)":
     sel_domain = st.sidebar.selectbox(
-        "Choose Pure STRIPS Domain (Top 10):",
-        AUTOPLANBENCH_PURE_STRIPS_10,
+        "Choose Pure STRIPS Domain (autoplanbench/data/):",
+        AUTOPLANBENCH_PURE_STRIPS_DOMAINS,
         index=0,
         help="Strictly pure (:requirements :strips :typing) domains from autoplanbench/data/."
     )

@@ -19,20 +19,27 @@ from typing import Dict, List, Tuple, Optional, Any
 from config.paths import get_autoplanbench_dir, get_nl2pddl_dir
 
 # ==============================================================================
-# Filtered Top-10 Pure STRIPS + Typing Benchmark Domains
+# Filtered Pure STRIPS + Typing Benchmark Domains (autoplanbench/data/)
 # ==============================================================================
 
-AUTOPLANBENCH_PURE_STRIPS_10 = [
+AUTOPLANBENCH_PURE_STRIPS_DOMAINS = [
     "gripper",
     "depot",
     "satellite",
     "rovers",
     "barman14-bfs",
-    "blocksworld",
-    "logistics",
     "elevators08",
     "floortile",
-    "parking11"
+    "parking11",
+    "goldminer",
+    "transport08-bfs",
+    "scanalyzer08",
+    "visitall",
+    "pipesworld-notankage04-bfs",
+    "woodworking08",
+    "tpp06-bfs",
+    "pegsol08",
+    "nomystery11-bfs"
 ]
 
 NL2PDDL_PURE_STRIPS_10 = [

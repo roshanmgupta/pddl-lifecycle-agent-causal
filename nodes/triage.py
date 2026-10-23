@@ -327,31 +327,42 @@ def run_triage_node(state: Dict[str, Any]) -> Dict[str, Any]:
                     if not arg_type:
                         arg_type = "object"
                     
+                    declared_param_count = 0
                     expected_type = "object"
                     for p_decl in domain_bp.get("predicates", []):
                         clean_p = str(p_decl).strip('() ')
                         toks = clean_p.split()
                         if toks and toks[0] == pred_name:
                             matches = re.findall(r"\?\w+\s*-\s*([a-zA-Z0-9_\-]+)", clean_p)
+                            declared_param_count = len(matches)
                             if param_idx < len(matches):
                                 expected_type = matches[param_idx]
                                 break
                                 
                     dom_types = domain_bp.get("types", {})
                     current_parent = dom_types.get(arg_type, "object") if isinstance(dom_types, dict) else "object"
+                    is_arity_mismatch = (declared_param_count > 0 and len(args) != declared_param_count)
                     
                     type_mismatch_entries.append({
                         "pred_name": pred_name,
+                        "args": args,
                         "faulty_arg": faulty_arg,
                         "arg_type": arg_type,
                         "expected_type": expected_type,
                         "current_parent": current_parent,
                         "param_idx": param_idx,
+                        "declared_param_count": declared_param_count,
+                        "is_arity_mismatch": is_arity_mismatch,
                         "current_val_action": current_val_action,
                         "raw_log": line.strip()
                     })
                     
-                    if is_subtype(expected_type, arg_type, dom_types) and expected_type.lower() != arg_type.lower():
+                    if is_arity_mismatch:
+                        val_type_diagnostics.append(
+                            f"  * Proposition '({pred_name} {' '.join(args)})' has an ARITY MISMATCH: provided {len(args)} argument(s), but predicate '{pred_name}' is declared with {declared_param_count} parameter(s) expecting signature matching declared parameters.\n"
+                            f"    DIAGNOSIS & MANDATORY ACTION: In the action schema or problem definition, update the formula to provide all {declared_param_count} arguments matching the declared signature of '{pred_name}'. Do NOT change domain 'types' to resolve an arity mismatch!"
+                        )
+                    elif is_subtype(expected_type, arg_type, dom_types) and expected_type.lower() != arg_type.lower():
                         val_type_diagnostics.append(
                             f"  * Proposition '({pred_name} {' '.join(args)})' (parameter {param_idx + 1}): Object/parameter '{faulty_arg}' has declared type '{arg_type}', but predicate '{pred_name}' parameter {param_idx + 1} was declared too narrowly expecting subtype '{expected_type}' (which already inherits from '{arg_type}').\n"
                             f"    DIAGNOSIS & MANDATORY ACTION:\n"
@@ -359,7 +370,7 @@ def run_triage_node(state: Dict[str, Any]) -> Dict[str, Any]:
                             f"    2) Alternatively, if '{faulty_arg}' in problem ':objects' is intended to be a specialized '{expected_type}', declare '{faulty_arg} - {expected_type}' in problem ':objects'.\n"
                             f"    Do NOT declare '{arg_type}' as a subtype of '{expected_type}' in domain 'types' (subtyping cannot be inverted)."
                         )
-                    elif arg_type.lower() == expected_type.lower():
+                    elif is_subtype(arg_type, expected_type, dom_types):
                         val_type_diagnostics.append(
                             f"  * Action '{current_val_action}' proposition '({pred_name} {' '.join(args)})' (parameter {param_idx + 1}): Parameter '{faulty_arg}' has type '{arg_type}' (inheriting from '{current_parent}').\n"
                             f"    VAL failed type-checking against expected type '{expected_type}' because intermediate supertype '{current_parent}' is not declared as inheriting from '{expected_type}' in domain 'types'.\n"
@@ -367,8 +378,13 @@ def run_triage_node(state: Dict[str, Any]) -> Dict[str, Any]:
                         )
                     else:
                         val_type_diagnostics.append(
-                            f"  * Proposition '({pred_name} {' '.join(args)})' (parameter {param_idx + 1}): Object/parameter '{faulty_arg}' has declared type '{arg_type}' (currently inheriting from '{current_parent}'), but predicate '{pred_name}' parameter {param_idx + 1} expects type '{expected_type}'.\n"
-                            f"    DIAGNOSIS & MANDATORY ACTION: In domain 'types', check if '{arg_type}' should inherit from '{expected_type}' (e.g. declare '{arg_type}': '{expected_type}', or declare intermediate type '{current_parent}': '{expected_type}'). If '{arg_type}' is a subtype of '{expected_type}', update domain 'types' accordingly. Do NOT change the predicate declaration if it already expects the correct parent type!"
+                            f"  * Proposition '({pred_name} {' '.join(args)})' (parameter {param_idx + 1}): Parameter/object '{faulty_arg}' has type '{arg_type}', but predicate '{pred_name}' parameter {param_idx + 1} expects disjoint type '{expected_type}'.\n"
+                            f"    DIAGNOSIS & MANDATORY ACTION (DISJOINT TYPE MISMATCH):\n"
+                            f"    In Classical PDDL 2.1, disjoint types cannot inherit from each other without corrupting the taxonomy. Either:\n"
+                            f"    1) If this formula represents distinct states for distinct entities (e.g. hand emptiness vs container emptiness), declare a distinct dedicated predicate symbol in domain 'predicates' (e.g. '(handempty ?h - {arg_type})' vs '({pred_name} ?c - {expected_type})') and update the action/problem to use it.\n"
+                            f"    2) If the relation applies across multiple types, generalize parameter {param_idx + 1} in domain 'predicates' to their common supertype (e.g. 'object').\n"
+                            f"    3) Or in problem ':objects', verify if '{faulty_arg}' was declared with the wrong type and update its declaration.\n"
+                            f"    NEVER declare '{arg_type}' as a child of '{expected_type}' in domain 'types' if they are fundamentally disjoint concepts!"
                         )
 
         type_diag_str = "\n".join(val_type_diagnostics) if val_type_diagnostics else ""
@@ -578,20 +594,37 @@ GROUNDED ACTION-PREDICATE CAUSAL DEPENDENCY & REACHABILITY ANALYSIS:
                 p_idx = tm.get("param_idx", 0) + 1
                 dom_types = domain_bp.get("types", {}) if isinstance(domain_bp, dict) else {}
                 
-                if is_subtype(tm["expected_type"], tm["arg_type"], dom_types) and tm["expected_type"].lower() != tm["arg_type"].lower():
+                if tm.get("is_arity_mismatch"):
+                    target_elem = tm["pred_name"]
+                    hint = (
+                        f"Proposition '({tm['pred_name']} ...)' has an arity mismatch: provided {len(tm.get('args', []))} argument(s), "
+                        f"but predicate '{tm['pred_name']}' expects {tm.get('declared_param_count', 0)} parameter(s). "
+                        f"In the action schema or problem definition, update the formula to provide all arguments matching the declared signature."
+                    )
+                elif is_subtype(tm["expected_type"], tm["arg_type"], dom_types) and tm["expected_type"].lower() != tm["arg_type"].lower():
                     target_elem = tm["pred_name"]
                     hint = (
                         f"Type mismatch on proposition '({tm['pred_name']} {tm['faulty_arg']} ...)': Object/parameter '{tm['faulty_arg']}' has declared type '{tm['arg_type']}', but predicate '{tm['pred_name']}' was declared too narrowly expecting subtype '{tm['expected_type']}' (which already inherits from '{tm['arg_type']}'). "
                         f"In domain 'predicates', generalize parameter {p_idx} of predicate '{tm['pred_name']}' to supertype '{tm['arg_type']}' (e.g. '({tm['pred_name']} ... ?x - {tm['arg_type']} ...)'). Alternatively, if problem requirements designate that '{tm['faulty_arg']}' is a specialized '{tm['expected_type']}', declare '{tm['faulty_arg']} - {tm['expected_type']}' in problem ':objects'. "
                         f"Do NOT invert domain 'types' by declaring '{tm['arg_type']}' as a subtype of '{tm['expected_type']}'."
                     )
-                else:
+                elif is_subtype(tm["arg_type"], tm["expected_type"], dom_types):
                     target_elem = "types"
                     hint = (
-                        f"In domain 'types', declare '{tm['arg_type']}': '{tm['expected_type']}' "
+                        f"In domain 'types', ensure '{tm['arg_type']}': '{tm['expected_type']}' "
                         f"(currently inheriting from '{tm['current_parent']}'). Object '{tm['faulty_arg']}' has type '{tm['arg_type']}' "
                         f"and must inherit from '{tm['expected_type']}' to satisfy predicate '{tm['pred_name']}'. "
-                        f"Do NOT change predicate '{tm['pred_name']}', as it already expects '{tm['expected_type']}'."
+                        f"Do NOT declare 'object': 'object'."
+                    )
+                else:
+                    target_elem = tm["pred_name"]
+                    hint = (
+                        f"Type mismatch on proposition '({tm['pred_name']} {tm['faulty_arg']} ...)': Parameter/object '{tm['faulty_arg']}' has type '{tm['arg_type']}', but predicate '{tm['pred_name']}' parameter {p_idx} expects disjoint type '{tm['expected_type']}'. "
+                        f"In Classical PDDL 2.1, disjoint types cannot inherit from each other. Either: "
+                        f"1) Declare a dedicated predicate for distinct entity states (e.g. '(handempty ?h - {tm['arg_type']})' vs '({tm['pred_name']} ?c - {tm['expected_type']})'), "
+                        f"2) Generalize parameter {p_idx} in 'predicates' to their common supertype (e.g. 'object'), or "
+                        f"3) In problem ':objects', declare '{tm['faulty_arg']}' with the intended type. "
+                        f"NEVER declare '{tm['arg_type']}' as a child of '{tm['expected_type']}' in domain 'types'."
                     )
                 
                 matched = False
