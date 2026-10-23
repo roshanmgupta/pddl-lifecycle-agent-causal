@@ -40,3 +40,5 @@ tec.md
 /PDDLLifeCycleBench_Output__Evolve
 /output
 .licenses/
+/PDDLLifeCycleBench_Output_Elicitation
+/pddl_benchmark_instances
